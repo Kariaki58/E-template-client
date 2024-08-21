@@ -14,7 +14,7 @@ const Categories = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/category/get`, { withCredentials: true });
-        setCategories(response.data.message.slice(0, 2));
+        setCategories(response.data.message);
       } catch (err) {
         setError('Failed to load categories.');
       } finally {

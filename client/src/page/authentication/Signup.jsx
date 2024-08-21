@@ -1,26 +1,51 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { RxCross1 } from 'react-icons/rx';
-import { useContext } from 'react';
 import { context } from '../../contextApi/Modal';
+import axios from 'axios';
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
 
-
-const Signup = () => {
-    const { handleToggle } = useContext(context)
+const SignupPage = () => {
+    const { handleToggle } = useContext(context);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [comfirmPass, setComfirmPass] = useState('');
+    const [confirmPass, setConfirmPass] = useState('');
     const [error, setError] = useState('');
+    const signIn = useSignIn()
+    const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+
+    const handleSignup = async (e) => {
         e.preventDefault();
-        // Add your authentication logic here
-        if (email === '' || password === '') {
+        if (email === '' || password === '' || confirmPass === '') {
             setError('Please fill in all fields');
+        } else if (password !== confirmPass) {
+            setError('Passwords do not match');
         } else {
-            setError('');
-            // Proceed with login
-            console.log('Logging in with', { email, password });
+            try {
+                console.log(email, password)
+                setError('');
+                const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/register`, { email, password }, { withCredentials: true })
+                const { message, token, isAdmin } = response.data
+                if (signIn({
+                    auth: {
+                        token,
+                        type: 'Bearer'
+                    },
+                    userState: {
+                        isAdmin
+                    }
+                })) {
+                    setTimeout(() => {
+                        window.location.reload()
+                        navigate('/')
+                    }, 2000)
+                } else {
+                    throw new Error('failed to login')
+                }
+            } catch(err) {
+                console.log(err)
+            }
         }
     };
 
@@ -32,11 +57,11 @@ const Signup = () => {
         >
             <div className="m-10 flex items-center justify-center w-full">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative">
-                    <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Sign up</h2>
+                    <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Sign Up</h2>
                     {error && (
                         <p className="text-red-500 text-center mb-4">{error}</p>
                     )}
-                    <form onSubmit={handleLogin}>
+                    <form onSubmit={handleSignup}>
                         <div className="mb-4">
                             <label htmlFor="email" className="block text-sm font-bold mb-2">
                                 Email Address
@@ -50,31 +75,31 @@ const Signup = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
-                        <div className="mb-6">
-                        <label htmlFor="password" className="block text-sm font-bold mb-2">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
+                        <div className="mb-4">
+                            <label htmlFor="password" className="block text-sm font-bold mb-2">
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
+                                placeholder="Enter your password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
                         </div>
                         <div className="mb-6">
-                        <label htmlFor="password" className="block text-sm font-bold mb-2">
-                            comfirm password
-                        </label>
-                        <input
-                            type="password"
-                            id="password2"
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
-                            placeholder="Enter your password"
-                            value={comfirmPass}
-                            onChange={(e) => setComfirmPass(e.target.value)}
-                        />
+                            <label htmlFor="confirmPassword" className="block text-sm font-bold mb-2">
+                                Confirm Password
+                            </label>
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
+                                placeholder="Confirm your password"
+                                value={confirmPass}
+                                onChange={(e) => setConfirmPass(e.target.value)}
+                            />
                         </div>
                         <div className="flex items-center justify-between">
                             <button
@@ -86,13 +111,13 @@ const Signup = () => {
                         </div>
                     </form>
                     <p className="text-center mt-6">
-                        Don’t have an account? <Link to="/login" className="text-blue-500 hover:underline">login</Link>
+                        Already have an account? <Link to="/login" className="text-blue-500 hover:underline">Log In</Link>
                     </p>
-                    <RxCross1 className='absolute top-10 right-10 text-2xl hover:cursor-pointer' onClick={handleToggle}/>
+                    <RxCross1 className='absolute top-10 right-10 text-2xl hover:cursor-pointer' onClick={handleToggle} />
                 </div>
             </div>
         </div>
     );
 };
 
-export default Signup;
+export default SignupPage;

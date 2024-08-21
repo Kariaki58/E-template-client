@@ -5,6 +5,7 @@ import { RxCross1 } from "react-icons/rx";
 import { IoIosSearch } from "react-icons/io";
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import nigeria from '/niger-icon.png';
 import { context } from '../../contextApi/Modal';
 
@@ -16,7 +17,7 @@ const Navigation = () => {
     setIsSearchOpen(!isSearchOpen);
   };
   const [isOpen, setIsOpen] = useState(false)
-  const [isAuth, setIsAuth] = useState(true)
+  const isAuth = useIsAuthenticated()
 
   return (
     <div className="bg-white shadow-md py-4">
@@ -64,13 +65,13 @@ const Navigation = () => {
                     !isAuth ? (
                       <>
                         <Link  className='hover:bg-gray-200 p-2 w-full cursor-pointer' to="/login" onClick={handleToggle}>
-                          <li>Login</li>
+                          <li onClick={() => setIsOpen(prev => !prev)}>Login</li>
                         </Link>
                         <Link className='hover:bg-gray-200 p-2 w-full cursor-pointer' to="/sign-up" onClick={handleToggle}>
-                          <li>sign up</li>
+                          <li  onClick={() => setIsOpen(prev => !prev)}>sign up</li>
                         </Link>
                       </>
-                    ) : <Link className='hover:bg-gray-200 p-2 w-full cursor-pointer' to='/dashboard/user'><li>my account</li></Link>
+                    ) : <Link  onClick={() => setIsOpen(prev => !prev)} className='hover:bg-gray-200 p-2 w-full cursor-pointer' to='/dashboard/user'><li>my account</li></Link>
                   }
                 </ul>
               )

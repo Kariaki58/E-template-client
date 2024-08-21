@@ -1,24 +1,47 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { RxCross1 } from 'react-icons/rx';
 import { useContext } from 'react';
 import { context } from '../../contextApi/Modal';
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import axios from 'axios';
 
 const LoginPage = () => {
     const { handleToggle } = useContext(context)
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate()
     const [error, setError] = useState('');
+    const signIn = useSignIn()
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        // Add your authentication logic here
         if (email === '' || password === '') {
             setError('Please fill in all fields');
         } else {
-            setError('');
-            // Proceed with login
-            console.log('Logging in with', { email, password });
+            try {
+                setError('');
+                const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/login`, { email, password }, { withCredentials: true })
+                const { message, token, isAdmin } = response.data
+                if (signIn({
+                    auth: {
+                        token,
+                        type: 'Bearer'
+                    },
+                    userState: {
+                        isAdmin
+                    }
+                })) {
+                    setTimeout(() => {
+                        window.location.reload()
+                        navigate('/')
+                    }, 2000)
+                } else {
+                    throw new Error('failed to login')
+                }
+            } catch(err) {
+                console.log(err)
+            }
         }
     };
 

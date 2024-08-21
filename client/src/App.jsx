@@ -18,6 +18,7 @@ import Orders from './component/sellers-dashboard/Orders'
 import Products from './component/sellers-dashboard/Products'
 import Email from './component/sellers-dashboard/Email'
 import Address from './component/checkout/Address'
+import { CartProvider } from './contextApi/cartContext'
 import ProductContext from './contextApi/ProductContext'
 
 function App() {
@@ -25,12 +26,15 @@ function App() {
   return (
     <div className='max-w-screen-2xl mx-auto'>
       <Modal>
+        <CartProvider>
         <ProductContext>
           <Ads />
           <Navigation />
           <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/cart' element={<CartPage />} />
+
+            <Route path='/cart' element={
+                <CartPage />
+              } />
             <Route path='/' element={<Home />}>
               <Route path='login' element={<LoginPage />} />
               <Route path='sign-up' element={<Signup />}/>
@@ -50,6 +54,7 @@ function App() {
           </Routes>
           <Footer />
         </ProductContext>
+        </CartProvider>
       </Modal>
     </div>
   )

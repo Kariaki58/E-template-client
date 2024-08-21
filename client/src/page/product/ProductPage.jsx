@@ -100,9 +100,11 @@ const ProductSections = () => {
                     <h2 className="text-lg font-semibold mb-2">Available Colors</h2>
                     <div className="flex flex-wrap gap-2">
                       <select className='px-4 py-2 w-40 rounded-lg'>
-                        <option>Red</option>
-                        <option>gray</option>
-                        <option>Green</option>
+                        {
+                          product.colors.map((color, index) => (
+                            <option key={index}>{color}</option>
+                          ))
+                        }
                       </select>
                     </div>
                   </div>
@@ -113,12 +115,12 @@ const ProductSections = () => {
                     <h2 className="text-lg font-semibold mb-2">Available Sizes</h2>
                     <div className="flex flex-wrap gap-2">
                       <select className='px-4 py-2 w-40 rounded-lg'>
-                          <option>S</option>
-                          <option>M</option>
-                          <option>L</option>
-                          <option>XL</option>
-                          <option>XXL</option>
-                        </select>
+                        {
+                          product.sizes.map((color, index) => (
+                            <option key={index}>{color}</option>
+                          ))
+                        }
+                      </select>
                     </div>
                   </div>
                 )}
