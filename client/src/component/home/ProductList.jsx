@@ -3,6 +3,7 @@ import { productContext } from '../../contextApi/ProductContext';
 import { CartContext } from '../../contextApi/cartContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from 'react-router-dom';
 
 export const ProductSizesOrColorDisplay = ({ sizesAvailable, colorsAvailable, onSelectSize, onSelectColor, onClose, onCancel }) => {
   return (
@@ -60,6 +61,10 @@ const ProductList = () => {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
 
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(price);
+  };
+
   const handleAddToCart = (product) => {
     if (product.sizes.length > 0 || product.colors.length > 0) {
       setSelectedProduct(product);
@@ -88,10 +93,7 @@ const ProductList = () => {
   };
 
   const truncateText = (text, length) => {
-    if (text.length > length) {
-      return text.slice(0, length) + '...';
-    }
-    return text;
+    return text.length > length ? text.slice(0, length) + '...' : text;
   };
 
   if (loading) {
@@ -115,17 +117,19 @@ const ProductList = () => {
         </select>
       </div>
       <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {sortedProducts.map((data, index) => (
+        {sortedProducts.map((data) => (
           <div className='w-full hover:shadow-md p-4 bg-white rounded-lg flex flex-col justify-between' key={data._id}>
-            <div className="h-48 flex items-center justify-center">
-              <img src={data.images[0]} alt={data.name} className="h-full object-contain" />
-            </div>
+            <Link to={`products/content/${data._id}`}>
+              <div className="h-48 flex items-center justify-center">
+                <img src={data.images[0]} alt={data.name} className="h-full object-contain" />
+              </div>
+            </Link>
             <div className="mt-4 h-20">
-              <p className="font-semibold text-gray-800 text-center">
+              <p className="font-semibold text-gray-800">
                 {truncateText(data.name, 19)}
               </p>
               <div className="text-gray-950 font-semibold">
-                ₦{data.price.$numberDecimal ? parseFloat(data.price.$numberDecimal).toFixed(2) : data.price}
+                {formatPrice(data.price.$numberDecimal ? parseFloat(data.price.$numberDecimal) : data.price)}
               </div>
             </div>
             <div className="flex justify-center mt-auto">
@@ -144,11 +148,10 @@ const ProductList = () => {
           onSelectSize={(e) => setSelectedSize(e.target.value)}
           onSelectColor={(e) => setSelectedColor(e.target.value)}
           onClose={handleConfirmSelection}
-          onCancel={handleCancelSelection} // Pass handleCancelSelection as onCancel prop
+          onCancel={handleCancelSelection}
         />
       )}
 
-      {/* Add ToastContainer */}
       <ToastContainer />
     </div>
   );

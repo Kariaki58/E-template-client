@@ -10,9 +10,6 @@ const Header = () => {
             Elevate your digital interactions with Apple Vision Pro—where innovation meets immersive technology.
             Buy now and transform your reality!
           </h1>
-          <button className='text-white rounded-lg py-2 px-4 border-white border hover:border-2 font-light'>
-            Buy Now
-          </button>
         </div>
       </div>
     </header>

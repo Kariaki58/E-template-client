@@ -40,7 +40,7 @@ function App() {
               <Route path='sign-up' element={<Signup />}/>
             </Route>
             <Route path='/checkout' element={<Checkout />} />
-            <Route path='/:id/product' element={<ProductSections />} />
+            <Route path='/products/content/:id' element={<ProductSections />} />
             <Route path='/dashboard/user' element={<Buyer />}>
               <Route index element={<MyOrder />} />
               <Route path='address' element={<Address />} />

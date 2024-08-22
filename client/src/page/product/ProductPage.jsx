@@ -1,40 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { IoStarSharp } from 'react-icons/io5';
+import axios from 'axios';
 import ReviewForm from '../../component/product/ReviewForm';
 import ReviewList from '../../component/product/ReviewList';
-import airpod from '/assets/1.jpg';
-import apple_glass from '/assets/apple_glass.png';
-import brans from '/assets/brans.jpeg'
-
-const mockProductData = {
-  id: 1,
-  productName: "Sample Product",
-  price: 49.99,
-  productDescription: "This is a description of the sample product.",
-  productImages: [airpod, apple_glass, brans],
-  colors: ["red", "gray", "green"],
-  sizes: ["S", "M", "L", "XL"],
-};
+import 'react-toastify/dist/ReactToastify.css';
+import { CartContext } from '../../contextApi/cartContext';
+import { ToastContainer, toast } from 'react-toastify';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 const ProductSections = () => {
+  const { addToCart } = useContext(CartContext);
   const [selectedImage, setSelectedImage] = useState('');
   const params = useParams();
   const [writeReview, setWriteReview] = useState(false);
   const [product, setProduct] = useState(null);
+  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
+  const isAuthenticated = useIsAuthenticated();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
-        const fetchedProduct = mockProductData;
+        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/products/${params.id}`, { withCredentials: true });
+        if (response.data.error) {
+          throw new Error(response.data.error);
+        }
+        const fetchedProduct = response.data.message;
         setProduct(fetchedProduct);
-        if (fetchedProduct.productImages && fetchedProduct.productImages.length > 0) {
-          setSelectedImage(fetchedProduct.productImages[0]);
+
+        if (fetchedProduct.images && fetchedProduct.images.length > 0) {
+          setSelectedImage(fetchedProduct.images[0]);
         }
       } catch (error) {
+        console.log(error.response.data);
         console.error("Error fetching product data: ", error);
+        toast.error("Error fetching product data.");
       }
     };
 
@@ -42,135 +43,141 @@ const ProductSections = () => {
   }, [params.id]);
 
   const handleAddToCart = () => {
-    alert('Product added to cart');
+    if (product.sizes.length > 0 && !selectedSize) {
+      toast.error("Please select a size.");
+      return;
+    }
+    if (product.colors.length > 0 && !selectedColor) {
+      toast.error("Please select a color.");
+      return;
+    }
+
+    addToCart(params.id, 1, selectedSize, selectedColor);
+    toast.success(`${product.name} added to cart with ${selectedColor || ''} color and ${selectedSize || ''} size!`);
+  };
+
+  // Function to format the price with commas
+  const formatPrice = (price) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   return (
-    <div className="flex flex-col items-center p-4">
-      <div className="w-full max-w-6xl rounded-lg">
+    <div className="flex flex-col items-center p-4 bg-gray-50">
+      <ToastContainer />
+      <div className="w-full max-w-6xl rounded-lg overflow-hidden">
         {product ? (
           <>
-            <div className="flex flex-col lg:flex-row gap-8">
+            <div className="flex flex-col lg:flex-row gap-8 p-6">
               <div className="w-full lg:w-1/2 flex flex-col items-center">
-                <div className="relative w-full h-96 p-4 sm:p-0">
+                <div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-96">
                   <img
                     src={selectedImage}
                     alt="Product"
-                    className="absolute inset-0 w-full h-full object-contain rounded-lg"
+                    className="absolute w-full h-full object-cover rounded-lg transition-transform duration-300 transform hover:scale-105"
                   />
                 </div>
-                <div className="flex gap-3 mt-4">
-                  {product.productImages &&
-                    product.productImages.map((image, index) => (
-                      <img
-                        key={index}
-                        src={image}
-                        alt={`Thumbnail ${index + 1}`}
-                        className={`w-20 h-20 sm:w-14 sm:h-14 object-cover rounded-lg cursor-pointer border ${
-                          selectedImage === image ? 'border-gray-500' : 'border-gray-300'
-                        } hover:border-gray-500 transition-all duration-200`}
-                        onClick={() => setSelectedImage(image)}
-                      />
-                    ))}
+                <div className="flex gap-2 mt-4 overflow-x-auto">
+                  {product.images.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image}
+                      alt={`Thumbnail ${index + 1}`}
+                      className={`w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg cursor-pointer border ${
+                        selectedImage === image ? 'border-gray-500' : 'border-gray-300'
+                      } hover:border-gray-500 transition-all duration-200`}
+                      onClick={() => setSelectedImage(image)}
+                    />
+                  ))}
                 </div>
               </div>
-
-              {/* Product Details */}
               <div className="w-full lg:w-1/2 flex flex-col p-4 sm:p-0">
-                <h1 className="text-3xl lg:text-4xl font-bold mb-4 text-gray-900">
-                  {product.productName}
-                </h1>
-                <p className="text-sm text-gray-500 mb-4">
-                  Prices may vary during checkout.
-                </p>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-gray-900">{product.name}</h1>
+                <p className="text-xs sm:text-sm text-gray-500 mb-4">Prices may vary during checkout.</p>
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex text-yellow-500">
                     {[...Array(5)].map((_, index) => (
-                      <IoStarSharp key={index} className="text-xl sm:text-2xl" />
+                      <IoStarSharp key={index} className="text-lg sm:text-xl md:text-2xl" />
                     ))}
                   </div>
-                  <p className="text-sm text-gray-600">8 Reviews</p>
+                  <p className="text-xs sm:text-sm text-gray-600">{product.rating.count} Reviews</p>
                 </div>
                 <div className="flex gap-4 mb-4 items-center">
-                  <p className="text-xl text-gray-800">Price: ${product.price.toFixed(2)}</p>
+                  <p className="text-lg sm:text-xl md:text-2xl text-gray-800 font-bold">
+                    Price: ${formatPrice(product.price)}
+                  </p>
                 </div>
-
                 {product.colors.length > 0 && (
                   <div className="mb-4">
-                    <h2 className="text-lg font-semibold mb-2">Available Colors</h2>
-                    <div className="flex flex-wrap gap-2">
-                      <select className='px-4 py-2 w-40 rounded-lg'>
-                        {
-                          product.colors.map((color, index) => (
-                            <option key={index}>{color}</option>
-                          ))
-                        }
-                      </select>
-                    </div>
+                    <h2 className="text-base sm:text-lg font-semibold mb-2">Available Colors</h2>
+                    <select
+                      className="px-4 py-2 w-full sm:w-40 rounded-lg border border-gray-300"
+                      value={selectedColor}
+                      onChange={(e) => setSelectedColor(e.target.value)}
+                    >
+                      <option value="">Select Color</option>
+                      {product.colors.map((color, index) => (
+                        <option key={index} value={color}>
+                          {color}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 )}
-
                 {product.sizes.length > 0 && (
                   <div className="mb-4">
-                    <h2 className="text-lg font-semibold mb-2">Available Sizes</h2>
-                    <div className="flex flex-wrap gap-2">
-                      <select className='px-4 py-2 w-40 rounded-lg'>
-                        {
-                          product.sizes.map((color, index) => (
-                            <option key={index}>{color}</option>
-                          ))
-                        }
-                      </select>
-                    </div>
+                    <h2 className="text-base sm:text-lg font-semibold mb-2">Available Sizes</h2>
+                    <select
+                      className="px-4 py-2 w-full sm:w-40 rounded-lg border border-gray-300"
+                      value={selectedSize}
+                      onChange={(e) => setSelectedSize(e.target.value)}
+                    >
+                      <option value="">Select Size</option>
+                      {product.sizes.map((size, index) => (
+                        <option key={index} value={size}>
+                          {size}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 )}
-
-                <div className="flex mb-4 gap-4">
-                  <div className="flex items-center w-full sm:w-auto">
-                    <input
-                      placeholder="Enter coupon code"
-                      className="p-3 border border-gray-300 rounded-l-lg w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-gray-500"
-                    />
-                    <button
-                      className="bg-gray-950 text-white p-3 rounded-r-lg border-2 border-gray-600 hover:bg-gray-700 transition-all w-full sm:w-auto"
-                    >
-                      Apply
-                    </button>
-                  </div>
-                </div>
-
                 <div className="flex flex-col sm:flex-row gap-4 mt-4">
                   <button
                     onClick={handleAddToCart}
-                    className="w-full sm:w-auto bg-green-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
+                    className="w-full sm:w-auto bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
                   >
                     Add to Cart
                   </button>
-                  <button className="w-full sm:w-auto bg-gray-950 text-white py-2 px-4 rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all">
+                  <button className="w-full sm:w-auto bg-gray-950 text-white py-2 px-4 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all">
                     Buy Now
                   </button>
                 </div>
               </div>
             </div>
 
-            <div className="mt-8 rounded-lg">
-              <h2 className="text-2xl font-semibold mb-4 text-gray-900">Description</h2>
-              <p className="text-gray-700">{product.productDescription}</p>
+            <div className="mt-8 p-6 rounded-lg">
+              <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-900">Description</h2>
+              <p className="text-gray-700">{product.description}</p>
             </div>
-
-            <div className="mt-8">
-              <p
-                className="text-lg sm:text-2xl cursor-pointer text-blue-600 hover:underline"
-                onClick={() => setWriteReview((prev) => !prev)}
-              >
-                Write a Review
-              </p>
-              {writeReview && (
-                <ReviewForm writeReview={writeReview} setWriteReview={setWriteReview} productId={params.id} />
-              )}
-            </div>
-
-            <ReviewList />
+            {isAuthenticated ? (
+              <div>
+                <div className="mt-8">
+                  <p
+                    className="text-lg sm:text-xl cursor-pointer text-blue-600 hover:underline inline"
+                    onClick={() => setWriteReview((prev) => !prev)}
+                  >
+                    Write a Review
+                  </p>
+                  {writeReview && (
+                    <ReviewForm writeReview={writeReview} setWriteReview={setWriteReview} productId={params.id} />
+                  )}
+                </div>
+                <ReviewList />
+              </div>
+            ) : (
+              <div>
+                <p className="text-red-600">Please authenticate to write a review.</p>
+              </div>
+            )}
           </>
         ) : (
           <p className="text-center text-gray-600">Loading product details...</p>

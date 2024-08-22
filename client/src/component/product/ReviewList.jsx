@@ -4,26 +4,11 @@ import { useParams } from 'react-router-dom';
 import airpod from '/assets/1.jpg';
 import apple_glass from '/assets/apple_glass.png';
 import cute_gril from '/assets/image-open.jpeg'
+import axios from 'axios';
+
 
 const ReviewList = () => {
-  const [reviews, setReviews] = useState([
-    {
-      _id: 1,
-      rating: 3,
-      createdAt: new Date(),
-      name: 'Stephen',
-      comment: "this product is that good try it out",
-      reviewImage: airpod
-    },
-    {
-      _id: 2,
-      rating: 2,
-      createdAt: new Date(),
-      name: 'Samuel',
-      comment: "feels comfortable in my body",
-      reviewImage: apple_glass
-    }
-  ]);
+  const [reviews, setReviews] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [reviewsPerPage] = useState(2);
   const [totalPages, setTotalPages] = useState(1);
@@ -31,22 +16,26 @@ const ReviewList = () => {
   const params = useParams()
   const [error, setError] = useState(null);
 
-  // useEffect(() => {
-  //   const fetchReviews = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await axios.get(`http://localhost:5000/api/reviews/product/${params.id}`);
-  //       setReviews(response.data);
-  //       setTotalPages(Math.ceil(response.data.length / reviewsPerPage));
-  //     } catch (err) {
-  //       setError('Failed to load reviews. Please try again.');
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/review/get/${params.id}`);
+        if (response.data.error) {
+          throw new Error(response.data.error)
+        }
+        setReviews(response.data.message);
+        setTotalPages(Math.ceil(response.data.message.length / reviewsPerPage));
+      } catch (err) {
+        console.log(err)
+        setError('Failed to load reviews. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   fetchReviews();
-  // }, []);
+    fetchReviews();
+  }, []);
 
   const indexOfLastReview = currentPage * reviewsPerPage;
   const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
@@ -70,7 +59,7 @@ const ReviewList = () => {
             <article key={review._id} className="mb-6 border-b pb-4 border-gray-200">
               <div className="flex justify-between items-center mb-2">
                 <div className="flex">
-                  {[...Array(5)].map((_, index) => (
+                  {[...Array(review.rating)].map((_, index) => (
                     <IoStarSharp
                       key={index}
                       className={`w-5 h-5 ${
@@ -91,7 +80,7 @@ const ReviewList = () => {
                   />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-gray-800">{review.name}</p>
+                  <p className="font-semibold text-gray-800">{review.userId.email.split('@')[0]}</p>
                   <p className="mt-2 text-gray-700">{review.comment}</p>
                   {review.reviewImage && (
                     <div className="mt-4 w-32 h-32 overflow-hidden rounded-lg">
@@ -108,7 +97,7 @@ const ReviewList = () => {
           ))
         )}
       </div>
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-center mt-6 items-center">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}

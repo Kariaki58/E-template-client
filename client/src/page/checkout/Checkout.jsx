@@ -1,33 +1,213 @@
-import React, { useState } from 'react';
-import Address from '../../component/checkout/Address';
+import React, { useContext, useState } from 'react';
+import PaystackPop from '@paystack/inline-js';
+import axios from 'axios';
+import { CartContext } from '../../contextApi/cartContext';
 
 const Checkout = () => {
+  const [shippingDetails, setShippingDetails] = useState({
+    name: '',
+    email: '',
+    address: '',
+    city: '',
+    state: '',
+    zip: '',
+    phone: '',
+  });
+  const { cartItems } = useContext(CartContext);
+  
+  // Handle input changes for shipping details
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setShippingDetails((prevDetails) => ({
+      ...prevDetails,
+      [name]: value,
+    }));
+  };
+
+  // Calculate total amount from cart items
+  const calculateTotalAmount = () => {
+    return cartItems.items.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
+  // Format price with commas and Naira symbol
+  const formatPrice = (amount) => {
+    return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(amount);
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const totalAmount = calculateTotalAmount() * 100; // Convert to kobo for Paystack
+    const popup = new PaystackPop();
+
+    popup.newTransaction({
+      key: 'pk_test_fe3c7c857fbdf1e647efae4259d89937f3914562',
+      email: shippingDetails.email,
+      amount: totalAmount,
+      onSuccess: async (transaction) => {
+        try {
+          const response = await axios.post(
+            '/api/payment/verify',
+            { reference: transaction.reference },
+            { withCredentials: true }
+          );
+          console.log('Payment Successful:', response.data);
+        } catch (error) {
+          console.error('Payment verification failed:', error.message);
+        }
+      },
+      onCancel: () => {
+        console.log('Payment cancelled');
+      },
+      onError: (error) => {
+        console.error('Payment error:', error.message);
+      },
+    });
+  };
 
   return (
-    <div className='container mx-auto p-4 md:p-8 lg:p-12 mt-20'>
-      <h1 className='text-3xl font-bold mb-8 text-center'>Checkout</h1>
-      
-      <div className='rounded-lg p-6 mb-10'>
-        <h2 className='text-2xl font-semibold mb-6 border-b pb-2'>Order Summary</h2>
-        <ul className='space-y-4'>
-          {/* Example cart items */}
-          <li className='flex justify-between items-center border-b pb-2'>
-            <span>Product 1</span>
-            <span>$29.99 x 2</span>
-            <span>$59.98</span>
-          </li>
-          <li className='flex justify-between items-center border-b pb-2'>
-            <span>Product 2</span>
-            <span>$49.99 x 1</span>
-            <span>$49.99</span>
-          </li>
+    <div className="container mx-auto p-4 md:p-8 lg:p-12">
+      <h1 className="text-3xl font-bold mb-8 text-center">Checkout</h1>
+
+      <div className="rounded-lg p-6 mb-10">
+        <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Order Summary</h2>
+        <ul className="space-y-4">
+          {cartItems.items && cartItems.items.length ? (
+            cartItems.items.map((item, index) => (
+              <li key={index} className="flex justify-between items-center border-b pb-2">
+                <img src={item.productId.images[0]} className="h-10" alt={item.productId.name} />
+                <span>{item.quantity} x {formatPrice(item.price.toFixed(2))}</span>
+                <span>{formatPrice((item.price * item.quantity).toFixed(2))}</span>
+              </li>
+            ))
+          ) : (
+            <div>No items in the cart.</div>
+          )}
         </ul>
-        <div className='flex justify-between items-center mt-4 border-t pt-4'>
-          <span className='text-lg md:text-xl font-semibold'>Total:</span>
-          <span className='text-lg md:text-xl font-semibold'>$109.97</span>
+        <div className="flex justify-between items-center mt-4 pt-4">
+          <span className="text-lg md:text-xl font-semibold">Total:</span>
+          <span className="text-lg md:text-xl font-semibold">{formatPrice(cartItems.totalPrice)}</span>
         </div>
       </div>
-      <Address />
+
+      <div className="rounded-lg p-6">
+        <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Shipping Details</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 mb-8">
+            <div>
+              <label htmlFor="name" className="block mb-2 text-sm md:text-base font-medium">Full Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Full name"
+                value={shippingDetails.name}
+                onChange={handleChange}
+                className="border border-gray-300 rounded-md w-full py-2 px-3 text-sm md:text-base focus:outline-none focus:border-gray-500"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="block mb-2 text-sm md:text-base font-medium">Email Address</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Email"
+                value={shippingDetails.email}
+                onChange={handleChange}
+                className="border border-gray-300 rounded-md w-full py-2 px-3 text-sm md:text-base focus:outline-none focus:border-gray-500"
+                required
+              />
+            </div>
+            <div className="col-span-1 md:col-span-2">
+              <label htmlFor="address" className="block mb-2 text-sm md:text-base font-medium">Address</label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                placeholder="Street number, house number, or more information"
+                value={shippingDetails.address}
+                onChange={handleChange}
+                className="border border-gray-300 rounded-md w-full py-2 px-3 text-sm md:text-base focus:outline-none focus:border-gray-500"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="city" className="block mb-2 text-sm md:text-base font-medium">City</label>
+              <input
+                type="text"
+                id="city"
+                name="city"
+                placeholder="City"
+                value={shippingDetails.city}
+                onChange={handleChange}
+                className="border border-gray-300 rounded-md w-full py-2 px-3 text-sm md:text-base focus:outline-none focus:border-gray-500"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="state" className="block mb-2 text-sm md:text-base font-medium">State</label>
+              <input
+                type="text"
+                id="state"
+                name="state"
+                placeholder="State"
+                value={shippingDetails.state}
+                onChange={handleChange}
+                className="border border-gray-300 rounded-md w-full py-2 px-3 text-sm md:text-base focus:outline-none focus:border-gray-500"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="zip" className="block mb-2 text-sm md:text-base font-medium">ZIP Code (optional)</label>
+              <input
+                type="text"
+                id="zip"
+                name="zip"
+                placeholder="Optional ZIP"
+                value={shippingDetails.zip}
+                onChange={handleChange}
+                className="border border-gray-300 rounded-md w-full py-2 px-3 text-sm md:text-base focus:outline-none focus:border-gray-500"
+              />
+            </div>
+            <div className="col-span-1 md:col-span-2">
+              <label htmlFor="phone" className="block mb-2 text-sm md:text-base font-medium">Phone Number</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder="Phone number with country code"
+                value={shippingDetails.phone}
+                onChange={handleChange}
+                className="border border-gray-300 rounded-md w-full py-2 px-3 text-sm md:text-base focus:outline-none focus:border-gray-500"
+                required
+              />
+            </div>
+          </div>
+
+          <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Payment Method</h2>
+          <div className="mb-8">
+            <label className="inline-flex items-center ml-6">
+              <input
+                type="radio"
+                name="payment"
+                value="payStack"
+                className="form-radio h-4 w-4 text-gray-600 focus:ring-blue-500 border-gray-300"
+                checked
+                readOnly
+              />
+              <span className="ml-2 text-sm md:text-base">PayStack</span>
+            </label>
+          </div>
+          <button
+            type="submit"
+            className="bg-gray-950 text-white py-3 px-6 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm md:text-base transition-colors w-full md:w-auto"
+          >
+            Place Order
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
