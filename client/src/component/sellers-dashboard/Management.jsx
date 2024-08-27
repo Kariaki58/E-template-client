@@ -113,6 +113,10 @@ const ProductManagement = () => {
     }
   };
 
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(price);
+  };
+
   const uploadFile = async (file, type, timestamp, signature) => {
     const folder = type === "image" ? "images" : "videos";
     const data = new FormData();
@@ -315,7 +319,7 @@ const ProductManagement = () => {
             <div className="flex justify-between items-center bg-gray-50 p-4 rounded-md">
               <div>
                 <h2 className="text-lg font-bold">{product.name}</h2>
-                <p className="text-gray-600">${product.price}</p>
+                <p className="text-gray-600">{formatPrice(product.price)}</p>
                 <p className="text-gray-600">Stock: {product.stock}</p>
                 <div className="mt-2 flex space-x-2">
                   {product.images.slice(0, 3).map((image, idx) => (

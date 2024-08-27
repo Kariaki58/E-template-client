@@ -5,6 +5,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import { Link } from 'react-router-dom';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { Carousel } from 'react-responsive-carousel';
 
 
 export const ProductSizesOrColorDisplay = ({ sizesAvailable, colorsAvailable, onSelectSize, onSelectColor, onClose, onCancel }) => {
