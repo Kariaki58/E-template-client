@@ -143,7 +143,7 @@ const ProductList = () => {
                 </Carousel>
               </div>
             </Link>
-            <div className="-mt-5 md:mt-5 h-20 pl-2">
+            <div className="-mt-2 md:mt-5 h-20 pl-2">
               <p className="font-semibold text-gray-800">
                 {truncateText(data.name, 17)}
               </p>
