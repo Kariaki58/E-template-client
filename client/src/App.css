@@ -1,0 +1,27 @@
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 4px;
+}
+  
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #626364;
+  border-radius: 4px;
+}
+  
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #edf2f7;
+}
+
+.product-details ul {
+  list-style-type: disc; /* Default bullet style for unordered lists */
+  margin-left: 1.5em; /* Space from the left */
+}
+
+.product-details ol {
+  list-style-type: decimal; /* Default number style for ordered lists */
+  margin-left: 1.5em; /* Space from the left */
+}
+
+.product-details li {
+  margin-bottom: 0.5em; /* Space between list items */
+}

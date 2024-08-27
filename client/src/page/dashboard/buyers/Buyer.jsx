@@ -14,7 +14,6 @@ const Buyer = () => {
 
   const handleSignOut = async () => {
     try {
-      // Perform sign-out logic
       signOut();
       const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/signout`, {}, { withCredentials: true });
       
@@ -51,7 +50,7 @@ const Buyer = () => {
           </li>
         </ul>
       </div>
-      <div className="flex-1 p-4">
+      <div className="flex-1 p-4 overflow-x-auto">
         <Outlet />
       </div>
       <ToastContainer />

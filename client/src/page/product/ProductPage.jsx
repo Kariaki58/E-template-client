@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { IoStarSharp } from 'react-icons/io5';
 import axios from 'axios';
 import ReviewForm from '../../component/product/ReviewForm';
@@ -7,6 +7,7 @@ import ReviewList from '../../component/product/ReviewList';
 import 'react-toastify/dist/ReactToastify.css';
 import { CartContext } from '../../contextApi/cartContext';
 import { ToastContainer, toast } from 'react-toastify';
+import '../../App.css'
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 const ProductSections = () => {
@@ -17,6 +18,10 @@ const ProductSections = () => {
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
+  const [quantity, setQuantity] = useState(1);
+  const [totalPrice, setTotalPrice] = useState(0); // New state for total price
+  const [showDetailsPrompt, setShowDetailsPrompt] = useState(false);
+  const navigate = useNavigate();
   const isAuthenticated = useIsAuthenticated();
 
   useEffect(() => {
@@ -28,19 +33,19 @@ const ProductSections = () => {
         }
         const fetchedProduct = response.data.message;
         setProduct(fetchedProduct);
+        setTotalPrice(fetchedProduct.price * quantity); // Initialize total price
 
         if (fetchedProduct.images && fetchedProduct.images.length > 0) {
           setSelectedImage(fetchedProduct.images[0]);
         }
       } catch (error) {
-        console.log(error.response.data);
         console.error("Error fetching product data: ", error);
         toast.error("Error fetching product data.");
       }
     };
 
     fetchData();
-  }, [params.id]);
+  }, [params.id, quantity]); // Add quantity to dependencies
 
   const handleAddToCart = () => {
     if (product.sizes.length > 0 && !selectedSize) {
@@ -52,11 +57,33 @@ const ProductSections = () => {
       return;
     }
 
-    addToCart(params.id, 1, selectedSize, selectedColor);
+    addToCart(params.id, quantity, selectedSize, selectedColor);
     toast.success(`${product.name} added to cart with ${selectedColor || ''} color and ${selectedSize || ''} size!`);
   };
 
-  // Function to format the price with commas
+  const handleCheckout = () => {
+    if (product.sizes.length > 0 && !selectedSize) {
+      toast.error("Please select a size.");
+      return;
+    }
+    if (product.colors.length > 0 && !selectedColor) {
+      toast.error("Please select a color.");
+      return;
+    }
+
+    if (selectedSize && selectedColor) {
+      navigate(`/checkout/${params.id}?color=${selectedColor}&size=${selectedSize}&quantity=${quantity}`);
+    } else {
+      setShowDetailsPrompt(true);
+    }
+  };
+
+  const handleQuantityChange = (e) => {
+    const newQuantity = Number(e.target.value);
+    setQuantity(newQuantity);
+    setTotalPrice(product.price * newQuantity); // Update total price when quantity changes
+  };
+
   const formatPrice = (price) => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -73,7 +100,7 @@ const ProductSections = () => {
                   <img
                     src={selectedImage}
                     alt="Product"
-                    className="absolute w-full h-full object-cover rounded-lg transition-transform duration-300 transform hover:scale-105"
+                    className="absolute w-full h-64 object-cover rounded-lg transition-transform duration-300 transform hover:scale-105"
                   />
                 </div>
                 <div className="flex gap-2 mt-4 overflow-x-auto">
@@ -103,7 +130,7 @@ const ProductSections = () => {
                 </div>
                 <div className="flex gap-4 mb-4 items-center">
                   <p className="text-lg sm:text-xl md:text-2xl text-gray-800 font-bold">
-                    Price: ${formatPrice(product.price)}
+                    Total Price: ${formatPrice(totalPrice)}
                   </p>
                 </div>
                 {product.colors.length > 0 && (
@@ -140,6 +167,16 @@ const ProductSections = () => {
                     </select>
                   </div>
                 )}
+                <div className="mb-4">
+                  <h2 className="text-base sm:text-lg font-semibold mb-2">Quantity</h2>
+                  <input
+                    type="number"
+                    value={quantity}
+                    onChange={handleQuantityChange}
+                    className="px-4 py-2 w-full sm:w-40 rounded-lg border border-gray-300"
+                    min="1"
+                  />
+                </div>
                 <div className="flex flex-col sm:flex-row gap-4 mt-4">
                   <button
                     onClick={handleAddToCart}
@@ -147,40 +184,39 @@ const ProductSections = () => {
                   >
                     Add to Cart
                   </button>
-                  <button className="w-full sm:w-auto bg-gray-950 text-white py-2 px-4 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all">
-                    Buy Now
+                  <button
+                    onClick={handleCheckout}
+                    className="w-full sm:w-auto bg-gray-950 text-white py-2 px-4 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all"
+                  >
+                    Place Order
                   </button>
                 </div>
               </div>
             </div>
 
             <div className="mt-8 p-6 rounded-lg">
-              <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-900">Description</h2>
-              <p className="text-gray-700">{product.description}</p>
-            </div>
-            {isAuthenticated ? (
-              <div>
-                <div className="mt-8">
-                  <p
-                    className="text-lg sm:text-xl cursor-pointer text-blue-600 hover:underline inline"
-                    onClick={() => setWriteReview((prev) => !prev)}
+              <h2 className="text-xl sm:text-2xl font-semibold mb-6">Product Details</h2>
+              <div className="product-details">
+                <p className="" dangerouslySetInnerHTML={{ __html: product.description }} />
+              </div>
+              <div className="mt-8">
+                <h2 className="text-xl sm:text-2xl font-semibold mb-6">Customer Reviews</h2>
+                <ReviewList reviews={product.reviews} />
+                {writeReview ? (
+                  <ReviewForm setWriteReview={setWriteReview} />
+                ) : (
+                  <button
+                    onClick={() => setWriteReview(true)}
+                    className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                   >
                     Write a Review
-                  </p>
-                  {writeReview && (
-                    <ReviewForm writeReview={writeReview} setWriteReview={setWriteReview} productId={params.id} />
-                  )}
-                </div>
-                <ReviewList />
+                  </button>
+                )}
               </div>
-            ) : (
-              <div>
-                <p className="text-red-600">Please authenticate to write a review.</p>
-              </div>
-            )}
+            </div>
           </>
         ) : (
-          <p className="text-center text-gray-600">Loading product details...</p>
+          <p className="text-lg text-gray-700">Loading product...</p>
         )}
       </div>
     </div>

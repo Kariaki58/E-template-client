@@ -27,7 +27,6 @@ const ReviewList = () => {
         setReviews(response.data.message);
         setTotalPages(Math.ceil(response.data.message.length / reviewsPerPage));
       } catch (err) {
-        console.log(err)
         setError('Failed to load reviews. Please try again.');
       } finally {
         setLoading(false);

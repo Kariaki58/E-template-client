@@ -19,15 +19,19 @@ import Products from './component/sellers-dashboard/Products'
 import Email from './component/sellers-dashboard/Email'
 import Address from './component/checkout/Address'
 import { CartProvider } from './contextApi/cartContext'
-import ProductContext from './contextApi/ProductContext'
+import OrderContext from './contextApi/Orders'
+import Management from './component/sellers-dashboard/Management'
+import CheckoutNonAuth from './page/checkout/CheckoutNonAuth'
+import { ProductUploadProvider } from './contextApi/ProductContext'
+
 
 function App() {
-  
   return (
     <div className='max-w-screen-2xl mx-auto'>
       <Modal>
         <CartProvider>
-        <ProductContext>
+        <OrderContext>
+        <ProductUploadProvider>
           <Ads />
           <Navigation />
           <Routes>
@@ -40,6 +44,7 @@ function App() {
               <Route path='sign-up' element={<Signup />}/>
             </Route>
             <Route path='/checkout' element={<Checkout />} />
+            <Route path='/checkout/:id' element={<CheckoutNonAuth />} />
             <Route path='/products/content/:id' element={<ProductSections />} />
             <Route path='/dashboard/user' element={<Buyer />}>
               <Route index element={<MyOrder />} />
@@ -50,10 +55,12 @@ function App() {
               <Route path='orders' element={<Orders />} />
               <Route path='products' element={<Products />} />
               <Route path='emails' element={<Email />} />
+              <Route path='products/management' element={<Management />} />
             </Route>
           </Routes>
           <Footer />
-        </ProductContext>
+        </ProductUploadProvider>
+        </OrderContext>
         </CartProvider>
       </Modal>
     </div>

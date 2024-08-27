@@ -22,7 +22,7 @@ export const CartProvider = ({ children }) => {
     };
 
     fetchCartItems();
-  }, [loading]);
+  }, []);
 
   // Add item to cart
   const addToCart = async (productId, quantity, size = '', color = '') => {
@@ -49,6 +49,19 @@ export const CartProvider = ({ children }) => {
       console.error('Error updating cart item:', error);
     }
   };
+
+  const clearCart = async (cartItemId) => {
+    try {
+      const respone = await axios.delete(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/cart/${cartItemId}`, { withCredentials: true })
+
+      if (respone.data.error) {
+        throw respone.data.error
+      }
+      setCartItems((prevItems) => respone.data.message)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const decrementCart = async (productId, quantity, pos) => {
     try {
@@ -85,7 +98,7 @@ export const CartProvider = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, updateCartItemQuantity, removeFromCart, incrementCart, decrementCart }}>
+    <CartContext.Provider value={{ cartItems, addToCart, updateCartItemQuantity, removeFromCart, incrementCart, decrementCart, loading, clearCart }}>
       {children}
     </CartContext.Provider>
   );

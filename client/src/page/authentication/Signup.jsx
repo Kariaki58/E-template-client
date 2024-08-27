@@ -11,22 +11,29 @@ const SignupPage = () => {
     const [password, setPassword] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
     const [error, setError] = useState('');
-    const signIn = useSignIn()
+    const signIn = useSignIn();
     const navigate = useNavigate();
 
+    const isValidEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
 
     const handleSignup = async (e) => {
         e.preventDefault();
+
         if (email === '' || password === '' || confirmPass === '') {
             setError('Please fill in all fields');
+        } else if (!isValidEmail(email)) {
+            setError('Please enter a valid email address');
         } else if (password !== confirmPass) {
             setError('Passwords do not match');
         } else {
             try {
-                console.log(email, password)
                 setError('');
-                const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/register`, { email, password }, { withCredentials: true })
-                const { message, token, isAdmin } = response.data
+                const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/register`, { email, password }, { withCredentials: true });
+                const { message, token, isAdmin } = response.data;
+
                 if (signIn({
                     auth: {
                         token,
@@ -37,20 +44,21 @@ const SignupPage = () => {
                     }
                 })) {
                     setTimeout(() => {
-                        window.location.reload()
-                        navigate('/')
-                    }, 2000)
+                        window.location.reload();
+                        navigate('/');
+                    }, 2000);
                 } else {
-                    throw new Error('failed to login')
+                    throw new Error('Failed to login');
                 }
-            } catch(err) {
-                console.log(err)
+            } catch (err) {
+                console.log(err);
+                setError('An error occurred during signup. Please try again.');
             }
         }
     };
 
     return (
-        <div 
+        <div
             className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full md:inset-0 max-h-full bg-gray-900 bg-opacity-50"
             tabIndex="-1"
             aria-hidden="true"

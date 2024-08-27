@@ -4,6 +4,7 @@ import { PiShoppingCartLight } from "react-icons/pi";
 import { RxCross1 } from "react-icons/rx";
 import { IoIosSearch } from "react-icons/io";
 import { Link } from 'react-router-dom';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { useContext } from 'react';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import nigeria from '/niger-icon.png';
@@ -12,6 +13,8 @@ import { context } from '../../contextApi/Modal';
 const Navigation = () => {
   const { handleToggle } = useContext(context)
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const user = useAuthUser()
 
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
@@ -53,9 +56,19 @@ const Navigation = () => {
             
           </div>
         </li>
-
+        
         {/* User and Cart Section */}
         <li className="flex items-center gap-6">
+          <div className="flex items-center">
+            {
+              isAuth ? (
+                <Link to='/cart'>
+                  <PiShoppingCartLight className="hover:text-blue-500 transition duration-200 cursor-pointer text-2xl" />
+              </Link>
+              ): <></>
+            }
+            
+          </div>
           <div className="flex items-center relative">
             <GoPerson className="hover:text-blue-500 transition duration-200 cursor-pointer text-2xl" onClick={() => setIsOpen(prev => !prev)}/>
             {
@@ -71,16 +84,11 @@ const Navigation = () => {
                           <li  onClick={() => setIsOpen(prev => !prev)}>sign up</li>
                         </Link>
                       </>
-                    ) : <Link  onClick={() => setIsOpen(prev => !prev)} className='hover:bg-gray-200 p-2 w-full cursor-pointer' to='/dashboard/user'><li>my account</li></Link>
+                    ) : <Link  onClick={() => setIsOpen(prev => !prev)} className='hover:bg-gray-200 p-2 w-full cursor-pointer' to={user.isAdmin ? '/dashboard/admin' : '/dashboard/user'}><li>my account</li></Link>
                   }
                 </ul>
               )
             }
-          </div>
-          <div className="flex items-center">
-            <Link to='/cart'>
-              <PiShoppingCartLight className="hover:text-blue-500 transition duration-200 cursor-pointer text-2xl" />
-            </Link>
           </div>
         </li>
       </ul>

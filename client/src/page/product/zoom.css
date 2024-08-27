@@ -1,0 +1,31 @@
+/* Container to hold the product image and the zoom lens */
+.zoom-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    cursor: zoom-in;
+  }
+  
+  /* Product image with transition effect */
+  .zoom-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  /* Zoom lens that follows the mouse */
+  .zoom-lens {
+    position: absolute;
+    border: 2px solid #ddd;
+    width: 100px;
+    height: 100px;
+    visibility: hidden;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    background-size: 200%; /* Zoom level */
+    z-index: 1;
+  }
+  

@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import CreatableSelect from 'react-select/creatable';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import the default CSS for react-toastify
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useProductUpload } from '../../contextApi/ProductContext';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { useDropzone } from 'react-dropzone';
+import { FaTrash } from 'react-icons/fa';
 
 const sizeOptions = [
   { value: 'S', label: 'S' },
@@ -26,129 +30,49 @@ const categoryOptions = [
 ];
 
 const Products = () => {
-  const [productName, setProductName] = useState('');
-  const [productImages, setProductImages] = useState([]);
-  const [selectedSizes, setSelectedSizes] = useState([]);
-  const [selectedColors, setSelectedColors] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [stock, setStock] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const {
+    productName,
+    setProductName,
+    setProductImages,
+    selectedSizes,
+    setSelectedSizes,
+    selectedColors,
+    productImages,
+    setSelectedColors,
+    selectedCategory,
+    setSelectedCategory,
+    stock,
+    setStock,
+    description,
+    setDescription,
+    price,
+    setPrice,
+    loading,
+    handleSubmit,
+    imagePreviews,
+    setImagePreviews
+  } = useProductUpload();
 
-  const uploadFile = async (file, type, timestamp, signature) => {
-    const folder = type === 'image' ? 'images' : 'videos';
-    const data = new FormData();
-    data.append('file', file);
-    data.append('timestamp', timestamp);
-    data.append('signature', signature);
-    data.append('api_key', import.meta.env.VITE_APP_CLOUDINARY_API_KEY);
-    data.append('folder', folder);
+  const [images, setImages] = useState([]);
 
-    try {
-      const cloudName = import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME;
-      const resourceType = type === 'image' ? 'image' : 'video';
-      const api = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
-
-      const res = await axios.post(api, data);
-      const { secure_url } = res.data;
-      return secure_url;
-    } catch (error) {
-      toast.error('Something went wrong in the server');
-      return null;
-    }
+  const onDrop = async (acceptedFiles) => {
+    setImages([...images, ...acceptedFiles]);
+    setImagePreviews([...imagePreviews, ...acceptedFiles.map(file => URL.createObjectURL(file))]);
+    setProductImages(prev => [...productImages, ...Array.from(acceptedFiles)])
   };
 
-  const getSignatureForUpload = async (folder) => {
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_APP_BACKEND_BASEURL}/api/gensignature`,
-        { folder },
-        { withCredentials: true }
-      );
-      if (res.data.error) throw new Error(res.data.error)
-      return res.data;
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.error) {
-        toast.error(error.response.data.error);
-      } else {
-        toast.error("something went wrong")
-      }
-      return null
-    }
+  const removeImage = (index) => {
+    const newImages = images.filter((_, i) => i !== index);
+    const newImagePreviews = imagePreviews.filter((_, i) => i !== index);
+    setImages(newImages);
+    setImagePreviews(newImagePreviews);
+    setProductImages(prev => newImagePreviews)
   };
 
-  const handleImageUpload = (e) => {
-    setProductImages([...productImages, ...Array.from(e.target.files)]);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-  
-    try {
-      const { timestamp: imgTimestamp, signature: imgSignature } = await getSignatureForUpload('images');
-  
-      let images = [];
-      const uploadPromises = productImages.map(async (img) => {
-        const imgUrl = await uploadFile(img, 'image', imgTimestamp, imgSignature);
-        if (imgUrl) {
-          images.push(imgUrl);
-        }
-      });
-  
-      await Promise.all(uploadPromises);
-  
-      const url = `${import.meta.env.VITE_APP_BACKEND_BASEURL}/upload/add`;
-      const response = await axios.post(
-        url,
-        {
-          productName: productName,
-          description: description,
-          gender: '',
-          percentOff: 0,
-          size: selectedSizes.map(option => option.value),
-          color: selectedColors.map(option => option.value),
-          price: parseFloat(price),
-          currency: 'USD',
-          stock: parseInt(stock, 10),
-          images: images,
-          materials: [],
-          features: [],
-          rating: {},
-          category: selectedCategory ? selectedCategory.value : '',
-        },
-        { withCredentials: true }
-      );
-  
-      if (response.data.error) {
-        toast.error(response.data.error)
-      } else {
-        toast.success('Product uploaded successfully!');
-        setProductName('');
-        setProductImages([]);
-        setSelectedSizes([]);
-        setSelectedColors([]);
-        setSelectedCategory(null);
-        setStock('');
-        setDescription('');
-        setPrice('');
-      }
-    } catch (error) {
-      toast.error('An unexpected error occurred.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const Check = (select) => {
-    setSelectedCategory(select);
-  };
+  const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: 'image/*', multiple: true });
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg">
+    <div className="max-w-4xl mx-auto p-3 bg-white rounded-lg">
       <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Upload Product</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -162,19 +86,6 @@ const Products = () => {
               className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-gray-900 focus:border-gray-900"
             />
           </div>
-
-          <div>
-            <label className="block text-gray-950">Product Images:</label>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageUpload}
-              required
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-gray-900 focus:border-gray-900"
-            />
-          </div>
-
           <div>
             <label className="block text-gray-950">Size:</label>
             <CreatableSelect
@@ -202,7 +113,7 @@ const Products = () => {
             <CreatableSelect
               options={categoryOptions}
               value={selectedCategory}
-              onChange={(selected) => Check(selected)}
+              onChange={(selected) => setSelectedCategory(selected)}
               className="mt-1"
               required
             />
@@ -229,27 +140,52 @@ const Products = () => {
               className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-gray-900 focus:border-gray-900"
             />
           </div>
-        </div>
 
-        <div>
-          <label className="block text-gray-950">Description:</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-            className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-gray-900 focus:border-gray-900"
-          />
+          <div className='sm:col-span-2'>
+            <label className="block text-gray-950">Product Images:</label>
+            <div {...getRootProps()} className="dropzone border-dashed border-2 border-gray-300 p-4 rounded-md text-center mb-4 cursor-pointer">
+              <input {...getInputProps()} />
+              <p>Drag 'n' drop images here, or click to select multiple images</p>
+            </div>
+            {
+              imagePreviews && imagePreviews.length ? (
+                <div className="image-previews flex gap-4 w-full overflow-x-auto p-4">
+                  {imagePreviews.map((src, index) => (
+                    <div key={index} className="w-40 flex-shrink-0 relative h-full">
+                      <img src={src} alt={`Preview ${index + 1}`} className="max-w-full h-auto rounded-md" />
+                      <button
+                        type="button"
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                        onClick={() => removeImage(index)}
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : <></>
+            }
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className="block text-gray-950">Description:</label>
+            <ReactQuill 
+              value={description} 
+              onChange={(value) => setDescription(value)}
+              required
+              className="w-full mt-1 p-2 border-gray-300 rounded-md focus:ring-gray-900 focus:border-gray-900 h-52 mb-8"
+            />
+          </div>
         </div>
 
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-gray-950 text-white font-semibold rounded-md hover:bg-gray-700 focus:ring-2 focus:ring-gray-900 focus:ring-opacity-50"
           disabled={loading}
+          className="w-full py-2 px-4 bg-gray-900 text-white rounded-md hover:bg-gray-700 focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
         >
-          {loading ? 'Submitting...' : 'Submit'}
+          {loading ? 'Uploading...' : 'Upload Product'}
         </button>
       </form>
-
       <ToastContainer />
     </div>
   );

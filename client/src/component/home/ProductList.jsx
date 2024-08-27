@@ -1,9 +1,11 @@
-import React, { useContext, useState } from 'react';
-import { productContext } from '../../contextApi/ProductContext';
+import React, { useContext, useState, useEffect } from 'react';
+import { ProductUploadContext } from '../../contextApi/ProductContext';
 import { CartContext } from '../../contextApi/cartContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import { Link } from 'react-router-dom';
+
 
 export const ProductSizesOrColorDisplay = ({ sizesAvailable, colorsAvailable, onSelectSize, onSelectColor, onClose, onCancel }) => {
   return (
@@ -54,12 +56,19 @@ const ProductList = () => {
     sortByCategory,
     sortProducts,
     filterProductsByCategory,
-    handleSortChange
-  } = useContext(productContext);
+    fetchAllProducts,
+    setSortOption
+  } = useContext(ProductUploadContext);
+  
   const { addToCart } = useContext(CartContext);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
+  const isAuthenticated = useIsAuthenticated();
+
+  useEffect(() => {
+    fetchAllProducts();
+  }, []);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(price);
@@ -97,7 +106,7 @@ const ProductList = () => {
   };
 
   if (loading) {
-    return <p>Loading</p>;
+    return <p>Loading...</p>;
   }
 
   const filteredProducts = filterProductsByCategory(products, sortByCategory);
@@ -108,7 +117,7 @@ const ProductList = () => {
       <div className="w-full flex justify-center mb-4">
         <select
           value={sortOption}
-          onChange={handleSortChange}
+          onChange={(e) => setSortOption(e.target.value)}
           className="text-left bg-white border border-gray-300 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="Highest to Lowest">Highest to Lowest</option>
@@ -132,11 +141,15 @@ const ProductList = () => {
                 {formatPrice(data.price.$numberDecimal ? parseFloat(data.price.$numberDecimal) : data.price)}
               </div>
             </div>
-            <div className="flex justify-center mt-auto">
-              <button className="border text-black border-gray-950 hover:text-white py-2 px-4 rounded-lg sm:text-xl hover:bg-gray-950 w-60" onClick={() => handleAddToCart(data)}>
-                Add to Cart
-              </button>
-            </div>
+            {
+              isAuthenticated && (
+                <div className="flex justify-center mt-auto">
+                  <button className="border text-black border-gray-950 hover:text-white py-2 px-4 rounded-lg sm:text-xl hover:bg-gray-950 w-60" onClick={() => handleAddToCart(data)}>
+                    Add to Cart
+                  </button>
+                </div>
+              )
+            }
           </div>
         ))}
       </div>

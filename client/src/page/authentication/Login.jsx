@@ -5,6 +5,9 @@ import { useContext } from 'react';
 import { context } from '../../contextApi/Modal';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const LoginPage = () => {
     const { handleToggle } = useContext(context)
@@ -22,7 +25,11 @@ const LoginPage = () => {
             try {
                 setError('');
                 const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/login`, { email, password }, { withCredentials: true })
+                if (response.data.error) {
+                    throw new Error(response.data.error)
+                }
                 const { message, token, isAdmin } = response.data
+                toast.success(message)
                 if (signIn({
                     auth: {
                         token,
@@ -36,11 +43,10 @@ const LoginPage = () => {
                         window.location.reload()
                         navigate('/')
                     }, 2000)
-                } else {
-                    throw new Error('failed to login')
                 }
             } catch(err) {
-                console.log(err)
+                toast.error(err.response.data.error)
+                return null
             }
         }
     };
@@ -104,6 +110,7 @@ const LoginPage = () => {
                     <RxCross1 className='absolute top-10 right-10 text-2xl hover:cursor-pointer' onClick={handleToggle}/>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };

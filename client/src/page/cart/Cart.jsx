@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { CartContext } from '../../contextApi/cartContext';
 
 const CartPage = () => {
-    const { cartItems, incrementCart, decrementCart, removeFromCart, clearCart } = useContext(CartContext);
+    const { cartItems, incrementCart, decrementCart, removeFromCart, clearCart, loading } = useContext(CartContext);
 
     const handleIncreaseQuantity = (pid, quantity, pos) => {
         incrementCart(pid, quantity, pos);
@@ -17,6 +17,9 @@ const CartPage = () => {
         return parseFloat(price).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
     };
 
+    if (loading) {
+        return <div>Loading...</div>
+    }
     return (
         <div className="container mx-auto p-4 sm:p-8 min-h-screen">
             <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-6 sm:mb-10">Shopping Cart</h1>
@@ -24,7 +27,7 @@ const CartPage = () => {
                 <>
                     <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8">
                         <button
-                            onClick={clearCart}
+                            onClick={() => clearCart(cartItems._id)}
                             className="px-4 py-2 sm:px-6 sm:py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300 text-sm sm:text-base"
                         >
                             Clear Cart

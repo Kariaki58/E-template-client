@@ -1,6 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PaystackPop from '@paystack/inline-js';
 import axios from 'axios';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 import { CartContext } from '../../contextApi/cartContext';
 
 const Checkout = () => {
@@ -12,10 +14,52 @@ const Checkout = () => {
     state: '',
     zip: '',
     phone: '',
+    country: '',
   });
-  const { cartItems } = useContext(CartContext);
-  
-  // Handle input changes for shipping details
+  const [loading, setLoading] = useState(false);
+  const { cartItems, loading: cartloading } = useContext(CartContext);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('payStack');
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(price);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/address`, { withCredentials: true });
+        const {
+          address,
+          city,
+          state,
+          zipCode,
+          country,
+          phoneNumber,
+          email,
+          name,
+        } = response.data.message;
+
+        setShippingDetails({
+          name,
+          email,
+          address,
+          city,
+          state,
+          zip: zipCode,
+          country,
+          phone: phoneNumber,
+        });
+      } catch (error) {
+        console.error('Error fetching shipping details:', error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setShippingDetails((prevDetails) => ({
@@ -24,34 +68,35 @@ const Checkout = () => {
     }));
   };
 
-  // Calculate total amount from cart items
-  const calculateTotalAmount = () => {
-    return cartItems.items.reduce((total, item) => total + item.price * item.quantity, 0);
-  };
-
-  // Format price with commas and Naira symbol
-  const formatPrice = (amount) => {
-    return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(amount);
-  };
-
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     const totalAmount = calculateTotalAmount() * 100; // Convert to kobo for Paystack
+
+    if (selectedPaymentMethod === 'payStack') {
+      handlePaystackPayment(totalAmount);
+    } else if (selectedPaymentMethod === 'flutterwave') {
+      handleFlutterwavePayment(totalAmount);
+    } else if (selectedPaymentMethod === 'paypal') {
+      handlePaypalPayment(totalAmount);
+    } else if (selectedPaymentMethod === 'stripe') {
+      handleStripePayment(totalAmount);
+    }
+  };
+
+  const handlePaystackPayment = (totalAmount) => {
     const popup = new PaystackPop();
 
     popup.newTransaction({
       key: 'pk_test_fe3c7c857fbdf1e647efae4259d89937f3914562',
       email: shippingDetails.email,
       amount: totalAmount,
+      channels: ['card', 'bank', 'ussd', 'qr', 'eft', 'mobile_money', 'bank_transfer'],
       onSuccess: async (transaction) => {
         try {
-          const response = await axios.post(
-            '/api/payment/verify',
-            { reference: transaction.reference },
-            { withCredentials: true }
+          const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order`,
+            { cartId: cartItems._id, shippingDetails, status: transaction.success }, { withCredentials: true }
           );
-          console.log('Payment Successful:', response.data);
+          console.log('Order successful:', response.data);
         } catch (error) {
           console.error('Payment verification failed:', error.message);
         }
@@ -63,6 +108,29 @@ const Checkout = () => {
         console.error('Payment error:', error.message);
       },
     });
+  };
+
+  const handleFlutterwavePayment = (totalAmount) => {
+    // Implement Flutterwave payment logic
+  };
+
+  const handlePaypalPayment = (totalAmount) => {
+    // Implement Paypal payment logic
+  };
+
+  const handleStripePayment = (totalAmount) => {
+    // Implement Stripe payment logic
+  };
+
+  if (cartloading) {
+    return <div>loading...</div>
+  }
+
+  const calculateTotalAmount = () => {
+    if (!cartItems.items) {
+      return []
+    }
+    return cartItems.items.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   return (
@@ -86,7 +154,7 @@ const Checkout = () => {
         </ul>
         <div className="flex justify-between items-center mt-4 pt-4">
           <span className="text-lg md:text-xl font-semibold">Total:</span>
-          <span className="text-lg md:text-xl font-semibold">{formatPrice(cartItems.totalPrice)}</span>
+          <span className="text-lg md:text-xl font-semibold">{formatPrice(calculateTotalAmount())}</span>
         </div>
       </div>
 
@@ -94,6 +162,8 @@ const Checkout = () => {
         <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Shipping Details</h2>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 mb-8">
+            {/* Shipping details input fields */}
+            {/* Full Name */}
             <div>
               <label htmlFor="name" className="block mb-2 text-sm md:text-base font-medium">Full Name</label>
               <input
@@ -107,6 +177,7 @@ const Checkout = () => {
                 required
               />
             </div>
+            {/* Email */}
             <div>
               <label htmlFor="email" className="block mb-2 text-sm md:text-base font-medium">Email Address</label>
               <input
@@ -120,6 +191,7 @@ const Checkout = () => {
                 required
               />
             </div>
+            {/* Address */}
             <div className="col-span-1 md:col-span-2">
               <label htmlFor="address" className="block mb-2 text-sm md:text-base font-medium">Address</label>
               <input
@@ -133,6 +205,7 @@ const Checkout = () => {
                 required
               />
             </div>
+            {/* City */}
             <div>
               <label htmlFor="city" className="block mb-2 text-sm md:text-base font-medium">City</label>
               <input
@@ -146,6 +219,21 @@ const Checkout = () => {
                 required
               />
             </div>
+            {/* Country */}
+            <div>
+              <label htmlFor="country" className="block mb-2 text-sm md:text-base font-medium">Country</label>
+              <input
+                type="text"
+                id="country"
+                name="country"
+                placeholder="Country"
+                value={shippingDetails.country}
+                onChange={handleChange}
+                className="border border-gray-300 rounded-md w-full py-2 px-3 text-sm md:text-base focus:outline-none focus:border-gray-500"
+                required
+              />
+            </div>
+            {/* State */}
             <div>
               <label htmlFor="state" className="block mb-2 text-sm md:text-base font-medium">State</label>
               <input
@@ -160,24 +248,23 @@ const Checkout = () => {
               />
             </div>
             <div>
-              <label htmlFor="zip" className="block mb-2 text-sm md:text-base font-medium">ZIP Code (optional)</label>
               <input
                 type="text"
                 id="zip"
                 name="zip"
-                placeholder="Optional ZIP"
+                placeholder="ZIP Code"
                 value={shippingDetails.zip}
                 onChange={handleChange}
                 className="border border-gray-300 rounded-md w-full py-2 px-3 text-sm md:text-base focus:outline-none focus:border-gray-500"
-              />
+                />
             </div>
             <div className="col-span-1 md:col-span-2">
               <label htmlFor="phone" className="block mb-2 text-sm md:text-base font-medium">Phone Number</label>
               <input
-                type="tel"
+                type="text"
                 id="phone"
                 name="phone"
-                placeholder="Phone number with country code"
+                placeholder="Phone number"
                 value={shippingDetails.phone}
                 onChange={handleChange}
                 className="border border-gray-300 rounded-md w-full py-2 px-3 text-sm md:text-base focus:outline-none focus:border-gray-500"
@@ -186,28 +273,70 @@ const Checkout = () => {
             </div>
           </div>
 
-          <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Payment Method</h2>
           <div className="mb-8">
-            <label className="inline-flex items-center ml-6">
-              <input
-                type="radio"
-                name="payment"
-                value="payStack"
-                className="form-radio h-4 w-4 text-gray-600 focus:ring-blue-500 border-gray-300"
-                checked
-                readOnly
-              />
-              <span className="ml-2 text-sm md:text-base">PayStack</span>
-            </label>
+            <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Payment Method</h2>
+            <div className="flex flex-col space-y-4">
+              <div className="flex items-center">
+                <input
+                  type="radio"
+                  id="payStack"
+                  name="paymentMethod"
+                  value="payStack"
+                  checked={selectedPaymentMethod === 'payStack'}
+                  onChange={() => setSelectedPaymentMethod('payStack')}
+                  className="mr-2"
+                />
+                <label htmlFor="payStack" className="text-sm md:text-base">Paystack</label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="radio"
+                  id="flutterwave"
+                  name="paymentMethod"
+                  value="flutterwave"
+                  checked={selectedPaymentMethod === 'flutterwave'}
+                  onChange={() => setSelectedPaymentMethod('flutterwave')}
+                  className="mr-2"
+                />
+                <label htmlFor="flutterwave" className="text-sm md:text-base">Flutterwave</label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="radio"
+                  id="paypal"
+                  name="paymentMethod"
+                  value="paypal"
+                  checked={selectedPaymentMethod === 'paypal'}
+                  onChange={() => setSelectedPaymentMethod('paypal')}
+                  className="mr-2"
+                />
+                <label htmlFor="paypal" className="text-sm md:text-base">PayPal</label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="radio"
+                  id="stripe"
+                  name="paymentMethod"
+                  value="stripe"
+                  checked={selectedPaymentMethod === 'stripe'}
+                  onChange={() => setSelectedPaymentMethod('stripe')}
+                  className="mr-2"
+                />
+                <label htmlFor="stripe" className="text-sm md:text-base">Stripe</label>
+              </div>
+            </div>
           </div>
+
           <button
             type="submit"
-            className="bg-gray-950 text-white py-3 px-6 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm md:text-base transition-colors w-full md:w-auto"
+            className="w-full bg-gray-950 text-white py-3 px-4 rounded-md font-semibold text-lg hover:bg-gray-700 transition duration-300"
+            disabled={loading}
           >
-            Place Order
+            {loading ? 'Processing...' : 'Complete Purchase'}
           </button>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 };

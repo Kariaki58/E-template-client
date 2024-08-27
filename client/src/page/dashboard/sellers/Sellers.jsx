@@ -5,6 +5,7 @@ import { Link, Outlet } from 'react-router-dom';
 import { GrLogout } from 'react-icons/gr';
 import { PiChartLineUpBold } from 'react-icons/pi';
 import { MdOutlineProductionQuantityLimits } from 'react-icons/md';
+import { GrCloudUpload } from "react-icons/gr";
 
 const Sellers = () => {
   return (
@@ -27,6 +28,12 @@ const Sellers = () => {
             <li className="flex items-center text-xl gap-4 mt-3 cursor-pointer bg-gray-950 text-white sm:bg-gray-950 sm:text-white rounded-lg p-4">
               <MdOutlineProductionQuantityLimits className="text-2xl" />
               <p className="hidden md:block">Products</p>
+            </li>
+          </Link>
+          <Link to='/dashboard/admin/products/management'>
+            <li className='flex items-center text-xl gap-4 mt-3 cursor-pointer bg-gray-950 text-white sm:bg-gray-950 sm:text-white rounded-lg p-4'>
+              <GrCloudUpload className='text-2xl'/>
+              <p className='hidden md:block'>Management</p>
             </li>
           </Link>
           <Link to="/dashboard/admin/emails">
