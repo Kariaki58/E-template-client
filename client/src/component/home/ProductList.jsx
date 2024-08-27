@@ -127,7 +127,7 @@ const ProductList = () => {
           <option value="Latest">Latest</option>
         </select>
       </div>
-      <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {sortedProducts.map((data) => (
           <div className='w-full hover:shadow-md rounded-lg flex flex-col justify-between' key={data._id}>
             <Link to={`products/content/${data._id}`}>
@@ -143,9 +143,9 @@ const ProductList = () => {
                 </Carousel>
               </div>
             </Link>
-            <div className="mt-4 h-20">
+            <div className="-mt-5 md:mt-5 h-20 pl-2">
               <p className="font-semibold text-gray-800">
-                {truncateText(data.name, 19)}
+                {truncateText(data.name, 17)}
               </p>
               <div className="text-gray-950 font-semibold">
                 {formatPrice(data.price.$numberDecimal ? parseFloat(data.price.$numberDecimal) : data.price)}
