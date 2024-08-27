@@ -9,6 +9,7 @@
     "quill-table": "^1.0.0",
     "react-chartjs-2": "^5.2.0",
     "react-paginate": "^8.2.0",
+    "react-photo-gallery": "^8.0.0",
     "react-quill": "^2.0.0",
     "react-responsive-carousel": "^3.2.23"
   }

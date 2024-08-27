@@ -129,10 +129,18 @@ const ProductList = () => {
       </div>
       <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {sortedProducts.map((data) => (
-          <div className='w-full hover:shadow-md p-4 bg-white rounded-lg flex flex-col justify-between' key={data._id}>
+          <div className='w-full hover:shadow-md rounded-lg flex flex-col justify-between' key={data._id}>
             <Link to={`products/content/${data._id}`}>
               <div className="h-48 flex items-center justify-center">
-                <img src={data.images[0]} alt={data.name} className="h-full object-contain" />
+                <Carousel
+                  showThumbs={false}
+                  showArrows={false}
+                  showStatus={false}
+                  className="rounded-lg"
+                  showIndicators={false}
+                >
+                  <img width={300} height={300} src={data.images[0]} className="rounded-md" alt={data.name} />
+                </Carousel>
               </div>
             </Link>
             <div className="mt-4 h-20">
