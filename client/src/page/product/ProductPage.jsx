@@ -4,13 +4,13 @@ import { IoStarSharp } from 'react-icons/io5';
 import axios from 'axios';
 import ReviewForm from '../../component/product/ReviewForm';
 import ReviewList from '../../component/product/ReviewList';
+import 'react-toastify/dist/ReactToastify.css';
 import { CartContext } from '../../contextApi/cartContext';
 import { ToastContainer, toast } from 'react-toastify';
+import '../../App.css'
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
-import { Carousel } from 'react-responsive-carousel';
-import Gallery from 'react-photo-gallery';
-import 'react-toastify/dist/ReactToastify.css';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { Carousel } from 'react-responsive-carousel';
 
 const ProductSections = () => {
   const { addToCart } = useContext(CartContext);
@@ -90,12 +90,6 @@ const ProductSections = () => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  const photos = product ? product.images.map((image) => ({
-    src: image,
-    width: 4, // Aspect ratio width
-    height: 3 // Aspect ratio height
-  })) : [];
-
   return (
     <div className="bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <ToastContainer />
@@ -103,8 +97,30 @@ const ProductSections = () => {
         {product ? (
           <>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-              <div className="relative image-container">
-                <Gallery photos={photos} />
+              <div className="relative">
+                <Carousel
+                  showThumbs={true}
+                  autoPlay
+                  infiniteLoop
+                  interval={3000}
+                  showArrows={true}
+                  showStatus={false}
+                  className="rounded-lg overflow-hidden"
+                >
+                  {product.images.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image}
+                      height={484}
+                      width={484}
+                      alt={`Thumbnail ${index + 1}`}
+                      className={`object-cover rounded-lg cursor-pointer border ${
+                        selectedImage === image ? 'border-gray-500' : 'border-gray-300'
+                      } hover:border-gray-500 transition-all duration-200`}
+                      onClick={() => setSelectedImage(image)}
+                    />
+                  ))}
+                </Carousel>
               </div>
               <div className="flex flex-col">
                 <h1 className="text-3xl lg:text-4xl font-extrabold mb-6 text-gray-900">{product.name}</h1>

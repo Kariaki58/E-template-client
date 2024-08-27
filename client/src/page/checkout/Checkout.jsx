@@ -96,16 +96,16 @@ const Checkout = () => {
           const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order`,
             { cartId: cartItems._id, shippingDetails, status: transaction.success }, { withCredentials: true }
           );
-          console.log('Order successful:', response.data);
+          toast.success(response.data.message)
         } catch (error) {
-          console.error('Payment verification failed:', error.message);
+          toast.error('Payment verification failed');
         }
       },
       onCancel: () => {
-        console.log('Payment cancelled');
+        toast.error('Payment cancelled');
       },
       onError: (error) => {
-        console.error('Payment error:', error.message);
+        toast.error('Payment error');
       },
     });
   };

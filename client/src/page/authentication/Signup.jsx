@@ -4,6 +4,9 @@ import { RxCross1 } from 'react-icons/rx';
 import { context } from '../../contextApi/Modal';
 import axios from 'axios';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+
 
 const SignupPage = () => {
     const { handleToggle } = useContext(context);
@@ -43,16 +46,15 @@ const SignupPage = () => {
                         isAdmin
                     }
                 })) {
-                    setTimeout(() => {
-                        window.location.reload();
-                        navigate('/');
-                    }, 2000);
                 } else {
                     throw new Error('Failed to login');
                 }
+                toast.success(message)
+                setTimeout(() => {
+                    navigate('/')
+                }, 2000)
             } catch (err) {
-                console.log(err);
-                setError('An error occurred during signup. Please try again.');
+                toast.error('An error occurred during signup. Please try again.');
             }
         }
     };
@@ -124,6 +126,7 @@ const SignupPage = () => {
                     <RxCross1 className='absolute top-10 right-10 text-2xl hover:cursor-pointer' onClick={handleToggle} />
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };

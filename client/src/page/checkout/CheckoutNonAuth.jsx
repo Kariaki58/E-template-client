@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import PaystackPop from '@paystack/inline-js';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CheckoutNonAuth = () => {
   const [shippingDetails, setShippingDetails] = useState({
@@ -74,16 +76,16 @@ const CheckoutNonAuth = () => {
               shippingDetails,
               status: 'Paid'
             }, { withCredentials: true });
-            console.log(response.data);
+            toast.success(response.data.message)
           } catch (error) {
-            console.error('Payment verification failed:', error.message);
+            toast.error('Payment verification failed:');
           }
         },
         onCancel: () => {
-          console.log('Payment cancelled');
+          toast.error('Payment cancelled');
         },
         onError: (error) => {
-          console.error('Payment error:', error.message);
+          toast.error('Payment error')
         },
       });
     } catch (error) {
@@ -161,12 +163,9 @@ const CheckoutNonAuth = () => {
           </button>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
-};
-
-const formatPrice = (amount) => {
-  return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(amount);
 };
 
 export default CheckoutNonAuth;

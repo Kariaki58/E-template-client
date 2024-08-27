@@ -6,6 +6,7 @@ export const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   // Fetch cart items from the backend
   useEffect(() => {
@@ -59,7 +60,7 @@ export const CartProvider = ({ children }) => {
       }
       setCartItems((prevItems) => respone.data.message)
     } catch (error) {
-      console.log(error)
+      setError(error.respone.data.error)
     }
   }
 
@@ -98,7 +99,7 @@ export const CartProvider = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, updateCartItemQuantity, removeFromCart, incrementCart, decrementCart, loading, clearCart }}>
+    <CartContext.Provider value={{ cartItems,error, setError, addToCart, updateCartItemQuantity, removeFromCart, incrementCart, decrementCart, loading, clearCart }}>
       {children}
     </CartContext.Provider>
   );

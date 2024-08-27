@@ -145,7 +145,6 @@ const ProductManagement = () => {
     try {
       const { timestamp: imgTimestamp, signature: imgSignature } = await getSignatureForUpload('images');
 
-      console.log(productImages)
       let images = [];
   
       if (productImages.length > 0) {
@@ -153,7 +152,6 @@ const ProductManagement = () => {
           let imgUrl = await uploadFile(img, "image", imgTimestamp, imgSignature);
           imgUrl = String(imgUrl)
           if (imgUrl.startsWith('https://')) {
-            console.log(imgUrl)
             images.push(imgUrl);
           }
         });

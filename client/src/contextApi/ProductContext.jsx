@@ -72,7 +72,6 @@ export const ProductUploadProvider = ({ children }) => {
       let images = [];
       const uploadPromises = productImages.map(async (img) => {
         const imgUrl = await uploadFile(img, 'image', imgTimestamp, imgSignature);
-        console.log(imgUrl)
         if (imgUrl) {
           images.push(imgUrl);
         }
