@@ -133,14 +133,13 @@ const ProductList = () => {
           <option value="Latest">Latest</option>
         </select>
       </div>
-      <div className="grid gap-5 sm:grid-cols-1  md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-2 sm:grid-cols-1  md:grid-cols-2 lg:grid-cols-3">
         {sortedProducts.map((data) => (
           <div 
-            className="w-full hover:shadow-md rounded-lg flex flex-col justify-between bg-white"
+            className="w-full p-4 hover:shadow-md rounded-lg flex flex-col justify-between bg-white"
             key={data._id}
           >
             <Link to={`products/content/${data._id}`}>
-              <div className="relative flex items-center h-72 justify-center bg-gray-100 rounded-t-lg overflow-hidden">
                 {/* <Carousel
                   showThumbs={false}
                   showArrows={false}
@@ -149,15 +148,18 @@ const ProductList = () => {
                   showIndicators={false}
                   emulateTouch
                 > */}
+                
                   <img
-                    src={data.images[3]}
-                    className="object-cover w-full h-full"
-                    height={484}
-                    width={484}
+                    key={data._id}
+                    src={cld.image(`images/${data.images[3].split('/')[8].split('.')[0]}`)
+                    .resize('c_fill,w_500,h_500,g_auto')
+                    .delivery('q_auto')
+                    .format('auto')
+                    .toURL()}
                     alt={data.name}
+                    className='rounded-lg'
                   />
                 {/* </Carousel> */}
-              </div>
             </Link>
             <div className="p-4">
               <p className="font-semibold text-gray-800">

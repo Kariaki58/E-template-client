@@ -11,7 +11,14 @@ import '../../App.css'
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
+import { Cloudinary } from '@cloudinary/url-gen';
 
+
+const cld = new Cloudinary({
+  cloud: {
+    cloudName: import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME,
+  },
+});
 
 const ProductSections = () => {
   const { addToCart } = useContext(CartContext);
@@ -90,7 +97,6 @@ const ProductSections = () => {
   const formatPrice = (price) => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
-
   return (
     <div className="bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <ToastContainer />
@@ -111,15 +117,13 @@ const ProductSections = () => {
                   {product.images.map((image, index) => (
                     <img
                       key={index}
-                      src={image}
-                      height={484}
-                      width={484}
-                      alt={`Thumbnail ${index + 1}`}
-                      className={`object-cover rounded-lg cursor-pointer border ${
-                        selectedImage === image ? 'border-gray-500' : 'border-gray-300'
-                      } hover:border-gray-500 transition-all duration-200`}
-                      onClick={() => setSelectedImage(image)}
-                    />
+                      src={cld.image(`images/${image.split('/')[8].split('.')[0]}`)
+                      .resize('c_fill,w_600,h_600,g_auto')
+                      .delivery('q_auto')
+                      .format('auto')
+                      .toURL()}
+                      alt="Optimized Image"
+                    />                    
                   ))}
                 </Carousel>
               </div>
