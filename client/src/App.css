@@ -25,3 +25,7 @@
 .product-details li {
   margin-bottom: 0.5em; /* Space between list items */
 }
+.img-responsive {
+  height: 200px;
+  background-color: green;
+}

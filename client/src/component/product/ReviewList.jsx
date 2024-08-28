@@ -47,6 +47,8 @@ const ReviewList = () => {
   if (loading) return <div>Loading reviews...</div>;
   if (error) return <div>{error}</div>;
 
+  console.log(reviews)
+
   return (
     <div className="max-w-3xl p-4 rounded-lg">
       <h1 className="text-2xl font-bold text-center mb-6 text-gray-900">Reviews</h1>

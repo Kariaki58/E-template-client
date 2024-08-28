@@ -7,7 +7,13 @@ import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import { Link } from 'react-router-dom';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
+import { Cloudinary } from '@cloudinary/url-gen'
 
+const cld = new Cloudinary({
+  cloud: {
+    cloudName: import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME
+  }
+})
 
 export const ProductSizesOrColorDisplay = ({ sizesAvailable, colorsAvailable, onSelectSize, onSelectColor, onClose, onCancel }) => {
   return (
@@ -127,23 +133,33 @@ const ProductList = () => {
           <option value="Latest">Latest</option>
         </select>
       </div>
-      <div className="grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid gap-5 sm:grid-cols-1  md:grid-cols-2 lg:grid-cols-3">
         {sortedProducts.map((data) => (
-          <div className='w-full hover:shadow-md rounded-lg flex flex-col justify-between' key={data._id}>
+          <div 
+            className="w-full hover:shadow-md rounded-lg flex flex-col justify-between bg-white"
+            key={data._id}
+          >
             <Link to={`products/content/${data._id}`}>
-              <div className="h-48 flex items-center justify-center">
-                <Carousel
+              <div className="relative flex items-center h-72 justify-center bg-gray-100 rounded-t-lg overflow-hidden">
+                {/* <Carousel
                   showThumbs={false}
                   showArrows={false}
                   showStatus={false}
-                  className="rounded-lg"
+                  className="rounded-lg h-full"
                   showIndicators={false}
-                >
-                  <img width={300} height={300} src={data.images[0]} className="rounded-md" alt={data.name} />
-                </Carousel>
+                  emulateTouch
+                > */}
+                  <img
+                    src={data.images[3]}
+                    className="object-cover w-full h-full"
+                    height={484}
+                    width={484}
+                    alt={data.name}
+                  />
+                {/* </Carousel> */}
               </div>
             </Link>
-            <div className="-mt-2 md:mt-5 h-20 pl-2">
+            <div className="p-4">
               <p className="font-semibold text-gray-800">
                 {truncateText(data.name, 17)}
               </p>
@@ -151,15 +167,16 @@ const ProductList = () => {
                 {formatPrice(data.price.$numberDecimal ? parseFloat(data.price.$numberDecimal) : data.price)}
               </div>
             </div>
-            {
-              isAuthenticated && (
-                <div className="flex justify-center mt-auto">
-                  <button className="border text-black border-gray-950 hover:text-white py-2 px-4 rounded-lg sm:text-xl hover:bg-gray-950 w-60" onClick={() => handleAddToCart(data)}>
-                    Add to Cart
-                  </button>
-                </div>
-              )
-            }
+            {isAuthenticated && (
+              <div className="flex justify-center mt-auto">
+                <button 
+                  className="border text-black border-gray-950 hover:text-white py-2 px-4 rounded-lg sm:text-xl hover:bg-gray-950 w-60" 
+                  onClick={() => handleAddToCart(data)}
+                >
+                  Add to Cart
+                </button>
+              </div>
+            )}
           </div>
         ))}
       </div>

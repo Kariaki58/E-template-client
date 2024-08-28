@@ -24,7 +24,7 @@ const Navigation = () => {
 
   return (
     <div className="bg-white shadow-md py-4">
-      <ul className="container mx-auto flex items-center justify-between px-4 md:px-8 gap-2">
+      <ul className="mx-auto flex items-center justify-between px-4 gap-2">
         <li>
           <Link to='/'>
             <h1 className="text-xl font-bold text-gray-800">LOGO</h1>

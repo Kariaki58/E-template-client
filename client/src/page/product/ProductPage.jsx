@@ -12,6 +12,7 @@ import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 
+
 const ProductSections = () => {
   const { addToCart } = useContext(CartContext);
   const [selectedImage, setSelectedImage] = useState('');
@@ -208,7 +209,7 @@ const ProductSections = () => {
                 <h2 className="text-2xl lg:text-3xl font-semibold mb-8">Customer Reviews</h2>
                 <ReviewList reviews={product.reviews} />
                 {writeReview ? (
-                  <ReviewForm setWriteReview={setWriteReview} />
+                  <ReviewForm setWriteReview={setWriteReview} productId={params.id} />
                 ) : (
                   <button
                     onClick={() => setWriteReview(true)}
