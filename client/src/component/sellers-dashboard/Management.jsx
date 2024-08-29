@@ -212,7 +212,7 @@ const ProductManagement = () => {
 
   return (
     <div className="p-6 bg-white rounded-md shadow-md">
-      <h1 className="text-2xl font-bold mb-4">Product Management</h1>
+      <h1 className="text-2xl font-bold mb-4 text-gray-800">Product Management</h1>
       {products.map((product, productIdx) => (
         <div key={product._id} className="mb-4">
           {editingProductId === product._id ? (
@@ -252,90 +252,72 @@ const ProductManagement = () => {
                 isMulti
                 name="size"
                 options={sizeOptions}
-                value={updatedProduct.size}
+                value={updatedProduct.size || []}
                 onChange={(selected) => handleSelectChange('size', selected)}
-                className="w-full mt-1"
-                placeholder="Size"
+                className="w-full"
+                classNamePrefix="select"
               />
               <CreatableSelect
                 isMulti
                 name="color"
                 options={colorOptions}
-                value={updatedProduct.color}
+                value={updatedProduct.color || []}
                 onChange={(selected) => handleSelectChange('color', selected)}
-                className="w-full mt-1"
-                placeholder="Color"
+                className="w-full"
+                classNamePrefix="select"
               />
               <CreatableSelect
                 name="category"
                 options={categoryOptions}
-                value={updatedProduct.category}
+                value={updatedProduct.category || {}}
                 onChange={(selected) => handleSelectChange('category', selected)}
-                className="w-full mt-1"
-                placeholder="Category"
+                className="w-full"
+                classNamePrefix="select"
               />
-              <div className="border border-gray-300 p-4 rounded-md">
-                <div {...getRootProps()} className="cursor-pointer">
-                  <input {...getInputProps()} />
-                  <p className="text-sm text-gray-600">
-                    Drag 'n' drop some files here, or click to select files
-                  </p>
-                </div>
+              <div {...getRootProps()} className="border-2 border-dashed p-4 text-center cursor-pointer mb-4">
+                <input {...getInputProps()} />
+                <p>Drag & drop images here, or click to select images</p>
               </div>
-              <div className="mt-4 grid grid-cols-3 gap-2">
-                  {imagePreviews.map((url, idx) => (
-                    <div key={idx} className="relative">
-                      <img src={url} alt={`Preview ${idx}`} className="w-full h-32 object-cover rounded-md" />
-                      <button
-                        type="button"
-                        className="absolute top-0 right-0 p-1 bg-red-600 text-white rounded-full"
-                        onClick={() => removeImage(idx)}
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
-                  ))}
-                </div>
+              <div className="flex flex-wrap gap-4">
+                {imagePreviews.map((preview, idx) => (
+                  <div key={idx} className="relative">
+                    <img src={preview} alt="Preview" className="w-20 h-20 object-cover rounded-md" />
+                    <button
+                      onClick={() => removeImage(idx)}
+                      className="absolute top-0 right-0 bg-red-600 text-white p-1 rounded-full"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                ))}
+              </div>
               <div className="flex justify-end space-x-2">
-                <button
-                  type="button"
-                  onClick={onCancel}
-                  className="px-4 py-2 bg-gray-400 text-white rounded-md"
-                >
+                <button type="button" className="px-4 py-2 text-white bg-gray-500 rounded-md hover:bg-gray-600" onClick={onCancel}>
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md"
-                >
-                  {loading ? "Updating..." : "Update Product"}
+                <button type="submit" className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">
+                  Save
                 </button>
               </div>
             </form>
           ) : (
-            <div className="flex justify-between items-center bg-gray-50 p-4 rounded-md">
-              <div>
-                <h2 className="text-lg font-bold">{product.name}</h2>
-                <p className="text-gray-600">{formatPrice(product.price)}</p>
-                <p className="text-gray-600">Stock: {product.stock}</p>
-                <div className="mt-2 flex space-x-2">
+            <div className="flex flex-wrap gap-4 bg-gray-50 p-2 rounded-md shadow-sm">
+              <div className="mt-2 flex space-x-2">
                   {product.images.slice(0, 3).map((image, idx) => (
                     <img key={idx} src={image} alt={`Product ${idx}`} className="w-16 h-16 object-cover rounded-md" />
                   ))}
-                </div>
               </div>
-              <div className="space-x-2">
-                <button
-                  onClick={() => handleEditClick(product)}
-                  className="px-4 py-2 bg-yellow-400 text-white rounded-md"
-                >
+              <div className="w-full md:w-1/2">
+                <h2 className="text-lg font-bold text-gray-800">{product.name}</h2>
+                <p className="text-gray-700">Price: {formatPrice(product.price)}</p>
+                <p className="text-gray-700">Stock: {product.stock}</p>
+                <p className="text-gray-700">Category: {product.category}</p>
+              </div>
+              <div className="flex w-full md:w-auto items-center justify-end space-x-2 mt-4 md:mt-0">
+                <button onClick={() => handleEditClick(product)} className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">
                   Edit
                 </button>
-                <button
-                  onClick={() => handleDeleteClick(product._id)}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md"
-                >
+                <button onClick={() => handleDeleteClick(product._id)} className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600">
                   Delete
                 </button>
               </div>
@@ -343,14 +325,12 @@ const ProductManagement = () => {
           )}
         </div>
       ))}
-      <div className="flex justify-center mt-4 space-x-2">
-        {[...Array(totalPages)].map((_, idx) => (
+      <div className="flex justify-center mt-6">
+        {Array.from({ length: totalPages }).map((_, idx) => (
           <button
             key={idx}
             onClick={() => handlePageClick(idx + 1)}
-            className={`px-4 py-2 rounded-md ${
-              currentPage === idx + 1 ? 'bg-blue-600 text-white' : 'bg-gray-300'
-            }`}
+            className={`px-4 py-2 mx-1 ${currentPage === idx + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} rounded-md`}
           >
             {idx + 1}
           </button>

@@ -5,7 +5,7 @@ const UserAddressModal = ({ isOpen, onClose, address }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded shadow-lg w-1/2">
+      <div className="bg-white p-6 rounded shadow-lg w-1/2 text-gray-800">
         <h2 className="text-2xl mb-4">User Address</h2>
         <p><strong>Name:</strong> {address.name}</p>
         <p><strong>Email:</strong> {address.email}</p>

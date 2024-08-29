@@ -47,7 +47,7 @@ const ReviewList = () => {
 
   return (
     <div className="max-w-3xl p-4 rounded-lg">
-      <h1 className="text-2xl font-bold text-center mb-6 text-gray-900">Reviews</h1>
+      <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">Reviews</h1>
       <div>
         {currentReviews.length === 0 ? (
           <p>No reviews available.</p>

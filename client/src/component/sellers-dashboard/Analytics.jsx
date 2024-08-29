@@ -81,7 +81,7 @@ const Analytics = () => {
 
   return (
     <div className="p-2 mx-auto rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-2">Order Analytics</h2>
+      <h2 className="text-2xl font-semibold mb-2 text-gray-800">Order Analytics</h2>
       <div className="mb-2">
         <label htmlFor="view" className="block text-gray-700 font-medium mb-2">Select View:</label>
         <select

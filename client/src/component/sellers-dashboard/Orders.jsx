@@ -4,6 +4,8 @@ import { OrderContext } from '../../contextApi/Orders';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import UserAddressModal from './UserAddressModal';
+import '../../App.css';
+
 
 const Orders = () => {
   const { orders, fetchAllOrders, loading, error } = useContext(OrderContext);
@@ -57,44 +59,42 @@ const Orders = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="w-full p-3">
-      <h1 className="text-2xl font-bold mb-4 text-center">Admin Orders</h1>
-      <div className="overflow-x-auto max-w-full">
-        <div className="w-full inline-block align-middle">
-          <div className="overflow-auto rounded-lg shadow">
-            <table className="w-full bg-white border-collapse">
+    <div className="mb-10 custom-scrollbar">
+      <h1 className="text-2xl font-bold mb-4 text-center text-gray-800">Admin Orders</h1>
+        <div className='container overflow-x-auto'>
+          <table className="table-auto overflow-x-auto">
               <thead>
                 <tr className="bg-gray-100">
-                  <th className="py-2 px-4 text-left whitespace-nowrap">Order ID</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">User</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">Total Amount</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">Qty</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">Color</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">Size</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">Status</th>
-                  <th className="py-2 px-4 text-left whitespace-nowrap">Actions</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap text-gray-800">Order ID</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap text-gray-800">User</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap text-gray-800">Total Amount</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap text-gray-800">Qty</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap text-gray-800">Color</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap text-gray-800">Size</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap text-gray-800">Status</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap text-gray-800">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {orders.map((order) => (
                   <tr key={order._id} className="border-t">
-                    <td className="py-2 px-4 whitespace-nowrap">{order._id}</td>
+                    <td className="py-2 px-4 whitespace-nowrap text-gray-700">{order._id}</td>
                     <td
-                      className="py-2 px-4 cursor-pointer text-blue-600 underline whitespace-nowrap"
+                      className="py-2 px-4 cursor-pointer underline whitespace-nowrap text-gray-700"
                       onClick={() => navigateToUserDetails(order.shippingAddress._id)}
                     >
                       {order.shippingAddress.name}
                     </td>
-                    <td className="py-2 px-4 whitespace-nowrap">{formatPrice(order.price)}</td>
-                    <td className="py-2 px-4 whitespace-nowrap">{order.quantity}</td>
-                    <td className="py-2 px-4 whitespace-nowrap">{order.color}</td>
-                    <td className="py-2 px-4 whitespace-nowrap">{order.size}</td>
-                    <td className="py-2 px-4 whitespace-nowrap">
+                    <td className="py-2 px-4 whitespace-nowrap text-gray-700">{formatPrice(order.price)}</td>
+                    <td className="py-2 px-4 whitespace-nowrap text-gray-700">{order.quantity}</td>
+                    <td className="py-2 px-4 whitespace-nowrap text-gray-700">{order.color}</td>
+                    <td className="py-2 px-4 whitespace-nowrap text-gray-700">{order.size}</td>
+                    <td className="py-2 px-4 whitespace-nowrap text-gray-700">
                       <select
                         value={selectedOrderId === order._id ? status : order.status}
                         onChange={(e) => handleSelectChange(order._id, e.target.value)}
                         onBlur={() => handleStatusChange(order._id)}
-                        className="border p-2 rounded"
+                        className="border p-2 rounded text-gray-700"
                       >
                         <option value="Pending">Pending</option>
                         <option value="Paid">Paid</option>
@@ -103,7 +103,7 @@ const Orders = () => {
                         <option value="Cancelled">Cancelled</option>
                       </select>
                     </td>
-                    <td className="py-2 px-4 whitespace-nowrap">
+                    <td className="py-2 px-4 whitespace-nowrap text-gray-700">
                       <button
                         onClick={() => navigateToUserDetails(order.shippingAddress._id)}
                         className="bg-blue-500 text-white px-2 py-1 rounded"
@@ -115,9 +115,7 @@ const Orders = () => {
                 ))}
               </tbody>
             </table>
-          </div>
         </div>
-      </div>
       <UserAddressModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

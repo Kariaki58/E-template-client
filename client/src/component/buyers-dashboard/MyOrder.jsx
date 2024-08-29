@@ -78,9 +78,9 @@ const MyOrder = () => {
             </p>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white text-xs sm:text-sm">
+            <table className="min-w-full bg-white border-collapse">
               <thead className="bg-gray-100">
-                <tr>
+                <tr className="text-gray-800">
                   <th className="py-2 px-2 sm:px-4 text-left">Product ID</th>
                   <th className="py-2 px-2 sm:px-4 text-left">Size</th>
                   <th className="py-2 px-2 sm:px-4 text-left">Color</th>
@@ -89,7 +89,7 @@ const MyOrder = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t">
+                <tr className="border-t text-gray-800">
                   <td className="py-2 px-2 sm:px-4">{order._id}</td>
                   <td className="py-2 px-2 sm:px-4">{order.size}</td>
                   <td className="py-2 px-2 sm:px-4">{order.color}</td>
@@ -131,3 +131,4 @@ const MyOrder = () => {
 };
 
 export default MyOrder;
+

@@ -128,8 +128,7 @@ const ProductSections = () => {
                 </Carousel>
               </div>
               <div className="flex flex-col">
-                <h1 className="text-3xl lg:text-4xl font-extrabold mb-6 text-gray-900">{product.name}</h1>
-                <p className="text-sm text-gray-600 mb-4">Prices may vary during checkout.</p>
+                <h1 className="text-3xl lg:text-4xl font-extrabold mb-6 text-gray-800">{product.name}</h1>
                 <div className="flex items-center gap-4 mb-6">
                   <div className="flex text-yellow-500">
                     {[...Array(5)].map((_, index) => (
@@ -143,49 +142,51 @@ const ProductSections = () => {
                     Total Price: ${formatPrice(totalPrice)}
                   </p>
                 </div>
-                {product.colors.length > 0 && (
-                  <div className="mb-4">
-                    <h2 className="text-lg lg:text-xl font-semibold mb-2">Available Colors</h2>
-                    <select
-                      className="px-4 py-2 w-full lg:w-60 rounded-lg border border-gray-300 bg-white"
-                      value={selectedColor}
-                      onChange={(e) => setSelectedColor(e.target.value)}
-                    >
-                      <option value="">Select Color</option>
-                      {product.colors.map((color, index) => (
-                        <option key={index} value={color}>
-                          {color}
-                        </option>
-                      ))}
-                    </select>
+                <div className='grid grid-cols-2'>
+                  {product.colors.length > 0 && (
+                    <div className="mb-4">
+                      <h2 className="text-md text-gray-800 lg:text-xl font-semibold mb-2">Available Colors</h2>
+                      <select
+                        className="px-4 py-2 rounded-lg border border-gray-300 bg-white"
+                        value={selectedColor}
+                        onChange={(e) => setSelectedColor(e.target.value)}
+                      >
+                        <option value="">Select Color</option>
+                        {product.colors.map((color, index) => (
+                          <option key={index} value={color}>
+                            {color}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                  {product.sizes.length > 0 && (
+                    <div className="mb-4">
+                      <h2 className="text-md text-gray-800 lg:text-xl font-semibold mb-2">Available Sizes</h2>
+                      <select
+                        className="px-4 py-2 rounded-lg border border-gray-300 bg-white"
+                        value={selectedSize}
+                        onChange={(e) => setSelectedSize(e.target.value)}
+                      >
+                        <option value="">Select Size</option>
+                        {product.sizes.map((size, index) => (
+                          <option key={index} value={size}>
+                            {size}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                  <div className="mb-6">
+                    <h2 className="text-lg lg:text-xl font-semibold mb-2 text-gray-800">Quantity</h2>
+                    <input
+                      type="number"
+                      value={quantity}
+                      onChange={handleQuantityChange}
+                      className="px-4 py-2 rounded-lg border border-gray-300 bg-white"
+                      min="1"
+                    />
                   </div>
-                )}
-                {product.sizes.length > 0 && (
-                  <div className="mb-4">
-                    <h2 className="text-lg lg:text-xl font-semibold mb-2">Available Sizes</h2>
-                    <select
-                      className="px-4 py-2 w-full lg:w-60 rounded-lg border border-gray-300 bg-white"
-                      value={selectedSize}
-                      onChange={(e) => setSelectedSize(e.target.value)}
-                    >
-                      <option value="">Select Size</option>
-                      {product.sizes.map((size, index) => (
-                        <option key={index} value={size}>
-                          {size}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-                <div className="mb-6">
-                  <h2 className="text-lg lg:text-xl font-semibold mb-2">Quantity</h2>
-                  <input
-                    type="number"
-                    value={quantity}
-                    onChange={handleQuantityChange}
-                    className="px-4 py-2 w-full lg:w-60 rounded-lg border border-gray-300 bg-white"
-                    min="1"
-                  />
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 mt-6">
                   <button
@@ -205,12 +206,12 @@ const ProductSections = () => {
             </div>
 
             <div className="mt-12">
-              <h2 className="text-2xl lg:text-3xl font-semibold mb-8">Product Details</h2>
+              <h2 className="text-2xl lg:text-3xl font-semibold mb-8 text-gray-800">Product Details</h2>
               <div className="product-details text-base lg:text-lg text-gray-700 leading-relaxed">
                 <p dangerouslySetInnerHTML={{ __html: product.description }} />
               </div>
               <div className="mt-12">
-                <h2 className="text-2xl lg:text-3xl font-semibold mb-8">Customer Reviews</h2>
+                <h2 className="text-2xl lg:text-3xl font-semibold mb-8 text-gray-800">Customer Reviews</h2>
                 <ReviewList reviews={product.reviews} />
                 {writeReview ? (
                   <ReviewForm setWriteReview={setWriteReview} productId={params.id} />
