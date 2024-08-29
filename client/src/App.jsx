@@ -23,6 +23,8 @@ import OrderContext from './contextApi/Orders'
 import Management from './component/sellers-dashboard/Management'
 import CheckoutNonAuth from './page/checkout/CheckoutNonAuth'
 import { ProductUploadProvider } from './contextApi/ProductContext'
+import AuthOutlet from '@auth-kit/react-router/AuthOutlet'
+import PaymentPlan from './page/billing/Offer'
 
 
 function App() {
@@ -35,10 +37,7 @@ function App() {
           <Ads />
           <Navigation />
           <Routes>
-
-            <Route path='/cart' element={
-                <CartPage />
-              } />
+            <Route path='/offer/paymentPlan' element={<PaymentPlan />} />
             <Route path='/' element={<Home />}>
               <Route path='login' element={<LoginPage />} />
               <Route path='sign-up' element={<Signup />}/>
@@ -46,16 +45,21 @@ function App() {
             <Route path='/checkout' element={<Checkout />} />
             <Route path='/checkout/:id' element={<CheckoutNonAuth />} />
             <Route path='/products/content/:id' element={<ProductSections />} />
-            <Route path='/dashboard/user' element={<Buyer />}>
-              <Route index element={<MyOrder />} />
-              <Route path='address' element={<Address />} />
-            </Route>
-            <Route path='/dashboard/admin' element={<Sellers />}>
-              <Route index element={<Analytics />} />
-              <Route path='orders' element={<Orders />} />
-              <Route path='products' element={<Products />} />
-              <Route path='emails' element={<Email />} />
-              <Route path='products/management' element={<Management />} />
+            <Route element={<AuthOutlet fallbackPath='/api/auth/login' />}>
+              <Route path='/cart' element={
+                  <CartPage />
+                } />
+              <Route path='/dashboard/user' element={<Buyer />}>
+                <Route index element={<MyOrder />} />
+                <Route path='address' element={<Address />} />
+              </Route>
+              <Route path='/dashboard/admin' element={<Sellers />}>
+                <Route index element={<Analytics />} />
+                <Route path='orders' element={<Orders />} />
+                <Route path='products' element={<Products />} />
+                <Route path='emails' element={<Email />} />
+                <Route path='products/management' element={<Management />} />
+              </Route>
             </Route>
           </Routes>
           <Footer />

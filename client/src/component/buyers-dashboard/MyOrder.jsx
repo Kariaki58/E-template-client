@@ -1,6 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { OrderContext } from '../../contextApi/Orders';
 import ReactPaginate from 'react-paginate';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
+import { useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import '../../App.css';
@@ -10,6 +12,14 @@ const MyOrder = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const ordersPerPage = 5;
 
+  const isAuthenticated = useIsAuthenticated()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/')
+    }
+  }, [])
   if (loading) return <p className="text-center text-blue-600">Loading...</p>;
   if (error) return <p className="text-center text-red-600">Error: {error}</p>;
 

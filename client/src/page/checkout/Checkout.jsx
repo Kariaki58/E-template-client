@@ -87,7 +87,7 @@ const Checkout = () => {
     const popup = new PaystackPop();
 
     popup.newTransaction({
-      key: 'pk_test_fe3c7c857fbdf1e647efae4259d89937f3914562',
+      key: import.meta.env.VITE_APP_PAYSTACK_USER,
       email: shippingDetails.email,
       amount: totalAmount,
       channels: ['card', 'bank', 'ussd', 'qr', 'eft', 'mobile_money', 'bank_transfer'],

@@ -1,4 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import facebook from '/facebook.png'
+import instagram from '/instagram.jpeg'
+import linkedin from '/linkedin.png'
+import x from '/x.png'
+
 
 const Footer = () => {
     return (
@@ -7,21 +13,22 @@ const Footer = () => {
                 <div className="flex flex-wrap justify-between">
                     {/* Logo and Description */}
                     <div className="w-full md:w-1/3 mb-8 md:mb-0">
-                        <h2 className="text-2xl font-bold text-white mb-4">ShopEase</h2>
+                        <h2 className="text-2xl font-bold text-white mb-4">OverLow</h2>
                         <p className="text-gray-400">
                             Your one-stop shop for all your needs. Enjoy a seamless shopping experience with our wide range of products.
                         </p>
+                        <div className='text-gray-100 font-bold'>
+                            <p>Feel the impact of selling online, get a professional website - <span><Link to='/offer/paymentPlan' className='text-blue-500'>click here</Link></span></p>
+                        </div>
                     </div>
-
                     {/* Navigation Links */}
                     <div className="w-full md:w-1/3 mb-8 md:mb-0">
                         <h3 className="text-xl font-semibold text-white mb-4">Quick Links</h3>
                         <ul className="space-y-2">
-                            <li><a href="#" className="hover:text-white">Home</a></li>
-                            <li><a href="#" className="hover:text-white">Shop</a></li>
-                            <li><a href="#" className="hover:text-white">About Us</a></li>
-                            <li><a href="#" className="hover:text-white">Contact</a></li>
-                            <li><a href="#" className="hover:text-white">FAQs</a></li>
+                            <li><Link to="/" className="hover:text-white">Home</Link></li>
+                            <li><Link to="/about-us" className="hover:text-white">About Us</Link></li>
+                            <li><Link to="/contact" className="hover:text-white">Contact</Link></li>
+                            <li><Link to="/faq" className="hover:text-white">FAQs</Link></li>
                         </ul>
                     </div>
                     <div className="w-full md:w-1/3">
@@ -45,21 +52,20 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <div className="mt-12 border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
-                    <p className="text-gray-400 mb-4 md:mb-0">&copy; 2024 ShopEase. All rights reserved.</p>
+                <div className="mt-5 border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
                     <div className="flex space-x-4">
-                        <a href="#" className="text-gray-400 hover:text-white transition duration-300">
-                            <i className="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" className="text-gray-400 hover:text-white transition duration-300">
-                            <i className="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" className="text-gray-400 hover:text-white transition duration-300">
-                            <i className="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" className="text-gray-400 hover:text-white transition duration-300">
-                            <i className="fab fa-linkedin-in"></i>
-                        </a>
+                        <Link to="" className="text-gray-400 hover:text-white transition duration-300">
+                            <img src={facebook} width={40} height={40}/>
+                        </Link>
+                        <Link to="https://www.instagram.com/stephenkariaki/" className="text-gray-400 hover:text-white transition duration-300">
+                            <img src={instagram} width={40} height={40} className='rounded-full' />
+                        </Link>
+                        <Link to="https://www.linkedin.com/in/kariakistephen58/" className="text-gray-400 hover:text-white transition duration-300">
+                            <img src={linkedin} width={40} height={40} className='rounded-full' />
+                        </Link>
+                        <Link to="https://x.com/SKariaki" className="text-gray-400 hover:text-white transition duration-300">
+                            <img src={x} width={40} height={40} className='rounded-full' />
+                        </Link>
                     </div>
                 </div>
             </div>
