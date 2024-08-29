@@ -154,7 +154,7 @@ export const ProductUploadProvider = ({ children }) => {
   const fetchAllProducts = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/upload/products`, {
+      const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}`, {
         withCredentials: true,
       });
 
