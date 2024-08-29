@@ -28,7 +28,7 @@ const Categories = () => {
 
   return (
     <div className="bg-gray-100">
-      <h2 className="text-2xl font-bold mb-2 text-center pt-7">Shop by Category</h2>
+      <h2 className="text-2xl text-gray-800 font-bold mb-2 text-center pt-7">Shop by Category</h2>
       <div
         ref={scrollRef}
         className="flex overflow-x-auto whitespace-nowrap no-scrollbar"

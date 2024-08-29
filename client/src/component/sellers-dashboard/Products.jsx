@@ -167,7 +167,7 @@ const Products = () => {
             }
           </div>
 
-          <div className="sm:col-span-2">
+          <div className="sm:col-span-2 max-sm:mb-10">
             <label className="block text-gray-950">Description:</label>
             <ReactQuill 
               value={description} 

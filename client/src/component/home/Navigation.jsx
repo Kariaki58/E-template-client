@@ -48,7 +48,7 @@ const Navigation = () => {
             </span>
             {!isSearchOpen && (
               <div className="flex items-center p-2 rounded-r-lg">
-                <span className="flex gap-1">
+                <span className="flex gap-1 text-gray-800">
                   <img src={nigeria} width={20} alt="Nigeria flag" /> NGN
                 </span>
               </div>
@@ -56,8 +56,6 @@ const Navigation = () => {
             
           </div>
         </li>
-        
-        {/* User and Cart Section */}
         <li className="flex items-center gap-6">
           <div className="flex items-center">
             {

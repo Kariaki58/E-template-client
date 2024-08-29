@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { IoStarSharp } from 'react-icons/io5';
 import { useParams } from 'react-router-dom';
-import airpod from '/assets/1.jpg';
-import apple_glass from '/assets/apple_glass.png';
 import cute_gril from '/assets/image-open.jpeg'
 import axios from 'axios';
 
@@ -46,8 +44,6 @@ const ReviewList = () => {
 
   if (loading) return <div>Loading reviews...</div>;
   if (error) return <div>{error}</div>;
-
-  console.log(reviews)
 
   return (
     <div className="max-w-3xl p-4 rounded-lg">

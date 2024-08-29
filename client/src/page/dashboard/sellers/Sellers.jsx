@@ -10,7 +10,7 @@ import { GrCloudUpload } from "react-icons/gr";
 const Sellers = () => {
   return (
     <div className="flex">
-      <div className="h-screen flex-2 sm:block xl:w-72 border-gray-300 border-r-2">
+      <div className="h-screen flex-2 xl:w-72 border-gray-300 border-r-2">
         <ul className="leading-10 px-4">
           <Link to="/dashboard/admin">
             <li className="flex items-center text-xl gap-4 mt-10 cursor-pointer bg-gray-950 text-white sm:bg-gray-950 sm:text-white rounded-lg p-4">

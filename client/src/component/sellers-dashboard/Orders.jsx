@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { OrderContext } from '../../contextApi/Orders';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import UserAddressModal from './UserAddressModal'; // Import the modal component
+import UserAddressModal from './UserAddressModal';
 
 const Orders = () => {
   const { orders, fetchAllOrders, loading, error } = useContext(OrderContext);
@@ -57,61 +57,67 @@ const Orders = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="w-full p-3">
       <h1 className="text-2xl font-bold mb-4 text-center">Admin Orders</h1>
-      <table className="min-w-full bg-white">
-        <thead>
-          <tr className="w-full bg-gray-100">
-            <th className="py-2 px-4 text-left">Order ID</th>
-            <th className="py-2 px-4 text-left">User</th>
-            <th className="py-2 px-4 text-left">Total Amount</th>
-            <th className='py-2 px-4 text-left'>Qty</th>
-            <th className='py-2 px-4 text-left'>Color</th>
-            <th className='py-2 px-4 text-left'>Size</th>
-            <th className="py-2 px-4 text-left">Status</th>
-            <th className="py-2 px-4 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map(order => (
-            <tr key={order._id} className="border-t">
-              <td className="py-2 px-4">{order._id}</td>
-              <td
-                className="py-2 px-4 cursor-pointer"
-                onClick={() => navigateToUserDetails(order.shippingAddress._id)}
-              >
-                {order.shippingAddress.name}
-              </td>
-              <td className="py-2 px-4">{formatPrice(order.price)}</td>
-              <td className='py-2 px-4'>{order.quantity}</td>
-              <td className='py-2 px-4'>{order.color}</td>
-              <td className='py-2 px-4'>{order.size}</td>
-              <td className="py-2 px-4">
-                <select
-                  value={selectedOrderId === order._id ? status : order.status}
-                  onChange={(e) => handleSelectChange(order._id, e.target.value)}
-                  onBlur={() => handleStatusChange(order._id)}
-                  className="border p-1 rounded"
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="Paid">Paid</option>
-                  <option value="Shipped">Shipped</option>
-                  <option value="Delivered">Delivered</option>
-                  <option value="Cancelled">Cancelled</option>
-                </select>
-              </td>
-              <td className="py-2 px-4">
-                <button
-                  onClick={() => navigateToUserDetails(order.shippingAddress._id)}
-                  className="bg-blue-500 text-white px-2 py-1 rounded"
-                >
-                  View User
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="overflow-x-auto max-w-full">
+        <div className="w-full inline-block align-middle">
+          <div className="overflow-auto rounded-lg shadow">
+            <table className="w-full bg-white border-collapse">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="py-2 px-4 text-left whitespace-nowrap">Order ID</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">User</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">Total Amount</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">Qty</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">Color</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">Size</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">Status</th>
+                  <th className="py-2 px-4 text-left whitespace-nowrap">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((order) => (
+                  <tr key={order._id} className="border-t">
+                    <td className="py-2 px-4 whitespace-nowrap">{order._id}</td>
+                    <td
+                      className="py-2 px-4 cursor-pointer text-blue-600 underline whitespace-nowrap"
+                      onClick={() => navigateToUserDetails(order.shippingAddress._id)}
+                    >
+                      {order.shippingAddress.name}
+                    </td>
+                    <td className="py-2 px-4 whitespace-nowrap">{formatPrice(order.price)}</td>
+                    <td className="py-2 px-4 whitespace-nowrap">{order.quantity}</td>
+                    <td className="py-2 px-4 whitespace-nowrap">{order.color}</td>
+                    <td className="py-2 px-4 whitespace-nowrap">{order.size}</td>
+                    <td className="py-2 px-4 whitespace-nowrap">
+                      <select
+                        value={selectedOrderId === order._id ? status : order.status}
+                        onChange={(e) => handleSelectChange(order._id, e.target.value)}
+                        onBlur={() => handleStatusChange(order._id)}
+                        className="border p-2 rounded"
+                      >
+                        <option value="Pending">Pending</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                      </select>
+                    </td>
+                    <td className="py-2 px-4 whitespace-nowrap">
+                      <button
+                        onClick={() => navigateToUserDetails(order.shippingAddress._id)}
+                        className="bg-blue-500 text-white px-2 py-1 rounded"
+                      >
+                        View User
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
       <UserAddressModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -119,6 +125,6 @@ const Orders = () => {
       />
     </div>
   );
-}
+};
 
 export default Orders;

@@ -254,7 +254,6 @@ export const ProductUploadProvider = ({ children }) => {
         sortOption,
         setSortOption,
         sortProducts,
-        productImages,
         SortByCategory,
         setProductImages,
         imagePreviews,
