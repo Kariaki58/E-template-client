@@ -59,10 +59,10 @@ const Orders = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="mb-10 custom-scrollbar">
+    <div className="mb-10 custom-scrollbar w-full">
       <h1 className="text-2xl font-bold mb-4 text-center text-gray-800">Admin Orders</h1>
         <div className='w-full overflow-x-auto'>
-          <table className="table-auto overflow-x-auto">
+          <table className="overflow-x-auto">
               <thead>
                 <tr className="bg-gray-100">
                   <th className="py-2 px-4 text-left whitespace-nowrap text-gray-800">Order ID</th>
