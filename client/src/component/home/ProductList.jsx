@@ -151,7 +151,7 @@ const ProductList = () => {
 
   if (loading) {
     return (
-      <div className='flex justify-center mt-2'>
+      <div className='flex justify-center items-center mt-2'>
         <RotatingLines
           visible={true}
           height="96"

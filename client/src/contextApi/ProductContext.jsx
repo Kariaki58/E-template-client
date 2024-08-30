@@ -152,19 +152,14 @@ export const ProductUploadProvider = ({ children }) => {
 
   const fetchAllProducts = async () => {
     setLoading(true);
-    console.log("read to by fetched")
     try {
-      console.log("fectching data")
       const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}`, {
         withCredentials: true,
       });
-      console.log("response gotten")
 
       if (response.data.error) {
-        console.log(response.data.error)
         toast.error(response.data.error);
       } else {
-        console.log("data gotten")
         const data = response.data.message;
 
         toast.success(`data is present ${data}`)
@@ -181,10 +176,8 @@ export const ProductUploadProvider = ({ children }) => {
         setFilteredProducts(response.data.message || []);
       }
     } catch (error) {
-      console.log(error)
       toast.error('An error occurred while fetching products.');
     } finally {
-      console.log("not finishing")
       setLoading(false);
     }
   };
