@@ -15,7 +15,7 @@ const PaymentPlan = () => {
     {
       name: 'Basic',
       price: '₦10000',
-      features: ['Admin Page access', 'Receiving payment', 'Customize to your need'],
+      features: ['Admin Page access', 'Receiving payment', 'Customize to your need', 'Abandoned Cart'],
       buttonText: 'Choose Basic',
     },
     {
