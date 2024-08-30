@@ -61,7 +61,7 @@ const Orders = () => {
   return (
     <div className="mb-10 custom-scrollbar">
       <h1 className="text-2xl font-bold mb-4 text-center text-gray-800">Admin Orders</h1>
-        <div className='container overflow-x-auto'>
+        <div className='w-full overflow-x-auto'>
           <table className="table-auto overflow-x-auto">
               <thead>
                 <tr className="bg-gray-100">
