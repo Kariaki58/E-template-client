@@ -18,7 +18,11 @@ const EmailList = () => {
         }
         setEmails(response.data.emails);
       } catch (err) {
-        setError(err.response.data.error)
+        if (err.response && err.response.data && err.response.data.err) {
+          setError(err.response.data.error)
+        } else {
+          setError('Please check your internet')
+        }
       } finally {
         setLoading(false);
       }

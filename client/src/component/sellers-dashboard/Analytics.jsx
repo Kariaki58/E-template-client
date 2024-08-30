@@ -1,23 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+import { RotatingLines } from 'react-loader-spinner';
 
 const Analytics = () => {
   const [data, setData] = useState(null);
   const [view, setView] = useState('daily');
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,7 +15,7 @@ const Analytics = () => {
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/api/orders/analytics`, { withCredentials: true });
         setData(response.data);
       } catch (error) {
-        console.error("Error fetching analytics data", error);
+        setError("Error fetching analytics data");
       }
     };
 
@@ -49,39 +39,31 @@ const Analytics = () => {
     return label;
   };
 
-  const generateChartData = (orders, label) => {
-    return {
-      labels: orders.map(order => formatLabel(order._id, view)),
-      datasets: [
-        {
-          label: `Orders per ${label}`,
-          data: orders.map(order => order.count),
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1,
-          fill: false,
-        },
-      ],
-    };
+  const generateChartData = (orders) => {
+    return orders.map(order => ({
+      date: formatLabel(order._id, view),
+      count: order.count,
+    }));
   };
 
   const chartData = () => {
     switch (view) {
       case 'daily':
-        return generateChartData(data?.dailyOrders, 'Day');
+        return generateChartData(data?.dailyOrders);
       case 'weekly':
-        return generateChartData(data?.weeklyOrders, 'Week');
+        return generateChartData(data?.weeklyOrders);
       case 'monthly':
-        return generateChartData(data?.monthlyOrders, 'Month');
+        return generateChartData(data?.monthlyOrders);
       case 'yearly':
-        return generateChartData(data?.yearlyOrders, 'Year');
+        return generateChartData(data?.yearlyOrders);
       default:
-        return generateChartData(data?.dailyOrders, 'Day');
+        return generateChartData(data?.dailyOrders);
     }
   };
 
   return (
     <div className="p-2 mx-auto rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-2 text-gray-800">Order Analytics</h2>
+      <h2 className="md:text-2xl text-lg font-semibold mb-2 text-gray-800 text-center">Order Analytics</h2>
       <div className="mb-2">
         <label htmlFor="view" className="block text-gray-700 font-medium mb-2">Select View:</label>
         <select
@@ -96,10 +78,39 @@ const Analytics = () => {
           <option value="yearly">Yearly</option>
         </select>
       </div>
+      <div className='text-red-500'>
+        { error ? error : <></>}
+      </div>
       {data ? (
-        <Line data={chartData()} />
+        <ResponsiveContainer width="100%" height={400}>
+          <AreaChart data={chartData()}>
+            <defs>
+              <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <XAxis dataKey="date" />
+            <YAxis />
+            <CartesianGrid strokeDasharray="3 3" />
+            <Tooltip />
+            <Area type="monotone" dataKey="count" stroke="#8884d8" fillOpacity={1} fill="url(#colorCount)" />
+          </AreaChart>
+        </ResponsiveContainer>
       ) : (
-        <p>Loading data...</p>
+        <div className='flex justify-center items-center mt-20'>
+          <RotatingLines
+            visible={true}
+            height="96"
+            width="96"
+            color="grey"
+            strokeWidth="5"
+            animationDuration="0.75"
+            ariaLabel="rotating-lines-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+          />
+      </div>
       )}
     </div>
   );

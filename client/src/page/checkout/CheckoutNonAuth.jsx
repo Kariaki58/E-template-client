@@ -37,7 +37,7 @@ const CheckoutNonAuth = () => {
         setProduct(response.data.message);
         setTotalAmount(response.data.message.price * 100);
       } catch (error) {
-        console.error('Error fetching product details:', error.message);
+        toast.error('Error fetching product details');
       }
     };
 
@@ -62,7 +62,7 @@ const CheckoutNonAuth = () => {
     try {
       const qty = Number(quantity)
       popup.newTransaction({
-        key: 'pk_test_fe3c7c857fbdf1e647efae4259d89937f3914562',
+        key: import.meta.env.VITE_APP_PAYSTACK_USER,
         email: shippingDetails.email,
         amount: qty * totalAmount,
         channels: ['card', 'bank', 'ussd', 'qr', 'eft', 'mobile_money', 'bank_transfer'],
@@ -89,7 +89,7 @@ const CheckoutNonAuth = () => {
         },
       });
     } catch (error) {
-
+      toast.error('Paystack issues')
     } finally {
 
     }
@@ -153,6 +153,17 @@ const CheckoutNonAuth = () => {
                 readOnly
               />
               <span className="ml-2 text-sm md:text-base">PayStack</span>
+            </label>
+            <label className='inline-flex items-center ml-6'>
+              <input
+                type="radio"
+                name='payment'
+                value="stripe"
+                className='form-radio h-4 w-4 text-gray-600 focus:ring-blue-500 border-gray-300'
+                checked
+                readOnly
+              />
+              <span className='ml-2 text-sm md:text-base'>Stripe</span>
             </label>
           </div>
           <button

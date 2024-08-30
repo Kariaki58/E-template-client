@@ -12,6 +12,8 @@ import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import { Cloudinary } from '@cloudinary/url-gen';
+import { RotatingLines } from 'react-loader-spinner'
+
 
 
 const cld = new Cloudinary({
@@ -30,12 +32,14 @@ const ProductSections = () => {
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [loading, setLoading] = useState(true)
   const [showDetailsPrompt, setShowDetailsPrompt] = useState(false);
   const navigate = useNavigate();
   const isAuthenticated = useIsAuthenticated();
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true)
       try {
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/products/${params.id}`, { withCredentials: true });
         if (response.data.error) {
@@ -49,8 +53,9 @@ const ProductSections = () => {
           setSelectedImage(fetchedProduct.images[0]);
         }
       } catch (error) {
-        console.error("Error fetching product data: ", error);
         toast.error("Error fetching product data.");
+      } finally {
+        setLoading(false)
       }
     };
 
@@ -97,6 +102,24 @@ const ProductSections = () => {
   const formatPrice = (price) => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
+
+  if (loading) {
+    return (
+      <div className='flex justify-center items-center mt-20'>
+        <RotatingLines
+          visible={true}
+          height="96"
+          width="96"
+          color="grey"
+          strokeWidth="5"
+          animationDuration="0.75"
+          ariaLabel="rotating-lines-loading"
+          wrapperStyle={{}}
+          wrapperClass=""
+        />
+      </div>
+    )
+  }
   return (
     <div className="bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <ToastContainer />

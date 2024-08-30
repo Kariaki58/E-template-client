@@ -16,7 +16,7 @@ export const CartProvider = ({ children }) => {
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/cart`, { withCredentials: true });
         setCartItems(response.data.message);
       } catch (error) {
-        console.error('Error fetching cart items:', error);
+        setError('Error fetching cart items')
       } finally {
         setLoading(false)
       }
@@ -33,7 +33,7 @@ export const CartProvider = ({ children }) => {
         { withCredentials: true });
       setCartItems(response.data.cart);
     } catch (error) {
-      console.error('Error adding item to cart:', error);
+      setError('Error adding item to cart')
     }
   };
 
@@ -47,7 +47,7 @@ export const CartProvider = ({ children }) => {
         )
       );
     } catch (error) {
-      console.error('Error updating cart item:', error);
+      setError('Error updating cart item');
     }
   };
 
@@ -60,7 +60,10 @@ export const CartProvider = ({ children }) => {
       }
       setCartItems((prevItems) => respone.data.message)
     } catch (error) {
-      setError(error.respone.data.error)
+      if (error.respone && error.respone.data && error.respone.data.error)
+        setError(error.respone.data.error)
+      else
+        setError('Error occured while clearing cart')
     }
   }
 
@@ -72,7 +75,7 @@ export const CartProvider = ({ children }) => {
         );
         setCartItems(response.data.cart);
     } catch (error) {
-        console.error('Error incrementing cart', error);
+        setError('Error incrementing cart');
     }
   }
 
@@ -84,7 +87,7 @@ export const CartProvider = ({ children }) => {
         );
         setCartItems(response.data.cart);
     } catch (error) {
-        console.error('Error incrementing cart', error);
+        setError('Error incrementing cart');
     }
 };
 
@@ -94,7 +97,7 @@ export const CartProvider = ({ children }) => {
       const response =  await axios.delete(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/delete/cart/${pos}/${cartItemId}`, { withCredentials: true });
       setCartItems(response.data.cart);
     } catch (error) {
-      console.error('Error removing item from cart:', error);
+      setError('Error removing item from cart');
     }
   };
 

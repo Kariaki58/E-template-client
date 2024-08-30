@@ -39,7 +39,6 @@ export const ProductUploadProvider = ({ children }) => {
       const { secure_url } = res.data;
       return secure_url;
     } catch (error) {
-      console.log(error)
       toast.error('Something went wrong on the server');
       return null;
     }

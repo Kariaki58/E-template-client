@@ -57,7 +57,11 @@ const ProductManagement = () => {
       setProducts(response.data.message);
       setTotalPages(Math.ceil(response.data.total / 10));
     } catch (error) {
-      toast.error(error.response.data.error);
+      if (error.response && error.response.data && error.response.data.error) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error('unexpected error occured')
+      }
     }
   };
 
@@ -94,7 +98,11 @@ const ProductManagement = () => {
       setProducts(products.filter((product) => product._id !== productId));
       toast.success("Product deleted successfully");
     } catch (error) {
-      toast.error(error.response.data.error);
+      if (error.response && error.response.data && error.response.data.error) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error('unexpected error occured')
+      }
     }
   };
 
@@ -209,6 +217,10 @@ const ProductManagement = () => {
   const onCancel = () => {
     setEditingProductId(null);
   };
+
+  if (loading) {
+    return <div>Loading</div>
+  }
 
   return (
     <div className="p-6 bg-white rounded-md shadow-md">

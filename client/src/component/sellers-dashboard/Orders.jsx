@@ -5,6 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import UserAddressModal from './UserAddressModal';
 import '../../App.css';
+import { RotatingLines } from 'react-loader-spinner';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const Orders = () => {
@@ -28,7 +32,7 @@ const Orders = () => {
       );
       fetchAllOrders();
     } catch (err) {
-      console.error('Error updating order status:', err.message);
+      toast.error('Error updating order status')
     }
   };
 
@@ -43,7 +47,7 @@ const Orders = () => {
       setUserAddress(response.data);
       setIsModalOpen(true);
     } catch (error) {
-      console.error('Error fetching user address:', error.message);
+      toast.error('Error fetching user address');
     }
   };
 
@@ -55,7 +59,21 @@ const Orders = () => {
     return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(price);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return (
+    <div className='flex justify-center items-center mt-20'>
+      <RotatingLines
+        visible={true}
+        height="96"
+        width="96"
+        color="grey"
+        strokeWidth="5"
+        animationDuration="0.75"
+        ariaLabel="rotating-lines-loading"
+        wrapperStyle={{}}
+        wrapperClass=""
+      />
+    </div>
+  );
   if (error) return <p>Error: {error}</p>;
 
   return (

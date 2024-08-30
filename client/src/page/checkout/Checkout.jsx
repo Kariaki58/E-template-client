@@ -51,7 +51,6 @@ const Checkout = () => {
           phone: phoneNumber,
         });
       } catch (error) {
-        console.error('Error fetching shipping details:', error.message);
       } finally {
         setLoading(false);
       }

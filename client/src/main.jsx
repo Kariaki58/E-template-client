@@ -5,6 +5,7 @@ import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import createStore from 'react-auth-kit/createStore'
 import AuthProvider from 'react-auth-kit/AuthProvider'
+import ScrollToTop from './ScrollToTop'
 
 
 const authStore = createStore({
@@ -19,6 +20,7 @@ const authStore = createStore({
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
+      <ScrollToTop />
       <AuthProvider store={authStore}>
           <App />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
       </AuthProvider>

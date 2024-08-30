@@ -7,6 +7,7 @@ import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { set } from 'date-fns';
 
 
 const LoginPage = () => {
@@ -15,6 +16,7 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate()
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false)
     const signIn = useSignIn()
 
     const handleLogin = async (e) => {
@@ -23,6 +25,7 @@ const LoginPage = () => {
             setError('Please fill in all fields');
         } else {
             try {
+                setLoading(true)
                 setError('');
                 const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/login`, { email, password }, { withCredentials: true })
                 if (response.data.error) {
@@ -47,6 +50,8 @@ const LoginPage = () => {
             } catch(err) {
                 toast.error(err.response.data.error)
                 return null
+            } finally {
+                setLoading(false)
             }
         }
     };
@@ -95,7 +100,7 @@ const LoginPage = () => {
                                 type="submit"
                                 className="w-full bg-gray-950 text-white py-2 px-4 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-300"
                             >
-                                Log In
+                                { !loading ? 'Log In' : 'Loging in...'}
                             </button>
                         </div>
                     </form>

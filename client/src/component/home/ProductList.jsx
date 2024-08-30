@@ -8,7 +8,8 @@ import { Link } from 'react-router-dom';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Cloudinary } from '@cloudinary/url-gen';
 import './ProductList.css';
-import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+import { RotatingLines } from 'react-loader-spinner'
+
 
 const cld = new Cloudinary({
   cloud: {
@@ -149,7 +150,21 @@ const ProductList = () => {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div className='flex justify-center items-center mt-20'>
+        <RotatingLines
+          visible={true}
+          height="96"
+          width="96"
+          color="grey"
+          strokeWidth="5"
+          animationDuration="0.75"
+          ariaLabel="rotating-lines-loading"
+          wrapperStyle={{}}
+          wrapperClass=""
+        />
+      </div>
+    )
   }
 
   // Filter and sort products
