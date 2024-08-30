@@ -59,7 +59,7 @@ const Orders = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="mb-10 custom-scrollbar w-full">
+    <div className="mb-10 custom-scrollbar w-full bg-red-800">
       <h1 className="text-2xl font-bold mb-4 text-center text-gray-800">Admin Orders</h1>
         <div className='w-full overflow-x-auto'>
           <table className="overflow-x-auto">
