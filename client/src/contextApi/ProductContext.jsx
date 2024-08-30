@@ -161,8 +161,6 @@ export const ProductUploadProvider = ({ children }) => {
         toast.error(response.data.error);
       } else {
         const data = response.data.message;
-
-        toast.success(`data is present ${data}`)
         
         const uniqueCategories = data.reduce((acc, current) => {
           const isDuplicate = acc.some(item => item.category === current.category);
