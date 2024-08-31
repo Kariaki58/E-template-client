@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
 import CreatableSelect from 'react-select/creatable';
-import 'react-toastify/dist/ReactToastify.css';
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
 import { useProductUpload } from '../../contextApi/ProductContext';
 import { useDropzone } from "react-dropzone";
 import { FaTrash } from 'react-icons/fa';
+import { RotatingLines } from 'react-loader-spinner'
+
 
 const sizeOptions = [
   { value: 'S', label: 'S' },
@@ -219,7 +219,21 @@ const ProductManagement = () => {
   };
 
   if (loading) {
-    return <div>Loading</div>
+    return (
+      <div className='flex justify-center items-center mt-2'>
+        <RotatingLines
+          visible={true}
+          height="96"
+          width="96"
+          color="grey"
+          strokeWidth="5"
+          animationDuration="0.75"
+          ariaLabel="rotating-lines-loading"
+          wrapperStyle={{}}
+          wrapperClass=""
+        />
+      </div>
+    )
   }
 
   return (

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { ProductUploadContext } from '../../contextApi/ProductContext';
 import { CartContext } from '../../contextApi/cartContext';
 import { ToastContainer, toast } from 'react-toastify';
@@ -9,6 +9,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Cloudinary } from '@cloudinary/url-gen';
 import './ProductList.css';
 import { RotatingLines } from 'react-loader-spinner'
+import { EmailPopUp } from './Footer';
 
 
 const cld = new Cloudinary({
@@ -104,7 +105,21 @@ const ProductList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(10); // Set the number of products per page
   const isAuthenticated = useIsAuthenticated();
+  const [display, setDisplay] = useState(false)
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY >= 1100 && window.scrollY <= 1500) {
+        setDisplay(true)
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+  
   useEffect(() => {
     fetchAllProducts();
   }, []);
@@ -184,6 +199,11 @@ const ProductList = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
+    <>
+    {
+      display ? 
+    <EmailPopUp /> : <></>
+    }
     <div className="flex flex-col mt-5 px-4 mb-10">
       <div className="w-full flex justify-center mb-4">
         <select
@@ -305,6 +325,7 @@ const ProductList = () => {
         />
       )}
     </div>
+    </>
   );
 };
 
