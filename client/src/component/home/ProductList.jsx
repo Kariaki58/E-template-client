@@ -10,6 +10,7 @@ import { Cloudinary } from '@cloudinary/url-gen';
 import './ProductList.css';
 import { RotatingLines } from 'react-loader-spinner'
 import { EmailPopUp } from './Footer';
+import { useNavigate } from 'react-router-dom';
 
 
 const cld = new Cloudinary({
@@ -98,19 +99,24 @@ const ProductList = () => {
     setSortOption,
   } = useContext(ProductUploadContext);
 
+
   const { addToCart } = useContext(CartContext);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(10); // Set the number of products per page
+  const [productsPerPage] = useState(10);
   const isAuthenticated = useIsAuthenticated();
   const [display, setDisplay] = useState(false)
+  const navigate = useNavigate()
+
 
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY >= 1100 && window.scrollY <= 1500) {
-        setDisplay(true)
+        if (!isAuthenticated) {
+          setDisplay(true)
+        }
       }
     };
 

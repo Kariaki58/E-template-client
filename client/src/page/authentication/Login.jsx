@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { RxCross1 } from 'react-icons/rx';
 import { useContext } from 'react';
@@ -7,6 +7,7 @@ import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 
 const LoginPage = () => {
@@ -17,6 +18,14 @@ const LoginPage = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false)
     const signIn = useSignIn()
+    const isAuthenticated = useIsAuthenticated()
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/')
+        }
+    }, [])
+    
 
     const handleLogin = async (e) => {
         e.preventDefault();

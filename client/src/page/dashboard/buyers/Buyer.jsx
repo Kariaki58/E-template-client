@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BsCartCheck } from 'react-icons/bs';
 import { FaRegAddressBook } from 'react-icons/fa';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
@@ -7,7 +7,6 @@ import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 const Buyer = () => {
   const signOut = useSignOut();
   const navigate = useNavigate();

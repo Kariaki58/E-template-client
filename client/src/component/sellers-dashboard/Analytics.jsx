@@ -3,11 +3,18 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
 import { RotatingLines } from 'react-loader-spinner';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
+import { useNavigate } from 'react-router-dom';
+
 
 const Analytics = () => {
   const [data, setData] = useState(null);
   const [view, setView] = useState('daily');
   const [error, setError] = useState(null)
+  const user = useAuthUser()
+  const isAuthenticate = useIsAuthenticated()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {

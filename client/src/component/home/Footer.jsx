@@ -7,6 +7,7 @@ import x from '/x.png';
 import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast, ToastContainer } from "react-toastify";
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 const useEmailSubscription = () => {
     const [loading, setLoading] = useState(false);
@@ -56,6 +57,9 @@ export const EmailPopUp = () => {
     const [isPopupVisible, setIsPopupVisible] = useState(true);
     const [email, setEmail] = useState('');
     const { loading, handleSubscribe } = useEmailSubscription();
+
+
+
 
     return (
         <>

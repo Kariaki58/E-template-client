@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GoPerson } from "react-icons/go";
 import { PiShoppingCartLight } from "react-icons/pi";
 import { RxCross1 } from "react-icons/rx";
 import { IoIosSearch } from "react-icons/io";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { useContext } from 'react';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
@@ -11,10 +11,30 @@ import nigeria from '/niger-icon.png';
 import { context } from '../../contextApi/Modal';
 
 const Navigation = () => {
-  const { handleToggle } = useContext(context)
+  const { handleToggle, setIsOpen: openModal } = useContext(context)
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-
+  const navigate = useNavigate()
   const user = useAuthUser()
+  const isAuthenticated = useIsAuthenticated()
+
+  useEffect(() => {
+    if (isAuthenticated && (location.pathname === '/login' || location.pathname === '/sign-up')) {
+      navigate('/')
+    } else {
+      if (location.pathname === '/login' || location.pathname === '/sign-up')
+        navigate(location.pathname)
+      openModal(true)
+    }
+
+    if (user && user.isAdmin && (location.pathname.includes('/dashboard/user'))) {
+      navigate('/dashboard/admin')
+    }
+    if (user && (location.pathname === '/dashboard/admin' && !user.isAdmin)) {
+      navigate('/login')
+      openModal(true)
+    }
+  }, [location.pathname])
+
 
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);

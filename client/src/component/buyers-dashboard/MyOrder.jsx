@@ -6,20 +6,17 @@ import { useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import '../../App.css';
+import 'react-toastify/dist/ReactToastify.css';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { toast, ToastContainer } from 'react-toastify';
+
 
 const MyOrder = () => {
   const { orders, loading, error } = useContext(OrderContext);
   const [currentPage, setCurrentPage] = useState(0);
   const ordersPerPage = 5;
 
-  const isAuthenticated = useIsAuthenticated()
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/')
-    }
-  }, [])
+  
   if (loading) return <p className="text-center text-blue-600">Loading...</p>;
   if (error) return <p className="text-center text-red-600">Error: {error}</p>;
 
@@ -136,6 +133,7 @@ const MyOrder = () => {
           disabledClassName={'text-gray-400 cursor-not-allowed'}
         />
       </div>
+      <ToastContainer />
     </div>
   );
 };

@@ -6,6 +6,8 @@ import { BrowserRouter } from 'react-router-dom'
 import createStore from 'react-auth-kit/createStore'
 import AuthProvider from 'react-auth-kit/AuthProvider'
 import ScrollToTop from './ScrollToTop'
+import { Analytics as VercelAnalytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/react"
 
 
 const authStore = createStore({
@@ -20,6 +22,8 @@ const authStore = createStore({
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
+      <VercelAnalytics />
+      <SpeedInsights/>
       <ScrollToTop />
       <AuthProvider store={authStore}>
           <App />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      

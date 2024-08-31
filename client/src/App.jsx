@@ -28,7 +28,6 @@ import PaymentPlan from './page/billing/Offer'
 import About from './page/about/About'
 import Contact from './page/contact/Contact'
 import Faq from './page/faq/Faq'
-import { Analytics as VercelAnalytics } from "@vercel/analytics/react"
 
 
 function App() {
@@ -52,10 +51,10 @@ function App() {
             <Route path='/checkout' element={<Checkout />} />
             <Route path='/checkout/:id' element={<CheckoutNonAuth />} />
             <Route path='/products/content/:id' element={<ProductSections />} />
-            <Route element={<AuthOutlet fallbackPath='/api/auth/login' />}>
+            <Route element={<AuthOutlet fallbackPath='/login' />}>
               <Route path='/cart' element={
-                  <CartPage />
-                } />
+                <CartPage />
+              } />
               <Route path='/dashboard/user' element={<Buyer />}>
                 <Route index element={<MyOrder />} />
                 <Route path='address' element={<Address />} />
@@ -74,7 +73,6 @@ function App() {
         </OrderContext>
         </CartProvider>
       </Modal>
-      <VercelAnalytics />
     </div>
   )
 }
