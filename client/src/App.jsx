@@ -25,6 +25,10 @@ import CheckoutNonAuth from './page/checkout/CheckoutNonAuth'
 import { ProductUploadProvider } from './contextApi/ProductContext'
 import AuthOutlet from '@auth-kit/react-router/AuthOutlet'
 import PaymentPlan from './page/billing/Offer'
+import About from './page/about/About'
+import Contact from './page/contact/Contact'
+import Faq from './page/faq/Faq'
+import { Analytics as VercelAnalytics } from "@vercel/analytics/react"
 
 
 function App() {
@@ -37,6 +41,9 @@ function App() {
           <Ads />
           <Navigation />
           <Routes>
+            <Route path='/about-us' element={<About />} />
+            <Route path='/contact' element={<Contact />} />
+            <Route path='/faq' element={<Faq />} />
             <Route path='/offer/paymentPlan' element={<PaymentPlan />} />
             <Route path='/' element={<Home />}>
               <Route path='login' element={<LoginPage />} />
@@ -67,6 +74,7 @@ function App() {
         </OrderContext>
         </CartProvider>
       </Modal>
+      <VercelAnalytics />
     </div>
   )
 }
