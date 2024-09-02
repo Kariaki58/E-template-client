@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 
@@ -20,6 +20,7 @@ export const ProductUploadProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [total, setTotal] = useState(0)
 
   const uploadFile = async (file, type, timestamp, signature) => {
     const folder = type === 'image' ? 'images' : 'videos';
@@ -150,15 +151,15 @@ export const ProductUploadProvider = ({ children }) => {
     }
   };
 
-  const fetchAllProducts = async () => {
+  const fetchAllProducts = async (page = 1) => {
     setLoading(true);
     try {
-      const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}`, {
+      const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}?page=${page}`, {
         withCredentials: true,
       });
-
-      console.log(response.data.message)
-
+  
+      setTotal(response.data.total);
+  
       if (response.data.error) {
         toast.error(response.data.error);
       } else {
@@ -172,8 +173,8 @@ export const ProductUploadProvider = ({ children }) => {
           return acc;
         }, []);
         setCategories(uniqueCategories);
-        setProducts(response.data.message || []);
-        setFilteredProducts(response.data.message || []);
+        setProducts(data || []);
+        setFilteredProducts(data || []);
       }
     } catch (error) {
       toast.error('An error occurred while fetching products.');
@@ -181,6 +182,9 @@ export const ProductUploadProvider = ({ children }) => {
       setLoading(false);
     }
   };
+  
+  
+  
 
   const resetForm = () => {
     setProductName('');
@@ -258,7 +262,8 @@ export const ProductUploadProvider = ({ children }) => {
         SortByCategory,
         setProductImages,
         imagePreviews,
-        setImagePreviews
+        setImagePreviews,
+        total
       }}
     >
       {children}

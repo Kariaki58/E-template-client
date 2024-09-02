@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { ProductUploadContext } from '../../contextApi/ProductContext';
 import { CartContext } from '../../contextApi/cartContext';
 import { ToastContainer, toast } from 'react-toastify';
@@ -10,8 +10,6 @@ import { Cloudinary } from '@cloudinary/url-gen';
 import './ProductList.css';
 import { RotatingLines } from 'react-loader-spinner'
 import { EmailPopUp } from './Footer';
-import { useNavigate } from 'react-router-dom';
-
 
 const cld = new Cloudinary({
   cloud: {
@@ -19,86 +17,17 @@ const cld = new Cloudinary({
   },
 });
 
-export const ProductSizesOrColorDisplay = ({
-  sizesAvailable,
-  colorsAvailable,
-  onSelectSize,
-  onSelectColor,
-  onClose,
-  onCancel,
-}) => {
-  return (
-    <div
-      className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full md:inset-0 max-h-full bg-gray-900 bg-opacity-50"
-      tabIndex="-1"
-      aria-hidden="true"
-    >
-      <div className="bg-white rounded-lg p-8 max-w-lg mx-auto">
-        {colorsAvailable && colorsAvailable.length > 0 && (
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold mb-2">Available Colors</h2>
-            <select
-              onChange={onSelectColor}
-              className="px-4 py-2 w-full rounded-lg"
-            >
-              <option value={colorsAvailable[0].color}>Select Color</option>
-              {colorsAvailable.map((color, index) => (
-                <option key={index} value={color}>
-                  {color}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {sizesAvailable && sizesAvailable.length > 0 && (
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold mb-2">Available Sizes</h2>
-            <select
-              onChange={onSelectSize}
-              className="px-4 py-2 w-full rounded-lg"
-            >
-              <option value={sizesAvailable[0].size}>Select Size</option>
-              {sizesAvailable.map((size, index) => (
-                <option key={index} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={onCancel}
-            className="px-4 py-2 bg-gray-300 rounded-lg mr-2"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-          >
-            Confirm
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const ProductList = () => {
   const {
     products,
     loading,
     sortOption,
-    sortByCategory,
     sortProducts,
     filterProductsByCategory,
     fetchAllProducts,
     setSortOption,
+    total
   } = useContext(ProductUploadContext);
-
 
   const { addToCart } = useContext(CartContext);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -107,9 +36,7 @@ const ProductList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(10);
   const isAuthenticated = useIsAuthenticated();
-  const [display, setDisplay] = useState(false)
-  const navigate = useNavigate()
-
+  const [display, setDisplay] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -125,10 +52,8 @@ const ProductList = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
   
-  useEffect(() => {
-    fetchAllProducts();
-  }, []);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-NG', {
@@ -147,35 +72,33 @@ const ProductList = () => {
   };
 
   const handleConfirmSelection = () => {
-  console.log(selectedProduct);
-  
-  if (!selectedProduct) {
-    toast.error('No product selected.');
-    return;
-  }
+    if (!selectedProduct) {
+      toast.error('No product selected.');
+      return;
+    }
 
-  const requiresSize = selectedProduct.sizes && selectedProduct.sizes.length > 0;
-  const requiresColor = selectedProduct.colors && selectedProduct.colors.length > 0;
+    const requiresSize = selectedProduct.sizes && selectedProduct.sizes.length > 0;
+    const requiresColor = selectedProduct.colors && selectedProduct.colors.length > 0;
 
-  if (requiresSize && !selectedSize) {
-    toast.error('Please select a size.');
-    return;
-  }
+    if (requiresSize && !selectedSize) {
+      toast.error('Please select a size.');
+      return;
+    }
 
-  if (requiresColor && !selectedColor) {
-    toast.error('Please select a color.');
-    return;
-  }
+    if (requiresColor && !selectedColor) {
+      toast.error('Please select a color.');
+      return;
+    }
 
-  addToCart(selectedProduct._id, 1, selectedSize, selectedColor);
-  toast.success(
-    `${selectedProduct.name} added to cart with ${selectedColor || 'default'} color and ${selectedSize || 'default'} size!`
-  );
+    addToCart(selectedProduct._id, 1, selectedSize, selectedColor);
+    toast.success(
+      `${selectedProduct.name} added to cart with ${selectedColor || 'default'} color and ${selectedSize || 'default'} size!`
+    );
 
-  setSelectedProduct(null);
-  setSelectedSize('');
-  setSelectedColor('');
-};
+    setSelectedProduct(null);
+    setSelectedSize('');
+    setSelectedColor('');
+  };
 
   const handleCancelSelection = () => {
     setSelectedProduct(null);
@@ -186,6 +109,10 @@ const ProductList = () => {
   const truncateText = (text, length) => {
     return text.length > length ? text.slice(0, length) + '...' : text;
   };
+
+  // useEffect(() => {
+  //   fetchAllProducts(currentPage);
+  // }, [currentPage]);
 
   if (loading) {
     return (
@@ -206,148 +133,218 @@ const ProductList = () => {
   }
 
   // Filter and sort products
-  const filteredProducts = filterProductsByCategory(products, sortByCategory);
+  const filteredProducts = filterProductsByCategory(products, sortOption);
   const sortedProducts = sortProducts(filteredProducts, sortOption);
 
   // Pagination logic
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = sortedProducts.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
+  const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
-  const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber)
+  }
+
+  const handlePageChange = (page) => {
+    console.log(page)
+    setCurrentPage(page); // Update the current page number
+    fetchAllProducts(page); // Fetch products for the selected page
+
+  };
   
+  // Example usage with buttons or pagination controls
+  // Assuming you have a total number of pages
+  const totalPages = Math.ceil(total / productsPerPage);
+  
+
+  
+
   return (
     <>
-    {
-      display ? 
-    <EmailPopUp /> : <></>
-    }
-    <div className="flex flex-col mt-5 px-4 mb-10">
-      <div className="w-full flex justify-center mb-4">
-        <select
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-          className="text-left bg-white border border-gray-300 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          <option value="Highest to Lowest">Highest to Lowest</option>
-          <option value="Lowest to Highest">Lowest to Highest</option>
-          <option value="Latest">Latest</option>
-        </select>
-      </div>
-      <div className="gap-2 responsive">
-        {currentProducts.map((data) => (
-          <div
-            className="w-full p-4 hover:shadow-md rounded-lg flex flex-col justify-between bg-white"
-            key={data._id}
+      {display ? <EmailPopUp /> : <></>}
+      <div className="flex flex-col mt-5 px-4 mb-10">
+        <div className="w-full flex justify-center mb-4">
+          <select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+            className="text-left bg-white border border-gray-300 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
-            <Link to={`products/content/${data._id}`}>
-              <img
-                key={data._id}
-                src={cld
-                  .image(`images/${data.images[0].split('/')[8].split('.')[0]}`)
-                  .resize('c_fill,w_500,h_500,g_auto')
-                  .delivery('q_auto')
-                  .format('auto')
-                  .toURL()}
-                alt={data.name}
-                className="rounded-lg"
-              />
-            </Link>
-            <div className="p-4">
-              <p className="font-semibold text-gray-800">
-                {truncateText(data.name, 17)}
-              </p>
-              <div className="text-gray-800 font-semibold">
-                {formatPrice(
-                  data.price.$numberDecimal
-                    ? parseFloat(data.price.$numberDecimal)
-                    : data.price
-                )}
+            <option value="Highest to Lowest">Highest to Lowest</option>
+            <option value="Lowest to Highest">Lowest to Highest</option>
+            <option value="Latest">Latest</option>
+          </select>
+        </div>
+        <div className="gap-2 responsive">
+          {currentProducts.map((data) => (
+            <div
+              className="w-full p-4 hover:shadow-md rounded-lg flex flex-col justify-between bg-white"
+              key={data._id}
+            >
+              <Link to={`products/content/${data._id}`}>
+                <img
+                  key={data._id}
+                  src={cld
+                    .image(`images/${data.images[0].split('/')[8].split('.')[0]}`)
+                    .resize('c_fill,w_500,h_500,g_auto')
+                    .delivery('q_auto')
+                    .format('auto')
+                    .toURL()}
+                  alt={data.name}
+                  className="rounded-lg"
+                />
+              </Link>
+              <div className="p-4">
+                <p className="font-semibold text-gray-800">
+                  {truncateText(data.name, 17)}
+                </p>
+                <div className="text-gray-800 font-semibold">
+                  {formatPrice(
+                    data.price.$numberDecimal
+                      ? parseFloat(data.price.$numberDecimal)
+                      : data.price
+                  )}
+                </div>
               </div>
+              {isAuthenticated && (
+                <div className="flex justify-center mt-auto">
+                  <button
+                    className="border text-black border-gray-950 hover:text-white py-2 px-4 rounded-lg sm:text-xl hover:bg-gray-950 w-60"
+                    onClick={() => handleAddToCart(data)}
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              )}
             </div>
-            {isAuthenticated && (
-              <div className="flex justify-center mt-auto">
+          ))}
+        </div>
+        <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+          <div className="flex flex-1 justify-between sm:hidden">
+            <button
+              onClick={() =>
+                paginate(currentPage > 1 ? currentPage - 1 : currentPage)
+              }
+              className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() =>
+                paginate(currentPage < totalPages ? currentPage + 1 : currentPage)
+              }
+              className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+            >
+              Next
+            </button>
+          </div>
+          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm text-gray-700">
+                Showing{' '}
+                <span className="font-medium">
+                  {indexOfFirstProduct + 1}
+                </span>{' '}
+                to <span className="font-medium">{indexOfLastProduct}</span> of{' '}
+                <span className="font-medium">{sortedProducts.length}</span>{' '}
+                products
+              </p>
+            </div>
+            <div>
+              <nav
+                className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+                aria-label="Pagination"
+              >
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`${
+                      page === currentPage
+                        ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600'
+                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                    } relative inline-flex items-center border px-4 py-2 text-sm font-medium`}
+                  >
+                    {page}
+                  </button>
+                ))}
                 <button
-                  className="border text-black border-gray-950 hover:text-white py-2 px-4 rounded-lg sm:text-xl hover:bg-gray-950 w-60"
-                  onClick={() => handleAddToCart(data)}
+                  onClick={() =>
+                    paginate(currentPage > 1 ? currentPage - 1 : currentPage)
+                  }
+                  className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
                 >
-                  Add to Cart
+                  Previous
                 </button>
+                <button
+                  onClick={() =>
+                    paginate(currentPage < totalPages ? currentPage + 1 : currentPage)
+                  }
+                  className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
+                >
+                  Next
+                </button>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      {selectedProduct && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h2 className="text-xl font-semibold mb-4">Select Options</h2>
+            {selectedProduct.sizes && selectedProduct.sizes.length > 0 && (
+              <div className="mb-4">
+                <label className="block text-gray-700 mb-2">Size:</label>
+                <select
+                  value={selectedSize}
+                  onChange={(e) => setSelectedSize(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                >
+                  <option value="">Select size</option>
+                  {selectedProduct.sizes.map((size) => (
+                    <option key={size} value={size}>
+                      {size}
+                    </option>
+                  ))}
+                </select>
               </div>
             )}
-          </div>
-        ))}
-      </div>
-      <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
-        <div className="flex flex-1 justify-between sm:hidden">
-          <button
-            onClick={() =>
-              paginate(currentPage > 1 ? currentPage - 1 : currentPage)
-            }
-            className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          >
-            Previous
-          </button>
-          <button
-            onClick={() =>
-              paginate(currentPage < totalPages ? currentPage + 1 : currentPage)
-            }
-            className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
-          >
-            Next
-          </button>
-        </div>
-        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm text-gray-700">
-              Showing{' '}
-              <span className="font-medium">
-                {indexOfFirstProduct + 1}
-              </span>{' '}
-              to <span className="font-medium">{indexOfLastProduct}</span> of{' '}
-              <span className="font-medium">{sortedProducts.length}</span>{' '}
-              products
-            </p>
-          </div>
-          <div>
-            <nav
-              className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-              aria-label="Pagination"
-            >
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => paginate(page)}
-                  className={`relative inline-flex items-center px-4 py-2 text-sm font-medium ${
-                    currentPage === page
-                      ? 'z-10 bg-gray-950 text-white'
-                      : 'bg-gray-800 text-white hover:bg-gray-600'
-                  }`}
+            {selectedProduct.colors && selectedProduct.colors.length > 0 && (
+              <div className="mb-4">
+                <label className="block text-gray-700 mb-2">Color:</label>
+                <select
+                  value={selectedColor}
+                  onChange={(e) => setSelectedColor(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md"
                 >
-                  {page}
-                </button>
-              ))}
-            </nav>
+                  <option value="">Select color</option>
+                  {selectedProduct.colors.map((color) => (
+                    <option key={color} value={color}>
+                      {color}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            <div className="flex justify-end mt-6">
+              <button
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded mr-2"
+                onClick={handleCancelSelection}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+                onClick={handleConfirmSelection}
+              >
+                Add to Cart
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <ToastContainer />
-      {selectedProduct && (
-        <ProductSizesOrColorDisplay
-          sizesAvailable={selectedProduct.sizes}
-          colorsAvailable={selectedProduct.colors}
-          onSelectSize={(e) => setSelectedSize(e.target.value)}
-          onSelectColor={(e) => setSelectedColor(e.target.value)}
-          onClose={handleConfirmSelection}
-          onCancel={handleCancelSelection}
-        />
       )}
-    </div>
+      <ToastContainer />
     </>
   );
 };
