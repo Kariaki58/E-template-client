@@ -42,6 +42,8 @@ const ProductSections = () => {
       setLoading(true)
       try {
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/products/${params.id}`, { withCredentials: true });
+
+        console.log(response.data)
         if (response.data.error) {
           throw new Error(response.data.error);
         }
@@ -53,6 +55,7 @@ const ProductSections = () => {
           setSelectedImage(fetchedProduct.images[0]);
         }
       } catch (error) {
+        console.log(error)
         toast.error("Error fetching product data.");
       } finally {
         setLoading(false)

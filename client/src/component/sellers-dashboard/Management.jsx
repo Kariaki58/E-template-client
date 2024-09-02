@@ -7,6 +7,9 @@ import { useProductUpload } from '../../contextApi/ProductContext';
 import { useDropzone } from "react-dropzone";
 import { FaTrash } from 'react-icons/fa';
 import { RotatingLines } from 'react-loader-spinner'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const sizeOptions = [
