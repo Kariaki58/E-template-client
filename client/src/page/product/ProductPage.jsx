@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { IoStarSharp } from 'react-icons/io5';
 import axios from 'axios';
 import ReviewForm from '../../component/product/ReviewForm';
@@ -13,8 +13,6 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { RotatingLines } from 'react-loader-spinner'
-
-
 
 const cld = new Cloudinary({
   cloud: {
@@ -35,7 +33,7 @@ const ProductSections = () => {
   const [loading, setLoading] = useState(true)
   const [showDetailsPrompt, setShowDetailsPrompt] = useState(false);
   const navigate = useNavigate();
-  const isAuthenticated = useIsAuthenticated();
+  const isAuthenticated = useIsAuthenticated()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,11 +41,10 @@ const ProductSections = () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/products/${params.id}`, { withCredentials: true });
 
-        console.log(response.data)
         if (response.data.error) {
           throw new Error(response.data.error);
         }
-        const fetchedProduct = response.data.message;
+        const fetchedProduct = response.data.product;
         setProduct(fetchedProduct);
         setTotalPrice(fetchedProduct.price * quantity);
 
@@ -55,7 +52,6 @@ const ProductSections = () => {
           setSelectedImage(fetchedProduct.images[0]);
         }
       } catch (error) {
-        console.log(error)
         toast.error("Error fetching product data.");
       } finally {
         setLoading(false)
@@ -63,7 +59,7 @@ const ProductSections = () => {
     };
 
     fetchData();
-  }, [params.id, quantity]);
+  }, [params.id]);
 
   const handleAddToCart = () => {
     if (product.sizes.length > 0 && !selectedSize) {
@@ -123,6 +119,10 @@ const ProductSections = () => {
       </div>
     )
   }
+
+  const buttonClassNames = (isSelected) =>
+    `px-4 py-2 rounded-lg border ${isSelected ? 'bg-blue-600 text-white' : 'bg-white text-gray-800'} hover:bg-blue-500 hover:text-white transition-all`;
+
   return (
     <div className="bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <ToastContainer />
@@ -149,7 +149,7 @@ const ProductSections = () => {
                       .format('auto')
                       .toURL()}
                       alt="Optimized Image"
-                    />                    
+                    />
                   ))}
                 </Carousel>
               </div>
@@ -172,35 +172,33 @@ const ProductSections = () => {
                   {product.colors.length > 0 && (
                     <div className="mb-4">
                       <h2 className="text-md text-gray-800 lg:text-xl font-semibold mb-2">Available Colors</h2>
-                      <select
-                        className="px-4 py-2 rounded-lg border border-gray-300 bg-white"
-                        value={selectedColor}
-                        onChange={(e) => setSelectedColor(e.target.value)}
-                      >
-                        <option value="">Select Color</option>
+                      <div className="flex flex-wrap gap-2">
                         {product.colors.map((color, index) => (
-                          <option key={index} value={color}>
+                          <button
+                            key={index}
+                            onClick={() => setSelectedColor(color)}
+                            className={buttonClassNames(selectedColor === color)}
+                          >
                             {color}
-                          </option>
+                          </button>
                         ))}
-                      </select>
+                      </div>
                     </div>
                   )}
                   {product.sizes.length > 0 && (
                     <div className="mb-4">
                       <h2 className="text-md text-gray-800 lg:text-xl font-semibold mb-2">Available Sizes</h2>
-                      <select
-                        className="px-4 py-2 rounded-lg border border-gray-300 bg-white"
-                        value={selectedSize}
-                        onChange={(e) => setSelectedSize(e.target.value)}
-                      >
-                        <option value="">Select Size</option>
+                      <div className="flex flex-wrap gap-2">
                         {product.sizes.map((size, index) => (
-                          <option key={index} value={size}>
+                          <button
+                            key={index}
+                            onClick={() => setSelectedSize(size)}
+                            className={buttonClassNames(selectedSize === size)}
+                          >
                             {size}
-                          </option>
+                          </button>
                         ))}
-                      </select>
+                      </div>
                     </div>
                   )}
                   <div className="mb-6">
@@ -215,12 +213,14 @@ const ProductSections = () => {
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 mt-6">
-                  <button
+                  {
+                    isAuthenticated ? <button
                     onClick={handleAddToCart}
                     className="w-full sm:w-auto bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
                   >
                     Add to Cart
-                  </button>
+                  </button> : <></>
+                  }
                   <button
                     onClick={handleCheckout}
                     className="w-full sm:w-auto bg-gray-950 text-white py-2 px-4 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all"

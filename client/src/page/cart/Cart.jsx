@@ -23,7 +23,7 @@ const CartPage = () => {
     return (
         <div className="container mx-auto p-4 sm:p-8 min-h-screen">
             <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-6 sm:mb-10">Shopping Cart</h1>
-            {cartItems.items?.length > 0 ? (
+            {cartItems && cartItems.items && cartItems.items?.length > 0 ? (
                 <>
                     <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8">
                         <button
@@ -38,7 +38,7 @@ const CartPage = () => {
                     </div>
 
                     <div className="grid grid-cols-1 gap-6 sm:gap-8">
-                        {cartItems.items.map((item, index) => (
+                        {cartItems && cartItems.items && cartItems.items.map((item, index) => (
                             <div key={item._id} className="flex flex-col sm:flex-row p-4 sm:p-6 shadow-md rounded-lg">
                                 <img src={item.productId.images[0]} alt={item.productId.name} className="w-full sm:w-40 h-40 object-cover rounded-md" />
                                 <div className="ml-0 sm:ml-4 flex-1 mt-4 sm:mt-0">

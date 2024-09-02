@@ -14,7 +14,7 @@ export const CartProvider = ({ children }) => {
       setLoading(true)
       try {
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/cart`, { withCredentials: true });
-        setCartItems(response.data.message);
+        setCartItems(response.data.cart);
       } catch (error) {
         setError('Error fetching cart items')
       } finally {

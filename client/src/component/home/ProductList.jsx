@@ -34,14 +34,14 @@ export const ProductSizesOrColorDisplay = ({
       aria-hidden="true"
     >
       <div className="bg-white rounded-lg p-8 max-w-lg mx-auto">
-        {colorsAvailable.length > 0 && (
+        {colorsAvailable && colorsAvailable.length > 0 && (
           <div className="mb-4">
             <h2 className="text-lg font-semibold mb-2">Available Colors</h2>
             <select
               onChange={onSelectColor}
               className="px-4 py-2 w-full rounded-lg"
             >
-              <option value="">Select Color</option>
+              <option value={colorsAvailable[0].color}>Select Color</option>
               {colorsAvailable.map((color, index) => (
                 <option key={index} value={color}>
                   {color}
@@ -51,14 +51,14 @@ export const ProductSizesOrColorDisplay = ({
           </div>
         )}
 
-        {sizesAvailable.length > 0 && (
+        {sizesAvailable && sizesAvailable.length > 0 && (
           <div className="mb-4">
             <h2 className="text-lg font-semibold mb-2">Available Sizes</h2>
             <select
               onChange={onSelectSize}
               className="px-4 py-2 w-full rounded-lg"
             >
-              <option value="">Select Size</option>
+              <option value={sizesAvailable[0].size}>Select Size</option>
               {sizesAvailable.map((size, index) => (
                 <option key={index} value={size}>
                   {size}
@@ -147,18 +147,35 @@ const ProductList = () => {
   };
 
   const handleConfirmSelection = () => {
-    if (selectedProduct && selectedSize && selectedColor) {
-      addToCart(selectedProduct._id, 1, selectedSize, selectedColor);
-      toast.success(
-        `${selectedProduct.name} added to cart with ${selectedColor} color and ${selectedSize} size!`
-      );
-      setSelectedProduct(null);
-      setSelectedSize('');
-      setSelectedColor('');
-    } else {
-      toast.error('Please select size and color before confirming.');
-    }
-  };
+  console.log(selectedProduct);
+  
+  if (!selectedProduct) {
+    toast.error('No product selected.');
+    return;
+  }
+
+  const requiresSize = selectedProduct.sizes && selectedProduct.sizes.length > 0;
+  const requiresColor = selectedProduct.colors && selectedProduct.colors.length > 0;
+
+  if (requiresSize && !selectedSize) {
+    toast.error('Please select a size.');
+    return;
+  }
+
+  if (requiresColor && !selectedColor) {
+    toast.error('Please select a color.');
+    return;
+  }
+
+  addToCart(selectedProduct._id, 1, selectedSize, selectedColor);
+  toast.success(
+    `${selectedProduct.name} added to cart with ${selectedColor || 'default'} color and ${selectedSize || 'default'} size!`
+  );
+
+  setSelectedProduct(null);
+  setSelectedSize('');
+  setSelectedColor('');
+};
 
   const handleCancelSelection = () => {
     setSelectedProduct(null);
@@ -203,7 +220,7 @@ const ProductList = () => {
   const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
+  
   return (
     <>
     {

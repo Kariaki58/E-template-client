@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Address = () => {
@@ -16,7 +15,6 @@ const Address = () => {
     country: '',
     phone: '',
   });
-  const navigate = useNavigate()
 
   const handleChange = (e) => {
     const { name, value } = e.target;

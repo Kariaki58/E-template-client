@@ -57,7 +57,7 @@ const ProductManagement = () => {
         `${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/products?page=${page}&limit=10`,
         { withCredentials: true }
       );
-      setProducts(response.data.message);
+      setProducts(response.data.products);
       setTotalPages(Math.ceil(response.data.total / 10));
     } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useProductUpload } from '../../contextApi/ProductContext';
 import ReactQuill from 'react-quill';

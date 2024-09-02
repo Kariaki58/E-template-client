@@ -161,8 +161,6 @@ const Checkout = () => {
         <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Shipping Details</h2>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 mb-8">
-            {/* Shipping details input fields */}
-            {/* Full Name */}
             <div>
               <label htmlFor="name" className="block mb-2 text-sm md:text-base font-medium">Full Name</label>
               <input

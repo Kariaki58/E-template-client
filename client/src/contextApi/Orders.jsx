@@ -9,12 +9,11 @@ const OrderProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // Fetch orders for the logged-in user
     const fetchUserOrders = async () => {
         setLoading(true);
         try {
             const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/user`, { withCredentials: true });
-            setOrders(response.data);
+            setOrders(response.data.orders || []); // Safeguard in case `orders` is undefined
         } catch (err) {
             setError(err.message);
         } finally {
@@ -40,8 +39,9 @@ const OrderProvider = ({ children }) => {
         setLoading(true);
         try {
             const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/admin`, { withCredentials: true });
-            setOrders(response.data);
+            setOrders(response.data.orders);
         } catch (err) {
+            console.log(err)
             setError(err.message);
         } finally {
             setLoading(false);

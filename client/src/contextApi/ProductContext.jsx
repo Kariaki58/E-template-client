@@ -1,6 +1,6 @@
 import { createContext, useState, useContext } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 export const ProductUploadContext = createContext();
 
@@ -157,6 +157,8 @@ export const ProductUploadProvider = ({ children }) => {
         withCredentials: true,
       });
 
+      console.log(response.data.message)
+
       if (response.data.error) {
         toast.error(response.data.error);
       } else {
@@ -260,6 +262,7 @@ export const ProductUploadProvider = ({ children }) => {
       }}
     >
       {children}
+      <ToastContainer />
     </ProductUploadContext.Provider>
   );
 };

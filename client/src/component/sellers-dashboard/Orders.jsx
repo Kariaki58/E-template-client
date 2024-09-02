@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useContext } from 'react';
 import { OrderContext } from '../../contextApi/Orders';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import UserAddressModal from './UserAddressModal';
 import '../../App.css';
@@ -17,7 +16,7 @@ const Orders = () => {
   const [status, setStatus] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userAddress, setUserAddress] = useState(null);
-  const navigate = useNavigate();
+
 
   useEffect(() => {
     fetchAllOrders();
@@ -94,7 +93,7 @@ const Orders = () => {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order) => (
+                {[].map((order) => (
                   <tr key={order._id} className="border-t">
                     <td className="py-2 px-4 whitespace-nowrap text-gray-700">{order._id}</td>
                     <td
@@ -139,6 +138,7 @@ const Orders = () => {
         onClose={() => setIsModalOpen(false)}
         address={userAddress}
       />
+      <ToastContainer />
     </div>
   );
 };

@@ -34,8 +34,8 @@ const CheckoutNonAuth = () => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/products/${productId}`, { withCredentials: true });
-        setProduct(response.data.message);
-        setTotalAmount(response.data.message.price * 100);
+        setProduct(response.data.product);
+        setTotalAmount(response.data.product.price * 100);
       } catch (error) {
         toast.error('Error fetching product details');
       }
@@ -43,6 +43,41 @@ const CheckoutNonAuth = () => {
 
     fetchProduct();
   }, [productId]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/address`, { withCredentials: true });
+        const {
+          address,
+          city,
+          state,
+          zipCode,
+          country,
+          phoneNumber,
+          email,
+          name,
+        } = response.data.message;
+
+        setShippingDetails({
+          name,
+          email,
+          address,
+          city,
+          state,
+          zip: zipCode,
+          country,
+          phone: phoneNumber,
+        });
+      } catch (error) {
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

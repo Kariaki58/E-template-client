@@ -13,6 +13,7 @@ const EmailList = () => {
     const fetchEmails = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/email`, { withCredentials: true });
+
         if (response.data.error) {
           throw new Error(response.data.error)
         }
@@ -44,7 +45,7 @@ const EmailList = () => {
       <h1 className='text-2xl font-bold'>Email List</h1>
       <ul>
         {emails.map((email, index) => (
-          <li key={index}>{email.email}</li>
+          <li key={index}>{email}</li>
         ))}
       </ul>
       <ToastContainer />

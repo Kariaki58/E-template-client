@@ -4,14 +4,11 @@ import ReactPaginate from 'react-paginate';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import '../../App.css';
-import 'react-toastify/dist/ReactToastify.css';
-
 
 const MyOrder = () => {
-  const { orders, loading, error } = useContext(OrderContext);
+  const { orders = [], loading, error } = useContext(OrderContext);  // Provide default value for orders
   const [currentPage, setCurrentPage] = useState(0);
   const ordersPerPage = 5;
-
 
   if (loading) return <p className="text-center text-blue-600">Loading...</p>;
   if (error) return <p className="text-center text-red-600">Error: {error}</p>;
@@ -62,7 +59,7 @@ const MyOrder = () => {
         <div key={order._id} className="shadow-md rounded-lg mb-6 p-4">
           <div className="mb-4">
             <h3 className="text-gray-700">
-              Total Amount: ${order.price * order.quantity}
+              Total Amount: {formatPrice(order.price * order.quantity)}
             </h3>
             <p className="text-gray-700">
               Shipping Address: {order.shippingAddress.address},{' '}
@@ -129,10 +126,8 @@ const MyOrder = () => {
           disabledClassName={'text-gray-400 cursor-not-allowed'}
         />
       </div>
-      <ToastContainer />
     </div>
   );
 };
 
 export default MyOrder;
-
