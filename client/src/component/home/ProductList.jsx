@@ -28,8 +28,6 @@ const ProductList = () => {
     fetchAllProducts,
     setSortOption,
     total,
-    setFilteredProducts,
-    setProducts
   } = useContext(ProductUploadContext);
 
   const { addToCart } = useContext(CartContext);
@@ -130,7 +128,7 @@ const ProductList = () => {
 
 
   const filteredProducts = filterProductsByCategory(products, sortOption);
-  const sortedProducts = sortProducts(filteredProducts, sortOption);
+  const sortedProducts = sortProducts(products, sortOption);
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
