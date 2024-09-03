@@ -9,6 +9,7 @@ import { useContext } from 'react';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import nigeria from '/niger-icon.png';
 import { context } from '../../contextApi/Modal';
+import logo from '/assets/betterlogo.png'
 
 const Navigation = () => {
   const { handleToggle, setIsOpen: openModal } = useContext(context)
@@ -45,9 +46,9 @@ const Navigation = () => {
   return (
     <div className="bg-white shadow-md py-4">
       <ul className="mx-auto flex items-center justify-between px-4 gap-2">
-        <li>
+        <li className='bg-blue-800'>
           <Link to='/'>
-            <h1 className="text-xl font-bold text-gray-800">LOGO</h1>
+            <img src={logo} width={60}/>
           </Link>
         </li>
 

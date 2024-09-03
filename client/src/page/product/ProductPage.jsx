@@ -125,7 +125,7 @@ const ProductSections = () => {
     `px-4 py-2 rounded-lg border ${isSelected ? 'bg-blue-600 text-white' : 'bg-white text-gray-800'} hover:bg-blue-500 hover:text-white transition-all`;
 
   return (
-    <div className="bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="bg-gray-100 py-3 px-2 sm:px-6 lg:px-8">
       <ToastContainer />
       <div className="max-w-7xl mx-auto">
         {product ? (
