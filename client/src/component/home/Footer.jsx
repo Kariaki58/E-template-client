@@ -5,8 +5,7 @@ import instagram from '/instagram.jpeg';
 import linkedin from '/linkedin.png';
 import x from '/x.png';
 import axios from 'axios';
-import 'react-toastify/dist/ReactToastify.css';
-import { toast, ToastContainer } from "react-toastify";
+import { Toaster, toast } from 'react-hot-toast';
 
 
 const useEmailSubscription = () => {
@@ -159,7 +158,7 @@ const Footer = () => {
                     </div>
                 </div>
             </div>
-            <ToastContainer />
+            <Toaster />
         </footer>
     );
 };

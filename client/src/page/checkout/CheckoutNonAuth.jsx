@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PaystackPop from '@paystack/inline-js';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Toaster, toast } from 'react-hot-toast';
 
 
 const CheckoutNonAuth = () => {
@@ -210,7 +209,7 @@ const CheckoutNonAuth = () => {
           </button>
         </form>
       </div>
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 };

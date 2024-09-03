@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { IoStarSharp } from 'react-icons/io5';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
-import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
-import 'react-toastify/dist/ReactToastify.css';
+import { Toaster, toast } from 'react-hot-toast';
 
 
 const ReviewForm = ({ setWriteReview, productId }) => {
@@ -208,7 +207,7 @@ const ReviewForm = ({ setWriteReview, productId }) => {
           </form>
         </>
       )}
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 };

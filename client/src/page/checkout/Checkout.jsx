@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import PaystackPop from '@paystack/inline-js';
 import axios from 'axios';
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
+import { Toaster, toast } from 'react-hot-toast';
 import { CartContext } from '../../contextApi/cartContext';
 
 
@@ -334,7 +333,7 @@ const Checkout = () => {
           </button>
         </form>
       </div>
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 };

@@ -4,9 +4,8 @@ import { IoStarSharp } from 'react-icons/io5';
 import axios from 'axios';
 import ReviewForm from '../../component/product/ReviewForm';
 import ReviewList from '../../component/product/ReviewList';
-import 'react-toastify/dist/ReactToastify.css';
 import { CartContext } from '../../contextApi/cartContext';
-import { ToastContainer, toast } from 'react-toastify';
+import { Toaster, toast } from 'react-hot-toast';
 import '../../App.css'
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
@@ -126,7 +125,7 @@ const ProductSections = () => {
 
   return (
     <div className="bg-gray-100 py-3 px-2 sm:px-6 lg:px-8">
-      <ToastContainer />
+      <Toaster />
       <div className="max-w-7xl mx-auto">
         {product ? (
           <>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Toaster, toast } from 'react-hot-toast';
 
 const Address = () => {
   const [loading, setLoading] = useState(false);
@@ -207,7 +206,7 @@ const Address = () => {
         </button>
       </form>
 
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 };

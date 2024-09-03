@@ -1,8 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { ProductUploadContext } from '../../contextApi/ProductContext';
 import { CartContext } from '../../contextApi/cartContext';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Toaster, toast } from 'react-hot-toast';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import { Link } from 'react-router-dom';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
@@ -344,7 +343,7 @@ const ProductList = () => {
           </div>
         </div>
       )}
-      <ToastContainer />
+      <Toaster />
     </>
   );
 };

@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster, toast } from 'react-hot-toast';
 
 export const ProductUploadContext = createContext();
 
@@ -268,7 +268,7 @@ export const ProductUploadProvider = ({ children }) => {
       }}
     >
       {children}
-      <ToastContainer />
+      <Toaster />
     </ProductUploadContext.Provider>
   );
 };

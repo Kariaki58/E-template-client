@@ -11,6 +11,7 @@ import nigeria from '/niger-icon.png';
 import { context } from '../../contextApi/Modal';
 import logo from '/assets/betterlogo.png'
 
+
 const Navigation = () => {
   const { handleToggle, setIsOpen: openModal } = useContext(context)
   const [isSearchOpen, setIsSearchOpen] = useState(false);

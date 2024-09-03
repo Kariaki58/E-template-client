@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useProductUpload } from '../../contextApi/ProductContext';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -187,7 +185,6 @@ const Products = () => {
           {loading ? 'Uploading...' : 'Upload Product'}
         </button>
       </form>
-      <ToastContainer />
     </div>
   );
 };

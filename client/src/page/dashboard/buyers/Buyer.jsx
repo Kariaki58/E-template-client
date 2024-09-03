@@ -5,8 +5,7 @@ import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { GrLogout } from 'react-icons/gr';
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Toaster, toast } from 'react-hot-toast';
 
 
 const Buyer = () => {
@@ -54,7 +53,7 @@ const Buyer = () => {
       <div className="flex-1 p-4 overflow-x-auto">
         <Outlet />
       </div>
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 };

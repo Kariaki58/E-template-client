@@ -5,8 +5,7 @@ import axios from 'axios';
 import UserAddressModal from './UserAddressModal';
 import '../../App.css';
 import { RotatingLines } from 'react-loader-spinner';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Toaster, toast } from 'react-hot-toast';
 
 
 const Orders = () => {
@@ -137,7 +136,7 @@ const Orders = () => {
         onClose={() => setIsModalOpen(false)}
         address={userAddress}
       />
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 };

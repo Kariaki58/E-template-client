@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 
 const EmailList = () => {
@@ -48,7 +46,6 @@ const EmailList = () => {
           <li key={index}>{email}</li>
         ))}
       </ul>
-      <ToastContainer />
     </div>
   );
 };

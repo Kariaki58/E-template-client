@@ -8,8 +8,7 @@ import { MdOutlineProductionQuantityLimits } from 'react-icons/md';
 import { GrCloudUpload } from "react-icons/gr";
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Toaster, toast } from 'react-hot-toast';
 
 
 const Sellers = () => {
@@ -76,7 +75,7 @@ const Sellers = () => {
       <div className="flex-1 p-4 overflow-x-auto">
         <Outlet />
       </div>
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 };

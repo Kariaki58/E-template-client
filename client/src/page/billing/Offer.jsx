@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PaystackPop from '@paystack/inline-js';
-import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
+import { Toaster, toast } from 'react-hot-toast';
+
 
 const PaymentPlan = () => {
   const navigate = useNavigate();
@@ -128,7 +129,7 @@ const PaymentPlan = () => {
         </div>
       )}
 
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 };

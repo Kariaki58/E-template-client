@@ -5,8 +5,7 @@ import { useContext } from 'react';
 import { context } from '../../contextApi/Modal';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Toaster, toast } from 'react-hot-toast';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 
@@ -123,7 +122,7 @@ const LoginPage = () => {
                     <RxCross1 className='absolute top-10 right-10 text-2xl hover:cursor-pointer' onClick={handleToggle}/>
                 </div>
             </div>
-            <ToastContainer />
+            <Toaster />
         </div>
     );
 };

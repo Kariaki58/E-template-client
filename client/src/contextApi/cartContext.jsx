@@ -8,7 +8,6 @@ export const CartProvider = ({ children }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  // Fetch cart items from the backend
   useEffect(() => {
     const fetchCartItems = async () => {
       setLoading(true)

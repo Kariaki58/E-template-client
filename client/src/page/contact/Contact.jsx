@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
+import { Toaster, toast } from 'react-hot-toast';
 import axios from 'axios';
 
 
@@ -90,7 +89,7 @@ const Contact = () => {
           { loading ? 'Sending message...' : 'Send Message' }
         </button>
       </form>
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 };

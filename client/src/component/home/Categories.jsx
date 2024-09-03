@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { ProductUploadContext } from '../../contextApi/ProductContext';
 
 const Categories = () => {

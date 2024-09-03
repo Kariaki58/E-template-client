@@ -4,8 +4,7 @@ import { RxCross1 } from 'react-icons/rx';
 import { context } from '../../contextApi/Modal';
 import axios from 'axios';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
+import { Toaster, toast } from 'react-hot-toast';
 
 
 const SignupPage = () => {
@@ -130,7 +129,7 @@ const SignupPage = () => {
                     <RxCross1 className='absolute top-10 right-10 text-2xl hover:cursor-pointer' onClick={handleToggle} />
                 </div>
             </div>
-            <ToastContainer />
+            <Toaster />
         </div>
     );
 };
