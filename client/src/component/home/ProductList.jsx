@@ -9,6 +9,8 @@ import { Cloudinary } from '@cloudinary/url-gen';
 import './ProductList.css';
 import { RotatingLines } from 'react-loader-spinner'
 import { EmailPopUp } from './Footer';
+import ScrollToTop from '../../ScrollToTop';
+
 
 const cld = new Cloudinary({
   cloud: {
@@ -22,7 +24,6 @@ const ProductList = () => {
     loading,
     sortOption,
     sortProducts,
-    filterProductsByCategory,
     fetchAllProducts,
     setSortOption,
     total,
@@ -119,7 +120,6 @@ const ProductList = () => {
   }, [currentPage]);
 
 
-  const filteredProducts = filterProductsByCategory(products, sortOption);
   const sortedProducts = sortProducts(products, sortOption);
 
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -344,6 +344,7 @@ const ProductList = () => {
         </div>
       )}
       <Toaster />
+      <ScrollToTop />
     </>
   );
 };
