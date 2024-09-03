@@ -7,9 +7,11 @@ import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import { Link } from 'react-router-dom';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Cloudinary } from '@cloudinary/url-gen';
+import axios from 'axios';
 import './ProductList.css';
 import { RotatingLines } from 'react-loader-spinner'
 import { EmailPopUp } from './Footer';
+
 
 const cld = new Cloudinary({
   cloud: {
@@ -26,7 +28,9 @@ const ProductList = () => {
     filterProductsByCategory,
     fetchAllProducts,
     setSortOption,
-    total
+    total,
+    setFilteredProducts,
+    setProducts
   } = useContext(ProductUploadContext);
 
   const { addToCart } = useContext(CartContext);
@@ -110,9 +114,51 @@ const ProductList = () => {
     return text.length > length ? text.slice(0, length) + '...' : text;
   };
 
-  // useEffect(() => {
-  //   fetchAllProducts(currentPage);
-  // }, [currentPage]);
+  useEffect(() => {
+    const fetchData = async () => {
+      // console.log(currentPage);
+      await fetchAllProducts(currentPage);
+      // console.log(products);
+      const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}?page=${currentPage}`, {
+        withCredentials: true,
+      });
+
+    };
+  
+    fetchData();
+  
+    // Cleanup function is not needed if there's nothing to clean up
+  }, [currentPage]);
+
+
+
+  useEffect(() => {
+    setProducts(products)
+  }, [products])
+
+
+  const filteredProducts = filterProductsByCategory(products, sortOption);
+  const sortedProducts = sortProducts(filteredProducts, sortOption);
+
+
+  // Pagination logic
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = sortedProducts
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber)
+  }
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    fetchAllProducts(page);
+  };
+  
+  // Example usage with buttons or pagination controls
+  // Assuming you have a total number of pages
+  const totalPages = Math.ceil(total / productsPerPage);
+  
 
   if (loading) {
     return (
@@ -133,29 +179,6 @@ const ProductList = () => {
   }
 
   // Filter and sort products
-  const filteredProducts = filterProductsByCategory(products, sortOption);
-  const sortedProducts = sortProducts(filteredProducts, sortOption);
-
-  // Pagination logic
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
-
-
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber)
-  }
-
-  const handlePageChange = (page) => {
-    console.log(page)
-    setCurrentPage(page); // Update the current page number
-    fetchAllProducts(page); // Fetch products for the selected page
-
-  };
-  
-  // Example usage with buttons or pagination controls
-  // Assuming you have a total number of pages
-  const totalPages = Math.ceil(total / productsPerPage);
   
 
   

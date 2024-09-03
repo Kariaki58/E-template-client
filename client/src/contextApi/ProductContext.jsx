@@ -22,6 +22,7 @@ export const ProductUploadProvider = ({ children }) => {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [total, setTotal] = useState(0)
 
+
   const uploadFile = async (file, type, timestamp, signature) => {
     const folder = type === 'image' ? 'images' : 'videos';
     const data = new FormData();
@@ -157,14 +158,15 @@ export const ProductUploadProvider = ({ children }) => {
       const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}?page=${page}`, {
         withCredentials: true,
       });
-  
+
+
+
       setTotal(response.data.total);
   
       if (response.data.error) {
         toast.error(response.data.error);
       } else {
         const data = response.data.message;
-        
         const uniqueCategories = data.reduce((acc, current) => {
           const isDuplicate = acc.some(item => item.category === current.category);
           if (!isDuplicate) {
@@ -172,6 +174,7 @@ export const ProductUploadProvider = ({ children }) => {
           }
           return acc;
         }, []);
+        console.log(page)
         setCategories(uniqueCategories);
         setProducts(data || []);
         setFilteredProducts(data || []);
@@ -182,7 +185,6 @@ export const ProductUploadProvider = ({ children }) => {
       setLoading(false);
     }
   };
-  
   
   
 
@@ -263,7 +265,9 @@ export const ProductUploadProvider = ({ children }) => {
         setProductImages,
         imagePreviews,
         setImagePreviews,
-        total
+        total,
+        setFilteredProducts,
+        setProducts
       }}
     >
       {children}
