@@ -121,12 +121,6 @@ const ProductList = () => {
   }, [currentPage]);
 
 
-
-  // useEffect(() => {
-  //   setProducts(products)
-  // }, [products])
-
-
   const filteredProducts = filterProductsByCategory(products, sortOption);
   const sortedProducts = sortProducts(products, sortOption);
 

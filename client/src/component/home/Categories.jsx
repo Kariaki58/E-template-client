@@ -4,22 +4,7 @@ import { ProductUploadContext } from '../../contextApi/ProductContext';
 const Categories = () => {
   const { categories, SortByCategory } = useContext(ProductUploadContext);
   const [activeCategory, setActiveCategory] = useState('All');
-  const scrollRef = useRef(null);
 
-  useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (scrollContainer) {
-      const scrollInterval = setInterval(() => {
-        if (scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth) {
-          scrollContainer.scrollLeft = 0;
-        } else {
-          scrollContainer.scrollLeft += 2;
-        }
-      }, 20);
-
-      return () => clearInterval(scrollInterval);
-    }
-  }, [categories]);
 
   const handleCategoryClick = (category) => {
     setActiveCategory(category);
@@ -30,7 +15,6 @@ const Categories = () => {
     <div className="bg-gray-100">
       <h2 className="text-2xl text-gray-800 font-bold mb-2 text-center pt-7">Shop by Category</h2>
       <div
-        ref={scrollRef}
         className="flex overflow-x-auto whitespace-nowrap no-scrollbar"
         style={{ scrollBehavior: 'smooth' }}
       >
