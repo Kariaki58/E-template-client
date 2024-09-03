@@ -174,7 +174,6 @@ export const ProductUploadProvider = ({ children }) => {
           }
           return acc;
         }, []);
-        console.log(page)
         setCategories(uniqueCategories);
         setProducts(data || []);
         setFilteredProducts(data || []);
@@ -209,8 +208,6 @@ export const ProductUploadProvider = ({ children }) => {
 
   const SortByCategory = (category) => {
     setSelectedCategory(category);
-
-    // Filter products by selected category
     const filtered = filterProductsByCategory(products, category);
     setFilteredProducts(filtered);
   };

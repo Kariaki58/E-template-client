@@ -7,7 +7,6 @@ import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import { Link } from 'react-router-dom';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Cloudinary } from '@cloudinary/url-gen';
-import axios from 'axios';
 import './ProductList.css';
 import { RotatingLines } from 'react-loader-spinner'
 import { EmailPopUp } from './Footer';
@@ -116,32 +115,23 @@ const ProductList = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      // console.log(currentPage);
       await fetchAllProducts(currentPage);
-      // console.log(products);
-      const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}?page=${currentPage}`, {
-        withCredentials: true,
-      });
-
     };
   
     fetchData();
   
-    // Cleanup function is not needed if there's nothing to clean up
   }, [currentPage]);
 
 
 
-  useEffect(() => {
-    setProducts(products)
-  }, [products])
+  // useEffect(() => {
+  //   setProducts(products)
+  // }, [products])
 
 
   const filteredProducts = filterProductsByCategory(products, sortOption);
   const sortedProducts = sortProducts(filteredProducts, sortOption);
 
-
-  // Pagination logic
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = sortedProducts
@@ -178,10 +168,6 @@ const ProductList = () => {
     )
   }
 
-  // Filter and sort products
-  
-
-  
 
   return (
     <>

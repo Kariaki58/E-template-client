@@ -41,7 +41,6 @@ const OrderProvider = ({ children }) => {
             const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/admin`, { withCredentials: true });
             setOrders(response.data.orders);
         } catch (err) {
-            console.log(err)
             setError(err.message);
         } finally {
             setLoading(false);

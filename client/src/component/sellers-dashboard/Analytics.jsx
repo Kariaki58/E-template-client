@@ -13,7 +13,6 @@ const Analytics = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/api/orders/analytics`, { withCredentials: true });
-        console.log(response.data)
         setData(response.data);
       } catch (error) {
         setError("Error fetching analytics data");
