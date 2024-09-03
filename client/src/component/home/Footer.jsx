@@ -46,7 +46,7 @@ const EmailForm = ({ email, setEmail, handleSubscribe, loading, buttonText }) =>
         />
         <button
             type="submit"
-            className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-r hover:bg-blue-600 transition duration-300"
+            className={`px-4 py-2 text-sm bg-blue-500 text-white font-semibold rounded-r hover:bg-blue-600 transition duration-300`}
         >
             {loading ? 'Sending...' : buttonText}
         </button>
@@ -57,7 +57,6 @@ export const EmailPopUp = () => {
     const [isPopupVisible, setIsPopupVisible] = useState(true);
     const [email, setEmail] = useState('');
     const { loading, handleSubscribe } = useEmailSubscription();
-    
 
     return (
         <>
@@ -70,8 +69,8 @@ export const EmailPopUp = () => {
                         >
                             &times;
                         </button>
-                        <h2 className="text-3xl font-bold mb-4">Join Our Creative Community!</h2>
-                        <p className="mb-6 text-lg">
+                        <h2 className="text-xl md:text-3xl font-bold mb-4">Join Our Creative Community!</h2>
+                        <p className="mb-6 text-md md:text-lg">
                             Be the first to get exclusive updates, tips, and offers straight to your inbox.
                         </p>
                         <EmailForm
@@ -102,12 +101,12 @@ const Footer = () => {
     const { loading, handleSubscribe } = useEmailSubscription();
 
     return (
-        <footer className="bg-gray-950 text-gray-300 py-12">
-            <div className="container mx-auto px-4">
-                <div className="flex flex-wrap justify-between">
-                    <div className="w-full md:w-1/3 mb-8 md:mb-0">
-                        <h2 className="text-2xl font-bold text-white mb-4">OverLow</h2>
-                        <p className="text-gray-400">
+        <footer className="bg-gray-950 text-gray-300 py-16">
+            <div className="mx-auto px-4">
+                <div className="flex flex-wrap justify-between gap-2">
+                    <div className="w-full md:w-1/4 mb-8 md:mb-0">
+                        <h2 className="text-2xl font-bold text-white mb-6">OverLow</h2>
+                        <p className="text-gray-400 mb-6">
                             Your one-stop shop for all your needs. Enjoy a seamless shopping experience with our wide range of products.
                         </p>
                         <div className='text-gray-100 font-bold'>
@@ -115,9 +114,9 @@ const Footer = () => {
                         </div>
                     </div>
 
-                    <div className="w-full md:w-1/3 mb-8 md:mb-0">
-                        <h3 className="text-xl font-semibold text-white mb-4">Quick Links</h3>
-                        <ul className="space-y-2">
+                    <div className="w-full md:w-1/4 mb-8 md:mb-0">
+                        <h3 className="text-xl font-semibold text-white mb-6">Quick Links</h3>
+                        <ul className="space-y-3">
                             <li><Link to="/" className="hover:text-white">Home</Link></li>
                             <li><Link to="/about-us" className="hover:text-white">About Us</Link></li>
                             <li><Link to="/contact" className="hover:text-white">Contact</Link></li>
@@ -125,8 +124,18 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    <div className="w-full md:w-1/3">
-                        <h3 className="text-xl font-semibold text-white mb-4">Newsletter</h3>
+                    <div className="w-full md:w-1/4 mb-8 md:mb-0">
+                        <h3 className="text-xl font-semibold text-white mb-6">Company</h3>
+                        <ul className="space-y-3">
+                            <li><Link to="/careers" className="hover:text-white">Careers</Link></li>
+                            <li><Link to="/blog" className="hover:text-white">Blog</Link></li>
+                            <li><Link to="/privacy-policy" className="hover:text-white">Privacy Policy</Link></li>
+                            <li><Link to="/terms-conditions" className="hover:text-white">Terms & Conditions</Link></li>
+                        </ul>
+                    </div>
+
+                    <div className="w-full md:w-1/4">
+                        <h3 className="text-xl sm:text-lg font-semibold text-white mb-2">Newsletter</h3>
                         <p className="text-gray-400 mb-4">
                             Subscribe to our newsletter to get the latest updates and offers.
                         </p>
@@ -140,12 +149,13 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <div className="mt-5 border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
-                    <div className="flex space-x-4">
-                        <SocialLink href="" src={facebook} alt="Facebook" />
-                        <SocialLink href="https://www.instagram.com/stephenkariaki/" src={instagram} alt="Instagram" />
-                        <SocialLink href="https://www.linkedin.com/in/kariakistephen58/" src={linkedin} alt="LinkedIn" />
-                        <SocialLink href="https://x.com/SKariaki" src={x} alt="X" />
+                <div className="mt-12 pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center">
+                    <p className="text-gray-500 text-sm">© {new Date().getFullYear()} OverLow. All rights reserved.</p>
+                    <div className="flex space-x-6 mt-4 md:mt-0">
+                        <SocialLink href="https://www.facebook.com" src={facebook} alt="Facebook" />
+                        <SocialLink href="https://www.instagram.com" src={instagram} alt="Instagram" />
+                        <SocialLink href="https://www.linkedin.com" src={linkedin} alt="LinkedIn" />
+                        <SocialLink href="https://x.com" src={x} alt="X" />
                     </div>
                 </div>
             </div>
