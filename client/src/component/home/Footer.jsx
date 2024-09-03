@@ -154,7 +154,7 @@ const Footer = () => {
                     <div className="flex space-x-6 mt-4 md:mt-0">
                         <SocialLink href="https://www.facebook.com" src={facebook} alt="Facebook" />
                         <SocialLink href="https://www.instagram.com" src={instagram} alt="Instagram" />
-                        <SocialLink href="https://www.linkedin.com" src={linkedin} alt="LinkedIn" />
+                        <SocialLink href="https://www.linkedin.com/in/kariakistephen58/" src={linkedin} alt="LinkedIn" />
                         <SocialLink href="https://x.com" src={x} alt="X" />
                     </div>
                 </div>

@@ -168,7 +168,7 @@ const ProductSections = () => {
                     Total Price: ${formatPrice(totalPrice)}
                   </p>
                 </div>
-                <div className='grid grid-cols-2'>
+                <div className='grid md:grid-cols-2 grid-cols-1'>
                   {product.colors.length > 0 && (
                     <div className="mb-4">
                       <h2 className="text-md text-gray-800 lg:text-xl font-semibold mb-2">Available Colors</h2>
