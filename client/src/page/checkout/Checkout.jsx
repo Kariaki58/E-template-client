@@ -285,7 +285,7 @@ const Checkout = () => {
                 />
                 <label htmlFor="payStack" className="text-sm md:text-base">Paystack</label>
               </div>
-              <div className="flex items-center">
+              {/* <div className="flex items-center">
                 <input
                   type="radio"
                   id="flutterwave"
@@ -320,7 +320,7 @@ const Checkout = () => {
                   className="mr-2"
                 />
                 <label htmlFor="stripe" className="text-sm md:text-base">Stripe</label>
-              </div>
+              </div> */}
             </div>
           </div>
 

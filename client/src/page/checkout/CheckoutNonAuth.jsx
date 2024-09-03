@@ -27,6 +27,7 @@ const CheckoutNonAuth = () => {
       quantity: queryParams.get('quantity'),
     };
   };
+  const [loading, setLoading] = useState(false)
 
   const { color, size, quantity } = getQueryParams();
   
@@ -189,7 +190,7 @@ const CheckoutNonAuth = () => {
               />
               <span className="ml-2 text-sm md:text-base">PayStack</span>
             </label>
-            <label className='inline-flex items-center ml-6'>
+            {/* <label className='inline-flex items-center ml-6'>
               <input
                 type="radio"
                 name='payment'
@@ -199,7 +200,7 @@ const CheckoutNonAuth = () => {
                 readOnly
               />
               <span className='ml-2 text-sm md:text-base'>Stripe</span>
-            </label>
+            </label> */}
           </div>
           <button
             type="submit"
