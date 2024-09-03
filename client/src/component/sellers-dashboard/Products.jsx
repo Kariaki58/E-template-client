@@ -8,6 +8,8 @@ import 'react-quill/dist/quill.snow.css';
 import { useDropzone } from 'react-dropzone';
 import { FaTrash } from 'react-icons/fa';
 
+
+toast.configure();
 const sizeOptions = [
   { value: 'S', label: 'S' },
   { value: 'M', label: 'M' },

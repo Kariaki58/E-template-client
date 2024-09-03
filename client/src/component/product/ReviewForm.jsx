@@ -6,6 +6,8 @@ import axios from 'axios';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import 'react-toastify/dist/ReactToastify.css';
 
+
+toast.configure();
 const ReviewForm = ({ setWriteReview, productId }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');

@@ -11,7 +11,7 @@ import './ProductList.css';
 import { RotatingLines } from 'react-loader-spinner'
 import { EmailPopUp } from './Footer';
 
-
+toast.configure();
 const cld = new Cloudinary({
   cloud: {
     cloudName: import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME,

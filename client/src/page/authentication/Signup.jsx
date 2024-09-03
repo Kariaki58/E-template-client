@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 
 
+toast.configure();
 const SignupPage = () => {
     const { handleToggle } = useContext(context);
     const [email, setEmail] = useState('');

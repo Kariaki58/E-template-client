@@ -9,7 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-
+toast.configure();
 const Orders = () => {
   const { orders, fetchAllOrders, loading, error } = useContext(OrderContext);
   const [selectedOrderId, setSelectedOrderId] = useState(null);

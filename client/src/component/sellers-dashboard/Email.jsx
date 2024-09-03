@@ -4,6 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
+toast.configure();
 const EmailList = () => {
   const [emails, setEmails] = useState([]);
   const [loading, setLoading] = useState(true);
