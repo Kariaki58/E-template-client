@@ -6,7 +6,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 
 
-toast.configure();
 const Contact = () => {
   const [formData, setFormData] = useState({
     subject: 'From A Customer',

@@ -12,7 +12,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-toast.configure();
 const Sellers = () => {
   const signOut = useSignOut()
   const navigate = useNavigate()

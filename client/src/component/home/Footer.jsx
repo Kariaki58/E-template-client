@@ -9,7 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { toast, ToastContainer } from "react-toastify";
 
 
-toast.configure();
 const useEmailSubscription = () => {
     const [loading, setLoading] = useState(false);
 

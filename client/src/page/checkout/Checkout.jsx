@@ -6,7 +6,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import { CartContext } from '../../contextApi/cartContext';
 
 
-toast.configure();
 const Checkout = () => {
   const [shippingDetails, setShippingDetails] = useState({
     name: '',

@@ -8,7 +8,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 
 
-toast.configure();
 const SignupPage = () => {
     const { handleToggle } = useContext(context);
     const [email, setEmail] = useState('');
@@ -55,7 +54,11 @@ const SignupPage = () => {
                     navigate('/')
                 }, 2000)
             } catch (err) {
-                toast.error('An error occurred during signup. Please try again.');
+                if (err.response.data) {
+                    toast.error(err.response.data.error)
+                } else {
+                    toast.error('An error occurred during signup. Please try again.');
+                }
             }
         }
     };

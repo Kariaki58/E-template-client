@@ -10,7 +10,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 
-toast.configure();
 const LoginPage = () => {
     const { handleToggle } = useContext(context)
     const [email, setEmail] = useState('');

@@ -11,7 +11,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-toast.configure();
 const sizeOptions = [
   { value: 'S', label: 'S' },
   { value: 'M', label: 'M' },
