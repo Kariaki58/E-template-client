@@ -181,12 +181,17 @@ const ProductList = () => {
               key={data._id}
             >
               <Link to={`products/content/${data._id}`}>
-              <img
-                key={data._id}
-                src={data.images[0]}
-                alt={data.name}
-                className="rounded-lg"
-              />
+                <img
+                  key={data._id}
+                  src={cld
+                    .image(`images/${data.images[0].split('/')[8].split('.')[0]}`)
+                    .resize('c_fill,w_500,h_500,g_auto')
+                    .delivery('q_auto')
+                    .format('auto')
+                    .toURL()}
+                  alt={data.name}
+                  className="rounded-lg"
+                />
               </Link>
               <div className="p-4">
                 <p className="font-semibold text-gray-800">
