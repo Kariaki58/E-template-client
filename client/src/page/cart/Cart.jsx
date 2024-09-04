@@ -14,12 +14,16 @@ const CartPage = () => {
     };
 
     const formatPrice = (price) => {
-        return parseFloat(price).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+        return new Intl.NumberFormat('en-NG', {
+          style: 'currency',
+          currency: 'NGN',
+        }).format(price);
     };
 
     if (loading) {
         return <div>Loading...</div>
     }
+    
     return (
         <div className="container mx-auto p-4 sm:p-8 min-h-screen">
             <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-6 sm:mb-10">Shopping Cart</h1>

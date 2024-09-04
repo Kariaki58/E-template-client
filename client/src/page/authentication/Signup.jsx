@@ -12,6 +12,7 @@ const SignupPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState('');
     const signIn = useSignIn();
     const navigate = useNavigate();
@@ -22,7 +23,6 @@ const SignupPage = () => {
     };
 
     const handleSignup = async (e) => {
-        e.preventDefault();
 
         if (email === '' || password === '' || confirmPass === '') {
             setError('Please fill in all fields');
@@ -32,6 +32,7 @@ const SignupPage = () => {
             setError('Passwords do not match');
         } else {
             try {
+                setLoading(true)
                 setError('');
                 const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/register`, { email, password }, { withCredentials: true });
                 const { message, token, isAdmin } = response.data;
@@ -58,6 +59,8 @@ const SignupPage = () => {
                 } else {
                     toast.error('An error occurred during signup. Please try again.');
                 }
+            } finally {
+                setLoading(false)
             }
         }
     };
@@ -119,7 +122,7 @@ const SignupPage = () => {
                                 type="submit"
                                 className="w-full bg-gray-950 text-white py-2 px-4 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-300"
                             >
-                                Sign Up
+                                { !loading ? 'Sign Up' : 'Signing up...'}
                             </button>
                         </div>
                     </form>

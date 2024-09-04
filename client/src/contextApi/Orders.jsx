@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import React from 'react';
+import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated";
 
 export const OrderContext = createContext();
 
@@ -8,16 +9,19 @@ const OrderProvider = ({ children }) => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const isAuth = useIsAuthenticated()
 
     const fetchUserOrders = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/user`, { withCredentials: true });
-            setOrders(response.data.orders || []); // Safeguard in case `orders` is undefined
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
+        if (isAuth) {
+            setLoading(true);
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/user`, { withCredentials: true });
+                setOrders(response.data.orders || []); // Safeguard in case `orders` is undefined
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
         }
     };
 

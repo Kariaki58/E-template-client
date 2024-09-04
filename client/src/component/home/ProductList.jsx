@@ -205,7 +205,6 @@ const ProductList = () => {
                   )}
                 </div>
               </div>
-              {isAuthenticated && (
                 <div className="flex justify-center mt-auto">
                   <button
                     className="border text-black border-gray-950 hover:text-white py-2 px-4 rounded-lg sm:text-xl hover:bg-gray-950 w-60"
@@ -214,7 +213,6 @@ const ProductList = () => {
                     Add to Cart
                   </button>
                 </div>
-              )}
             </div>
           ))}
         </div>

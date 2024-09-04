@@ -51,10 +51,8 @@ function App() {
             <Route path='/checkout' element={<Checkout />} />
             <Route path='/checkout/:id' element={<CheckoutNonAuth />} />
             <Route path='/products/content/:id' element={<ProductSections />} />
+            <Route path='/cart' element={<CartPage />} />
             <Route element={<AuthOutlet fallbackPath='/login' />}>
-              <Route path='/cart' element={
-                <CartPage />
-              } />
               <Route path='/dashboard/user' element={<Buyer />}>
                 <Route index element={<MyOrder />} />
                 <Route path='address' element={<Address />} />

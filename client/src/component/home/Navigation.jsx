@@ -67,27 +67,14 @@ const Navigation = () => {
                 isSearchOpen ? <RxCross1 /> : 
                 <IoIosSearch className="text-2xl block sm:hidden"/>
               }
-            </span>
-            {!isSearchOpen && (
-              <div className="flex items-center p-2 rounded-r-lg">
-                <span className="flex gap-1 text-gray-800">
-                  <img src={nigeria} width={20} alt="Nigeria flag" /> NGN
-                </span>
-              </div>
-            )}
-            
+            </span>            
           </div>
         </li>
         <li className="flex items-center gap-6">
           <div className="flex items-center">
-            {
-              isAuth ? (
-                <Link to='/cart'>
-                  <PiShoppingCartLight className="hover:text-blue-500 transition duration-200 cursor-pointer text-2xl" />
-              </Link>
-              ): <></>
-            }
-            
+              <Link to='/cart'>
+                <PiShoppingCartLight className="hover:text-blue-500 transition duration-200 cursor-pointer text-2xl" />
+            </Link>
           </div>
           <div className="flex items-center relative">
             <GoPerson className="hover:text-blue-500 transition duration-200 cursor-pointer text-2xl" onClick={() => setIsOpen(prev => !prev)}/>
