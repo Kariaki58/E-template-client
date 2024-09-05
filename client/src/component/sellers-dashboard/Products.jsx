@@ -52,6 +52,7 @@ const Products = () => {
     setImagePreviews
   } = useProductUpload();
 
+
   const [images, setImages] = useState([]);
 
   const onDrop = async (acceptedFiles) => {

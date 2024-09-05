@@ -238,12 +238,13 @@ const ProductManagement = () => {
   }
 
   return (
-    <div className="p-6 bg-white rounded-md shadow-md">
+    <div className="">
       <h1 className="text-2xl font-bold mb-4 text-gray-800">Product Management</h1>
       {products.map((product, productIdx) => (
         <div key={product._id} className="mb-4">
           {editingProductId === product._id ? (
             <form onSubmit={handleUpdate} className="space-y-4">
+              <lable>Product Name</lable>
               <input
                 type="text"
                 name="name"
@@ -252,6 +253,7 @@ const ProductManagement = () => {
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Product Name"
               />
+              <lable className="mt-5 block">Price</lable>
               <input
                 type="number"
                 name="price"
@@ -260,6 +262,16 @@ const ProductManagement = () => {
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Price"
               />
+              <label className="mt-5 block">Percent Off</label>
+              <input
+                type="number"
+                name="percent"
+                value={updatedProduct.percent || ""}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded-md"
+                placeholder="percentage off"
+              />
+              <label className="mt-5 block">Stock</label>
               <input
                 type="number"
                 name="stock"
@@ -268,6 +280,7 @@ const ProductManagement = () => {
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Stock"
               />
+              <label className="mt-5 block">Product Description</label>
               <ReactQuill 
                 value={updatedProduct.description} 
                 onChange={handleQuillChange}
@@ -275,6 +288,7 @@ const ProductManagement = () => {
                 className="w-full mt-1 border-gray-300 rounded-md focus:ring-gray-900 focus:border-gray-900 h-52"
               />
               <div className="h-8"></div>
+              <label className="mt-5 block">Sizes</label>
               <CreatableSelect
                 isMulti
                 name="size"
@@ -284,6 +298,7 @@ const ProductManagement = () => {
                 className="w-full"
                 classNamePrefix="select"
               />
+              <label className="mt-5 block">Colors</label>
               <CreatableSelect
                 isMulti
                 name="color"
@@ -293,6 +308,7 @@ const ProductManagement = () => {
                 className="w-full"
                 classNamePrefix="select"
               />
+              <label className="mt-5 block">Category</label>
               <CreatableSelect
                 name="category"
                 options={categoryOptions}
@@ -301,6 +317,7 @@ const ProductManagement = () => {
                 className="w-full"
                 classNamePrefix="select"
               />
+              <lable className="mt-5 block">Images</lable>
               <div {...getRootProps()} className="border-2 border-dashed p-4 text-center cursor-pointer mb-4">
                 <input {...getInputProps()} />
                 <p>Drag & drop images here, or click to select images</p>

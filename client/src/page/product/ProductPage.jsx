@@ -165,7 +165,7 @@ const ProductSections = () => {
                 </div>
                 <div className="flex gap-4 mb-6 items-center">
                   <p className="text-2xl lg:text-3xl text-gray-800 font-bold">
-                    Total Price: ${formatPrice(totalPrice)}
+                    Total Price: ${formatPrice(totalPrice - (product.price * (product.percentOff / 100)) )}
                   </p>
                 </div>
                 <div className='grid md:grid-cols-2 grid-cols-1'>

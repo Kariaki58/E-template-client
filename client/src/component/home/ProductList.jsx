@@ -29,6 +29,7 @@ const ProductList = () => {
     total,
   } = useContext(ProductUploadContext);
 
+
   const { addToCart } = useContext(CartContext);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState('');
@@ -177,7 +178,7 @@ const ProductList = () => {
         <div className="gap-2 responsive">
           {currentProducts.map((data) => (
             <div
-              className="w-full p-4 hover:shadow-md rounded-lg flex flex-col justify-between bg-white"
+              className="w-full p-4 hover:shadow-md rounded-lg flex flex-col justify-between bg-white relative"
               key={data._id}
             >
               <Link to={`products/content/${data._id}`}>
@@ -197,13 +198,28 @@ const ProductList = () => {
                 <p className="font-semibold text-gray-800">
                   {truncateText(data.name, 17)}
                 </p>
-                <div className="text-gray-800 font-semibold">
+                {
+                  data.percentOff > 1 ? 
+                  <span className='bg-orange-500 text-white p-2 rounded-full absolute top-5 right-5'>{data.percentOff}%</span>
+                  : <></>
+                }
+                <div className={`text-gray-800 font-semibold ${data.percentOff ? 'line-through' : ''}`}>
                   {formatPrice(
                     data.price.$numberDecimal
                       ? parseFloat(data.price.$numberDecimal)
                       : data.price
                   )}
                 </div>
+                {
+                  data.percentOff ? (
+                    <div className='text-gray-800 font-semibold'>
+                      {formatPrice(
+                        data.price.$numberDecimal ? parseFloat(data.price - ((data.price.$numberDecimal) * (Number(data.percentOff) / 100))) :
+                        data.price - (data.price * (Number(data.percentOff) / 100))
+                      )}
+                    </div>
+                  ) : <></>
+                }
               </div>
                 <div className="flex justify-center mt-auto">
                   <button
