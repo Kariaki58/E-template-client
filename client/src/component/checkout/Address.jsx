@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Toaster, toast } from 'react-hot-toast';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 const Address = () => {
   const [loading, setLoading] = useState(false);
@@ -14,6 +15,7 @@ const Address = () => {
     country: '',
     phone: '',
   });
+  const isAuth = useIsAuthenticated()
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,8 +56,9 @@ const Address = () => {
         setLoading(false);
       }
     };
-
-    fetchData();
+    if (isAuth) {
+      fetchData();
+    }
   }, []);
 
   const handleSubmit = async (e) => {

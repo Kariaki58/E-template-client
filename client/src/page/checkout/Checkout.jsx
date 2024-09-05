@@ -3,6 +3,7 @@ import PaystackPop from '@paystack/inline-js';
 import axios from 'axios';
 import { Toaster, toast } from 'react-hot-toast';
 import { CartContext } from '../../contextApi/cartContext';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 
 const Checkout = () => {
@@ -19,6 +20,7 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const { cartItems, loading: cartloading } = useContext(CartContext);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('payStack');
+  const isAuth = useIsAuthenticated()
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(price);
@@ -55,8 +57,9 @@ const Checkout = () => {
         setLoading(false);
       }
     };
-
-    fetchData();
+    if (isAuth) {
+      fetchData();
+    }
   }, []);
 
   const handleChange = (e) => {
@@ -92,10 +95,21 @@ const Checkout = () => {
       channels: ['card', 'bank', 'ussd', 'qr', 'eft', 'mobile_money', 'bank_transfer'],
       onSuccess: async (transaction) => {
         try {
-          const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order`,
-            { cartId: cartItems._id, shippingDetails, status: transaction.success }, { withCredentials: true }
-          );
-          toast.success(response.data.message)
+          if (isAuth) {
+            const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order`,
+              { cartId: cartItems._id, shippingDetails, status: transaction.success }, { withCredentials: true }
+            );
+            toast.success(response.data.message)
+          } else {
+            const getLocalCart = JSON.parse(localStorage.getItem('items') || '[]')
+            const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/add`, { cart: getLocalCart, shippingDetails, status: transaction.status })
+            if (response.data.error) {
+              toast.error(response.data.error)
+            } else { 
+              toast.success(response.data.message)
+            }
+          }
+          
         } catch (error) {
           toast.error('Payment verification failed');
         }

@@ -15,7 +15,6 @@ const Orders = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userAddress, setUserAddress] = useState(null);
 
-
   useEffect(() => {
     fetchAllOrders();
   }, []);
@@ -91,7 +90,7 @@ const Orders = () => {
                 </tr>
               </thead>
               <tbody>
-                {[].map((order) => (
+                {orders.map((order) => (
                   <tr key={order._id} className="border-t">
                     <td className="py-2 px-4 whitespace-nowrap text-gray-700">{order._id}</td>
                     <td

@@ -3,6 +3,7 @@ import PaystackPop from '@paystack/inline-js';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Toaster, toast } from 'react-hot-toast';
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 
 
 const CheckoutNonAuth = () => {
@@ -19,6 +20,7 @@ const CheckoutNonAuth = () => {
   const [product, setProduct] = useState(null);
   const [totalAmount, setTotalAmount] = useState(0);
   const { id: productId } = useParams();
+  const isAuth = useIsAuthenticated()
   const getQueryParams = () => {
     const queryParams = new URLSearchParams(location.search);
     return {
@@ -104,15 +106,23 @@ const CheckoutNonAuth = () => {
         channels: ['card', 'bank', 'ussd', 'qr', 'eft', 'mobile_money', 'bank_transfer'],
         onSuccess: async (transaction) => {
           try {
-            const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/place`, {
-              productId,
-              color,
-              size,
-              quantity,
-              shippingDetails,
-              status: 'Paid'
-            }, { withCredentials: true });
-            toast.success(response.data.message)
+            if (isAuth) {
+              const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/place`, {
+                productId,
+                color,
+                size,
+                quantity,
+                shippingDetails,
+                status: 'Paid'
+              }, { withCredentials: true });
+              toast.success(response.data.message)
+            } else {
+              const getLocalCart = JSON.parse(localStorage.getItem('items') || '[]')
+              const respose = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/add`, { cart: getLocalCart, status: transaction.success, shippingDetails })
+
+              console.log(respose.data)
+            }
+            
           } catch (error) {
             toast.error('Payment verification failed:');
           }

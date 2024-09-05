@@ -6,7 +6,7 @@ import 'jspdf-autotable';
 import '../../App.css';
 
 const MyOrder = () => {
-  const { orders = [], loading, error } = useContext(OrderContext);  // Provide default value for orders
+  const { orders, loading, error } = useContext(OrderContext);  // Provide default value for orders
   const [currentPage, setCurrentPage] = useState(0);
   const ordersPerPage = 5;
 

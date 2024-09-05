@@ -213,14 +213,12 @@ const ProductSections = () => {
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 mt-6">
-                  {
-                    isAuthenticated ? <button
+                  <button
                     onClick={handleAddToCart}
                     className="w-full sm:w-auto bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
                   >
                     Add to Cart
-                  </button> : <></>
-                  }
+                  </button>
                   <button
                     onClick={handleCheckout}
                     className="w-full sm:w-auto bg-gray-950 text-white py-2 px-4 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all"

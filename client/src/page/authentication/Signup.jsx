@@ -1,10 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { RxCross1 } from 'react-icons/rx';
 import { context } from '../../contextApi/Modal';
 import axios from 'axios';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import { Toaster, toast } from 'react-hot-toast';
+import { CartContext } from '../../contextApi/cartContext';
 
 
 const SignupPage = () => {
@@ -16,14 +17,14 @@ const SignupPage = () => {
     const [error, setError] = useState('');
     const signIn = useSignIn();
     const navigate = useNavigate();
-
+    
     const isValidEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
 
     const handleSignup = async (e) => {
-
+        e.preventDefault()
         if (email === '' || password === '' || confirmPass === '') {
             setError('Please fill in all fields');
         } else if (!isValidEmail(email)) {
@@ -34,9 +35,16 @@ const SignupPage = () => {
             try {
                 setLoading(true)
                 setError('');
-                const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/register`, { email, password }, { withCredentials: true });
+                let checkLocalCart = JSON.parse(localStorage.getItem('items') || '[]')
+                
+                if (checkLocalCart && checkLocalCart.length <= 0) {
+                    checkLocalCart = null
+                }
+                const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/register`, { email, password, checkLocalCart }, { withCredentials: true });
                 const { message, token, isAdmin } = response.data;
 
+                toast.success(message)
+                
                 if (signIn({
                     auth: {
                         token,
@@ -46,15 +54,13 @@ const SignupPage = () => {
                         isAdmin
                     }
                 })) {
-                } else {
-                    throw new Error('Failed to login');
+                    setTimeout(() => {
+                        window.location.reload()
+                        navigate('/')
+                    }, 2000)
                 }
-                toast.success(message)
-                setTimeout(() => {
-                    navigate('/')
-                }, 2000)
             } catch (err) {
-                if (err.response.data) {
+                if (err.response && err.response.data) {
                     toast.error(err.response.data.error)
                 } else {
                     toast.error('An error occurred during signup. Please try again.');

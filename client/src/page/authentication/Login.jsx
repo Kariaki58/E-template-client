@@ -6,7 +6,7 @@ import { context } from '../../contextApi/Modal';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import axios from 'axios';
 import { Toaster, toast } from 'react-hot-toast';
-import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
+import { CartContext } from '../../contextApi/cartContext';
 
 
 const LoginPage = () => {
@@ -17,13 +17,7 @@ const LoginPage = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false)
     const signIn = useSignIn()
-    const isAuthenticated = useIsAuthenticated()
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            navigate('/')
-        }
-    }, [])
+    
     
 
     const handleLogin = async (e) => {
@@ -34,7 +28,13 @@ const LoginPage = () => {
             try {
                 setLoading(true)
                 setError('');
-                const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/login`, { email, password }, { withCredentials: true })
+
+                let checkLocalCart = JSON.parse(localStorage.getItem('items') || '[]')
+
+                if (checkLocalCart && checkLocalCart.length <= 0) {
+                    checkLocalCart = null
+                }
+                const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/login`, { email, password, checkLocalCart }, { withCredentials: true })
                 if (response.data.error) {
                     throw new Error(response.data.error)
                 }
@@ -55,7 +55,10 @@ const LoginPage = () => {
                     }, 2000)
                 }
             } catch(err) {
-                toast.error(err.response.data.error)
+                if (err.response && err.response.data)
+                    toast.error(err.response.data.error)
+                else
+                    toast.error('something went wrong')
                 return null
             } finally {
                 setLoading(false)
