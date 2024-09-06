@@ -132,6 +132,7 @@ const CheckoutNonAuth = () => {
                 quantity,
                 shippingDetails,
                 status: 'Paid',
+                couponCode
               }, { withCredentials: true });
               toast.success(response.data.message);
             } else {
@@ -161,18 +162,19 @@ const CheckoutNonAuth = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 md:p-8 lg:p-12">
-      <h1 className="text-3xl font-bold mb-8 text-center">Checkout</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-center">
-        <div className="rounded-lg p-6 mb-10">
-          <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Order Summary</h2>
+    <div className="container mx-auto p-6 md:p-10 lg:p-14 bg-gray-50 rounded-lg shadow-md">
+      <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">Checkout</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        {/* Order Summary */}
+        <div className="rounded-lg bg-white p-6 shadow-lg">
+          <h2 className="text-2xl font-semibold mb-6 border-b pb-3">Order Summary</h2>
           {product ? (
             <div>
               <ul className="space-y-4">
-                <li className="flex justify-between items-center border-b pb-2">
-                  <img src={product.images[0]} className="h-10" alt={product.name} />
-                  <span>{quantity} x {formatPrice(product.price.toFixed(2))}</span>
-                  <span>{formatPrice(product.price.toFixed(2) * quantity)}</span>
+                <li className="flex justify-between items-center border-b pb-3">
+                  <img src={product.images[0]} className="h-16 w-16 object-cover rounded-md" alt={product.name} />
+                  <span className="text-lg font-medium">{quantity} x {formatPrice(product.price)}</span>
+                  <span className="text-lg font-medium">{formatPrice(product.price * quantity)}</span>
                 </li>
               </ul>
             </div>
@@ -180,67 +182,66 @@ const CheckoutNonAuth = () => {
             <div>Loading product details...</div>
           )}
         </div>
-        <div>
+        {/* Shipping and Coupon Section */}
+        <div className="rounded-lg bg-white p-6 shadow-lg">
           <div className="mt-4">
-            <h3 className="text-lg font-semibold">Coupon Code</h3>
+            <h3 className="text-xl font-semibold text-gray-800">Coupon Code</h3>
             <input
               type="text"
-              className="border rounded-md py-2 px-3 mt-2 w-full"
+              className="border rounded-md py-2 px-4 mt-2 w-full bg-gray-100 focus:ring-2 focus:ring-gray-500 outline-none"
               placeholder="Enter coupon code"
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value)}
             />
             <button
-              className="mt-2 bg-gray-900 text-white py-2 px-4 rounded-md"
+              className="mt-3 bg-gray-800 text-white py-2 px-5 rounded-md hover:bg-gray-700 transition duration-150"
               onClick={handleCouponApply}
             >
               Apply Coupon
             </button>
           </div>
-          <div className="flex justify-between items-center mt-4 pt-4">
-            <span className="text-lg md:text-xl font-semibold">Shipping Fee:</span>
-            <span className="text-lg md:text-xl font-semibold">{formatPrice(shippingFee)}</span>
+          <div className="flex justify-between items-center mt-6">
+            <span className="text-lg font-semibold text-gray-600">Shipping Fee:</span>
+            <span className="text-lg font-semibold text-gray-800">{formatPrice(shippingFee)}</span>
           </div>
           <div className="flex justify-between items-center mt-2">
-            <span className="text-lg md:text-xl font-semibold">Discount:</span>
-            <span className="text-lg md:text-xl font-semibold">{discount}%</span>
+            <span className="text-lg font-semibold text-gray-600">Discount:</span>
+            <span className="text-lg font-semibold text-gray-800">{discount}%</span>
           </div>
-          <div className="flex justify-between items-center mt-2">
-            <span className="text-lg md:text-xl font-semibold">Total:</span>
-            <span className="text-lg md:text-xl font-semibold">{formatPrice(calculateTotalAmount())}</span>
+          <div className="flex justify-between items-center mt-4 border-t pt-4">
+            <span className="text-2xl font-bold text-gray-800">Total:</span>
+            <span className="text-2xl font-bold text-gray-800">{formatPrice(calculateTotalAmount())}</span>
           </div>
         </div>
       </div>
-      <div className="rounded-lg p-6">
-        <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Shipping Details</h2>
+      {/* Shipping Form */}
+      <div className="mt-8 bg-white p-6 rounded-lg shadow-lg">
+        <h2 className="text-2xl font-semibold mb-6 border-b pb-3">Shipping Details</h2>
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 mb-8">
-            {Object.keys(shippingDetails).map((key) => (
-              <div key={key}>
-                <label htmlFor={key} className="block mb-2 text-sm md:text-base font-medium">
-                  {key.charAt(0).toUpperCase() + key.slice(1)}
-                </label>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {['name', 'email', 'address', 'city', 'state', 'zip', 'phone', 'country'].map((field) => (
+              <div key={field}>
+                <label className="block font-medium text-gray-800">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
                 <input
-                  type={key === 'phone' ? 'tel' : 'text'}
-                  id={key}
-                  name={key}
-                  value={shippingDetails[key]}
+                  type="text"
+                  name={field}
+                  value={shippingDetails[field]}
                   onChange={handleChange}
-                  required
-                  className="w-full border rounded-md py-2 px-3"
+                  className="border rounded-md py-2 px-4 mt-2 w-full bg-gray-100 focus:ring-2 focus:ring-gray-500 outline-none"
                 />
               </div>
             ))}
           </div>
           <button
             type="submit"
-            className="w-full bg-gray-900 text-white py-3 rounded-md font-semibold text-lg"
+            className="mt-6 w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-500 transition duration-150"
+            disabled={loading}
           >
-            place Order
+            {loading ? 'Processing...' : 'Complete Payment'}
           </button>
         </form>
       </div>
-      <Toaster position="top-center" reverseOrder={false} />
+      <Toaster position="bottom-right" />
     </div>
   );
 };

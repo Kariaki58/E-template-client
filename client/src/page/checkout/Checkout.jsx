@@ -166,7 +166,7 @@ const Checkout = () => {
       <h1 className="text-3xl font-bold mb-8 text-center">Checkout</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-center">
-        <div className='rounded-lg p-6 mb-10'>
+        <div className="rounded-lg p-6 mb-10 bg-white shadow-lg">
           <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Order Summary</h2>
           <ul className="space-y-4">
             {cartItems.items && cartItems.items.length ? (
@@ -187,13 +187,13 @@ const Checkout = () => {
             <h3 className="text-lg font-semibold">Coupon Code</h3>
             <input
               type="text"
-              className="border rounded-md py-2 px-3 mt-2 w-full"
+              className="border rounded-md py-2 px-3 mt-2 w-full bg-gray-100 focus:ring-2 focus:ring-gray-500 outline-none"
               placeholder="Enter coupon code"
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value)}
             />
             <button
-              className="mt-2 bg-gray-900 text-white py-2 px-4 rounded-md"
+              className="mt-3 bg-gray-800 text-white py-2 px-5 rounded-md hover:bg-gray-700 transition duration-150"
               onClick={handleCouponApply}
             >
               Apply Coupon
@@ -214,164 +214,48 @@ const Checkout = () => {
         </div>
       </div>
 
-      <div className="rounded-lg p-6">
+      <div className="rounded-lg p-6 bg-white shadow-lg mt-4">
         <h2 className="text-2xl font-semibold mb-6 border-b pb-2">Shipping Details</h2>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 mb-8">
-            <div>
-              <label htmlFor="name" className="block mb-2 text-sm font-medium">Full Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                className="border rounded-md py-2 px-3 w-full"
-                value={shippingDetails.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="block mb-2 text-sm font-medium">Email Address</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                className="border rounded-md py-2 px-3 w-full"
-                value={shippingDetails.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="address" className="block mb-2 text-sm font-medium">Address</label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                className="border rounded-md py-2 px-3 w-full"
-                value={shippingDetails.address}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="city" className="block mb-2 text-sm font-medium">City</label>
-              <input
-                type="text"
-                id="city"
-                name="city"
-                className="border rounded-md py-2 px-3 w-full"
-                value={shippingDetails.city}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="state" className="block mb-2 text-sm font-medium">State</label>
-              <input
-                type="text"
-                id="state"
-                name="state"
-                className="border rounded-md py-2 px-3 w-full"
-                value={shippingDetails.state}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="zip" className="block mb-2 text-sm font-medium">Zip Code</label>
-              <input
-                type="text"
-                id="zip"
-                name="zip"
-                className="border rounded-md py-2 px-3 w-full"
-                value={shippingDetails.zip}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="country" className="block mb-2 text-sm font-medium">Country</label>
-              <input
-                type="text"
-                id="country"
-                name="country"
-                className="border rounded-md py-2 px-3 w-full"
-                value={shippingDetails.country}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="phone" className="block mb-2 text-sm font-medium">Phone Number</label>
-              <input
-                type="text"
-                id="phone"
-                name="phone"
-                className="border rounded-md py-2 px-3 w-full"
-                value={shippingDetails.phone}
-                onChange={handleChange}
-                required
-              />
-            </div>
+            {['name', 'email', 'address', 'city', 'state', 'zip', 'phone', 'country'].map((field) => (
+              <div key={field}>
+                <label className="block font-medium text-gray-800">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+                <input
+                  type="text"
+                  name={field}
+                  value={shippingDetails[field]}
+                  onChange={handleChange}
+                  className="w-full border rounded-md py-2 px-3 mt-2 bg-gray-100 focus:ring-2 focus:ring-gray-500 outline-none"
+                  required
+                />
+              </div>
+            ))}
           </div>
 
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold">Payment Method</h3>
-            <div className="space-y-4 mt-4">
-              <label>
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="payStack"
-                  checked={selectedPaymentMethod === 'payStack'}
-                  onChange={() => setSelectedPaymentMethod('payStack')}
-                />
-                Paystack
-              </label>
-              {/* <label>
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="flutterwave"
-                  checked={selectedPaymentMethod === 'flutterwave'}
-                  onChange={() => setSelectedPaymentMethod('flutterwave')}
-                />
-                Flutterwave
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="paypal"
-                  checked={selectedPaymentMethod === 'paypal'}
-                  onChange={() => setSelectedPaymentMethod('paypal')}
-                />
-                Paypal
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="stripe"
-                  checked={selectedPaymentMethod === 'stripe'}
-                  onChange={() => setSelectedPaymentMethod('stripe')}
-                />
-                Stripe
-              </label> */}
-            </div>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-4">Select Payment Method</h3>
+            <select
+              value={selectedPaymentMethod}
+              onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+              className="border py-2 px-4 rounded-md w-full bg-gray-100 focus:ring-2 focus:ring-gray-500 outline-none"
+            >
+              <option value="payStack">PayStack</option>
+              <option value="flutterwave">Flutterwave</option>
+              <option value="paypal">PayPal</option>
+              <option value="stripe">Stripe</option>
+            </select>
           </div>
 
           <button
             type="submit"
-            className={`py-2 px-4 w-full block rounded-md text-white ${loading ? 'bg-gray-500' : 'bg-gray-900'}`}
-            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-500 transition duration-150"
           >
-            {loading ? 'Processing...' : 'Place Order'}
+            Place Order
           </button>
         </form>
       </div>
-      <Toaster position="top-center" />
+      <Toaster />
     </div>
   );
 };
