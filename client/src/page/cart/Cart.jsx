@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CartContext } from '../../contextApi/cartContext';
+import { RotatingLines } from 'react-loader-spinner';
 
 const CartPage = () => {
-    const { cartItems, incrementCart, decrementCart, removeFromCart, clearCart, loading } = useContext(CartContext);
+    const { cartItems, incrementCart, decrementCart, removeFromCart, clearCart, loading, error, fetchCartItems } = useContext(CartContext);
 
     const handleIncreaseQuantity = (pid, quantity, pos) => {
         incrementCart(pid, quantity, pos);
@@ -21,8 +22,30 @@ const CartPage = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>
+        return (
+          <div className='flex justify-center items-center mt-2'>
+            <RotatingLines
+              visible={true}
+              height="96"
+              width="96"
+              color="grey"
+              strokeWidth="5"
+              animationDuration="0.75"
+              ariaLabel="rotating-lines-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+            />
+          </div>
+        )
     }
+
+    if (error) {
+        return <div className='text-red-700 text-2xl'>error</div>
+    }
+
+    useEffect(() => {
+        fetchCartItems()
+    }, [])
     
     return (
         <div className="container mx-auto p-4 sm:p-8 min-h-screen">

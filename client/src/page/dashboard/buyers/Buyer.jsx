@@ -24,7 +24,11 @@ const Buyer = () => {
         navigate('/');
       }
     } catch (error) {
-      toast.error('An unexpected error occurred.');
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.error)
+      } else {
+        toast.error('An unexpected error occurred.');
+      }
     }
   };
 

@@ -181,11 +181,6 @@ const ProductManagement = () => {
         { withCredentials: true }
       );
   
-      if (response.data.error) {
-        toast.error(response.data.error);
-        return;
-      }
-  
       setProducts(
         products.map((product) =>
           product._id === editingProductId ? { ...product, ...updatedProductData } : product
@@ -194,7 +189,11 @@ const ProductManagement = () => {
       toast.success("Product updated successfully");
       setEditingProductId(null);
     } catch (error) {
-      toast.error("Failed to update product");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.error)
+      } else {
+        toast.error("Failed to update product");
+      }
     }
   };
 

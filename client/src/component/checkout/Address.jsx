@@ -52,6 +52,11 @@ const Address = () => {
           phone: phoneNumber,
         });
       } catch (error) {
+        if (error.response && error.response.data) {
+          toast.error(error.response.data.error)
+        } else {
+          toast.error('something went wrong')
+        }
       } finally {
         setLoading(false);
       }
@@ -80,7 +85,11 @@ const Address = () => {
       });
       toast.success("Address saved successfully!");
     } catch (error) {
-      toast.error("Failed to save address.");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.error)
+      } else {
+        toast.error("Failed to save address.");
+      }
     } finally {
       setLoading(false);
     }

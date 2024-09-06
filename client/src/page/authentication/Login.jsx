@@ -6,7 +6,6 @@ import { context } from '../../contextApi/Modal';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import axios from 'axios';
 import { Toaster, toast } from 'react-hot-toast';
-import { CartContext } from '../../contextApi/cartContext';
 
 
 const LoginPage = () => {
@@ -59,7 +58,6 @@ const LoginPage = () => {
                     toast.error(err.response.data.error)
                 else
                     toast.error('something went wrong')
-                return null
             } finally {
                 setLoading(false)
             }

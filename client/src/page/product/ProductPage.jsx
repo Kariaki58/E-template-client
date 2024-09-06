@@ -33,7 +33,6 @@ const ProductSections = () => {
   const [loading, setLoading] = useState(true)
   const [showDetailsPrompt, setShowDetailsPrompt] = useState(false);
   const navigate = useNavigate();
-  const isAuthenticated = useIsAuthenticated()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,7 +51,11 @@ const ProductSections = () => {
           setSelectedImage(fetchedProduct.images[0]);
         }
       } catch (error) {
-        toast.error("Error fetching product data.");
+        if (error.response && error.response.data) {
+          toast.error(error.response.data.error)
+        } else {
+          toast.error("Error fetching product data.");
+        }
       } finally {
         setLoading(false)
       }

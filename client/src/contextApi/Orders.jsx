@@ -18,7 +18,11 @@ const OrderProvider = ({ children }) => {
                 const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/user`, { withCredentials: true });
                 setOrders(response.data.orders || []); // Safeguard in case `orders` is undefined
             } catch (err) {
-                setError(err.message);
+                if (err.response && err.response.data) {
+                    setError(err.response.data.error)
+                } else {
+                    setError('something went wrong');
+                }
             } finally {
                 setLoading(false);
             }
@@ -32,7 +36,11 @@ const OrderProvider = ({ children }) => {
             const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order`, orderData, { withCredentials: true });
             setOrders(prevOrders => [...prevOrders, response.data.order]);
         } catch (err) {
-            setError(err.message);
+            if (err.response && err.response.data) {
+                setError(err.response.data.error);
+            } else {
+                setError('something went wrong')
+            }
         } finally {
             setLoading(false);
         }
@@ -45,7 +53,11 @@ const OrderProvider = ({ children }) => {
             const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/admin`, { withCredentials: true });
             setOrders(response.data.orders);
         } catch (err) {
-            setError(err.message);
+            if (err.response && err.response.data) {
+                setError(err.response.data.error)
+            } else {
+                setError('something went wrong');
+            }
         } finally {
             setLoading(false);
         }

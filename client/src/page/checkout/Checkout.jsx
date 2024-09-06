@@ -111,8 +111,11 @@ const Checkout = () => {
           }
           
         } catch (error) {
-          console.log(error)
-          toast.error('Payment verification failed');
+          if (error.response && error.response.data && error.response.data.error) {
+            toast.error(error.response.data.error)
+          } else {
+              toast.error('Payment verification failed');
+          }
         }
       },
       onCancel: () => {

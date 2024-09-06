@@ -119,14 +119,15 @@ const CheckoutNonAuth = () => {
             } else {
               const getLocalCart = JSON.parse(localStorage.getItem('items') || '[]')
               const respose = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/add`, { cart: getLocalCart, status: transaction.success, shippingDetails })
-
-              console.log(respose.data)
+              toast.success(respose.data.message)
             }
             
           } catch (error) {
-            console.log("non auth")
-            console.log(error)
-            toast.error('Payment verification failed:');
+            if (error.response && error.response.data && error.response.data.error) {
+              toast.error(error.response.data.error)
+            } else {
+              toast.error('Payment verification failed:');
+            }
           }
         },
         onCancel: () => {

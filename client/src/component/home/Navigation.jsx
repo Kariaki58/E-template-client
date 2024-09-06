@@ -7,7 +7,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { useContext } from 'react';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
-import nigeria from '/niger-icon.png';
 import { context } from '../../contextApi/Modal';
 import logo from '/assets/betterlogo.png'
 

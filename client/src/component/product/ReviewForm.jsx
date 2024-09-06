@@ -104,7 +104,11 @@ const ReviewForm = ({ setWriteReview, productId }) => {
         setFile(null);
       }
     } catch (error) {
-      toast.error('An unexpected error occurred.');
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.error)
+      } else {
+        toast.error('An unexpected error occurred.');
+      }
     } finally {
       setLoading(false);
     }

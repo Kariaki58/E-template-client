@@ -113,8 +113,11 @@ export const ProductUploadProvider = ({ children }) => {
         fetchAllProducts(); // Fetch updated products after submission
       }
     } catch (error) {
-      console.log(error)
-      toast.error('An unexpected error occurred.');
+      if (error.response && error.response.data){
+        toast.error(error.response.data.error)
+      } else {
+        toast.error('An unexpected error occurred.');
+      }
     } finally {
       setLoading(false);
     }
@@ -147,7 +150,11 @@ export const ProductUploadProvider = ({ children }) => {
         fetchAllProducts();
       }
     } catch (error) {
-      toast.error('An error occurred while deleting the product.');
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.error)
+      } else {
+        toast.error('An error occurred while deleting the product.');
+      }
     } finally {
       setLoading(false);
     }
@@ -159,8 +166,6 @@ export const ProductUploadProvider = ({ children }) => {
       const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}?page=${page}`, {
         withCredentials: true,
       });
-
-
 
       setTotal(response.data.total);
   
@@ -180,7 +185,11 @@ export const ProductUploadProvider = ({ children }) => {
         setFilteredProducts(data || []);
       }
     } catch (error) {
-      toast.error('An error occurred while fetching products.');
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.error)
+      } else {
+        toast.error('An error occurred while fetching products.');
+      }
     } finally {
       setLoading(false);
     }

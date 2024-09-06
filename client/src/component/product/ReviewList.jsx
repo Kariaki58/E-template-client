@@ -19,13 +19,14 @@ const ReviewList = () => {
       try {
         setLoading(true);
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/review/get/${params.id}`);
-        if (response.data.error) {
-          throw new Error(response.data.error)
-        }
         setReviews(response.data.message);
         setTotalPages(Math.ceil(response.data.message.length / reviewsPerPage));
       } catch (err) {
-        setError('Failed to load reviews. Please try again.');
+        if (err.response && error.response.data) {
+          setError(err.response.data.error)
+        } else {
+          setError('Failed to load reviews. Please try again.');
+        }
       } finally {
         setLoading(false);
       }

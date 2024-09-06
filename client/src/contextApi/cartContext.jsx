@@ -10,29 +10,33 @@ export const CartProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const isAuth = useIsAuthenticated();
 
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      if (isAuth) {
-        setLoading(true);
-        try {
-          const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/cart`, { withCredentials: true });
-          setCartItems(response.data.cart);
-        } catch (error) {
+  const fetchCartItems = async () => {
+    if (isAuth) {
+      setLoading(true);
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/cart`, { withCredentials: true });
+        setCartItems(response.data.cart);
+      } catch (error) {
+        if (error.response && error.response.data) {
+          setError(error.response.data.error)
+        } else {
           setError('Error fetching cart items');
-        } finally {
-          setLoading(false);
         }
-      } else {
-        const cartItems = JSON.parse(localStorage.getItem('items') || '[]');
-        const totalPrice = cartItems.reduce((sum, item) => {
-          return sum + (item.productId.price - (item.productId.price * (item.productId.percentOff / 100))) * item.quantity
-           
-        }, 0);
-        const data = { _id: '1', userId: '1', items: cartItems, totalPrice };
-        setCartItems(data);
+      } finally {
+        setLoading(false);
       }
-    };
+    } else {
+      const cartItems = JSON.parse(localStorage.getItem('items') || '[]');
+      const totalPrice = cartItems.reduce((sum, item) => {
+        return sum + (item.productId.price - (item.productId.price * (item.productId.percentOff / 100))) * item.quantity
+         
+      }, 0);
+      const data = { _id: '1', userId: '1', items: cartItems, totalPrice };
+      setCartItems(data);
+    }
+  };
 
+  useEffect(() => {
     fetchCartItems();
   }, [isAuth]);
 
@@ -80,7 +84,11 @@ export const CartProvider = ({ children }) => {
         }
       }
     } catch (error) {
-      setError('Error adding item to cart');
+      if (error.response && error.response.data) {
+        setError(error.response.data.error)
+      } else {
+        setError('Error adding item to cart');
+      }
     }
   };
 
@@ -95,7 +103,11 @@ export const CartProvider = ({ children }) => {
         setCartItems([]);
       }
     } catch (error) {
-      setError('Error clearing cart');
+      if (error.response && error.response.data) {
+        setError(error.response.data.error)
+      } else {
+        setError('Error clearing cart');
+      }
     }
   };
 
@@ -120,7 +132,11 @@ export const CartProvider = ({ children }) => {
         }
       }
     } catch (error) {
-      setError('Error decrementing cart');
+      if (error.response && error.response.data) {
+        setError(error.response.data.error)
+      } else {
+        setError('Error decrementing cart');
+      }
     }
   };
 
@@ -145,7 +161,11 @@ export const CartProvider = ({ children }) => {
         }
       }
     } catch (error) {
-      setError('Error incrementing cart');
+      if (error.response && error.response.data) {
+        setError(error.response.data.error)
+      } else {
+        setError('Error incrementing cart');
+      }
     }
   };
 
@@ -163,12 +183,16 @@ export const CartProvider = ({ children }) => {
         setCartItems({ _id: '1', userId: '1', items: updatedCart, totalPrice });
       }
     } catch (error) {
-      setError('Error removing item from cart');
+      if (error.response && error.response.data) {
+        setError(error.response.data.error)
+      } else {
+        setError('Error removing item from cart');
+      }
     }
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, error, setError, addToCart, removeFromCart, incrementCart, decrementCart, loading, clearCart }}>
+    <CartContext.Provider value={{ cartItems, error, setError, fetchCartItems, addToCart, removeFromCart, incrementCart, decrementCart, loading, clearCart }}>
       {children}
     </CartContext.Provider>
   );
