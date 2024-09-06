@@ -113,6 +113,7 @@ export const ProductUploadProvider = ({ children }) => {
         fetchAllProducts(); // Fetch updated products after submission
       }
     } catch (error) {
+      console.log(error)
       toast.error('An unexpected error occurred.');
     } finally {
       setLoading(false);

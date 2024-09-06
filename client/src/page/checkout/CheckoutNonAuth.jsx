@@ -124,6 +124,8 @@ const CheckoutNonAuth = () => {
             }
             
           } catch (error) {
+            console.log("non auth")
+            console.log(error)
             toast.error('Payment verification failed:');
           }
         },
@@ -151,8 +153,8 @@ const CheckoutNonAuth = () => {
           {product ? (
             <li className="flex justify-between items-center border-b pb-2">
               <img src={product.images[0]} className="h-10" alt={product.name} />
-              <span>{quantity} x {formatPrice(product.price.toFixed(2))}</span>
-              <span>{formatPrice(quantity * (totalAmount / 100))}</span>
+              <span>{quantity} x {formatPrice(product.price.toFixed(2) - (product.price * (product.percentOff / 100)))}</span>
+              <span>{formatPrice((quantity * (totalAmount / 100)) - ((quantity * (totalAmount/100)) * (product.percentOff / 100)))}</span>
             </li>
           ) : (
             <div>Loading product details...</div>
@@ -160,7 +162,7 @@ const CheckoutNonAuth = () => {
         </ul>
         <div className="flex justify-between items-center mt-4 pt-4">
           <span className="text-lg md:text-xl font-semibold">Total:</span>
-          <span className="text-lg md:text-xl font-semibold">{formatPrice(quantity * (totalAmount / 100))}</span>
+          <span className="text-lg md:text-xl font-semibold">{formatPrice((quantity * (totalAmount / 100)) - ((quantity * (totalAmount/100)) * (product.percentOff / 100)))}</span>
         </div>
       </div>
 

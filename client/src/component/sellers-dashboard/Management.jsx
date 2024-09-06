@@ -353,9 +353,9 @@ const ProductManagement = () => {
               </div>
               <div className="w-full md:w-1/2">
                 <h2 className="text-lg font-bold text-gray-800">{product.name}</h2>
-                <p className="text-gray-700">Price: {formatPrice(product.price)}</p>
+                <p className="text-gray-700">Price: {formatPrice(product.price - (product.price * (product.percentOff / 100)))}</p>
                 <p className="text-gray-700">Stock: {product.stock}</p>
-                <p className="text-gray-700">Category: {product.category}</p>
+                <p className="text-gray-700">percentOff: {product.percentOff}</p>
               </div>
               <div className="flex w-full md:w-auto items-center justify-end space-x-2 mt-4 md:mt-0">
                 <button onClick={() => handleEditClick(product)} className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">

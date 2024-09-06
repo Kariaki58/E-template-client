@@ -25,7 +25,7 @@ export const CartProvider = ({ children }) => {
       } else {
         const cartItems = JSON.parse(localStorage.getItem('items') || '[]');
         const totalPrice = cartItems.reduce((sum, item) => {
-          return sum + item.productId.price * item.quantity
+          return sum + (item.productId.price - (item.productId.price * (item.productId.percentOff / 100))) * item.quantity
            
         }, 0);
         const data = { _id: '1', userId: '1', items: cartItems, totalPrice };
@@ -70,8 +70,8 @@ export const CartProvider = ({ children }) => {
               quantity,
               size,
               color,
-              totalPrice: product.price,
-              price: product.price
+              totalPrice: product.price - ((product.percentOff / 100) * product.price),
+              price: product.price - ((product.percentOff / 100) * product.price)
             });
           }
           const totalPrice = updateCartTotalPrice(cart);
@@ -87,6 +87,7 @@ export const CartProvider = ({ children }) => {
   const clearCart = async () => {
     try {
       if (isAuth) {
+        // need the user cart id
         await axios.delete(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/cart/clear`, { withCredentials: true });
         setCartItems([]);
       } else {

@@ -111,6 +111,7 @@ const Checkout = () => {
           }
           
         } catch (error) {
+          console.log(error)
           toast.error('Payment verification failed');
         }
       },
