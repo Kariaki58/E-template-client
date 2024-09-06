@@ -31,12 +31,19 @@ const categoryOptions = [
   { value: 'toys', label: 'Toys' },
 ];
 
+const generateCouponCode = () => {
+  return `COUPON-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+};
+
 const ProductManagement = () => {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [editingProductId, setEditingProductId] = useState(null);
   const [updatedProduct, setUpdatedProduct] = useState({});
+  const [couponCode, setCouponCode] = useState("");
+  const [couponPercent, setCouponPercent] = useState("");
+
   const {
     loading,
     productImages,
@@ -57,6 +64,8 @@ const ProductManagement = () => {
       );
       setProducts(response.data.products);
       setTotalPages(Math.ceil(response.data.total / 10));
+      setCouponCode(response.data.products[0].coupon)
+      setCouponPercent(response.data.products[0].couponPercent)
     } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {
         toast.error(error.response.data.error);
@@ -175,7 +184,7 @@ const ProductManagement = () => {
         category: updatedProduct.category.value,
       };
   
-      const response = await axios.put(
+      await axios.put(
         `${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/product/edit`,
         updatedProductData,
         { withCredentials: true }
@@ -218,6 +227,41 @@ const ProductManagement = () => {
     setEditingProductId(null);
   };
 
+  const handleApplyCoupon = async () => {
+    try {
+      const selectedProductData = products.map(id => ( { productId: id._id, couponCode, couponPercent }))
+      
+      await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/coupons`, { coupons: selectedProductData }, { withCredentials: true });
+      toast.success('Coupon applied to selected products');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to apply coupon');
+    }
+  };
+
+  const handleCouponPercentChange = (e) => {
+    setCouponPercent(e.target.value);
+  };
+
+  const handleGenerateCoupon = () => {
+    setCouponCode(generateCouponCode());
+  };
+
+  const handleCouponInputChange = (e) => {
+    setCouponCode(e.target.value);
+  };
+
+  const removeCoupon = async () => {
+    try {
+      const respone = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/coupons/delete`, { couponCode, couponPercent }, { withCredentials: true })
+      toast.success(respone.data.message)
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to apply coupon');
+    } finally {
+      setCouponCode('')
+      setCouponPercent('')
+    }
+  }
+
   if (loading) {
     return (
       <div className='flex justify-center items-center mt-2'>
@@ -239,6 +283,44 @@ const ProductManagement = () => {
   return (
     <div className="">
       <h1 className="text-2xl font-bold mb-4 text-gray-800">Product Management</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 items-center space-x-4 mb-4">
+        <input
+          type="text"
+          value={couponCode}
+          onChange={handleCouponInputChange}
+          className="p-2 border border-gray-300 rounded-md"
+          placeholder="Enter Coupon Code"
+        />
+        <button
+          onClick={handleGenerateCoupon}
+          className="mt-5 md:mt-0 md:px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        >
+          Generate Coupon
+        </button>
+      </div>
+      <div className="mb-4">
+        <label className="block font-medium mb-2">Coupon Percent Off</label>
+        <input
+          type="number"
+          value={couponPercent}
+          onChange={handleCouponPercentChange}
+          className="p-2 border border-gray-300 rounded-md"
+          placeholder="Enter percent off"
+        />
+      </div>
+      <div className="mb-10">
+        <button
+          onClick={handleApplyCoupon}
+          className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 mr-5"
+        >
+          Apply Coupon
+        </button>
+        <button className="px-4 py-2 mt-5 md:mt-0 bg-red-700 text-white rounded-md hover:bg-red-500" onClick={removeCoupon}>
+          Remove Coupon
+        </button>
+      </div>
+
       {products.map((product, productIdx) => (
         <div key={product._id} className="mb-4">
           {editingProductId === product._id ? (
