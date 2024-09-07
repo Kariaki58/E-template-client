@@ -32,7 +32,12 @@ const ProductSections = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [loading, setLoading] = useState(true)
   const [showDetailsPrompt, setShowDetailsPrompt] = useState(false);
+  const [faq, setFaq] = useState([])
+  const [openIndex, setOpenIndex] = useState(null);
+  const [review, setReview] = useState([])
   const navigate = useNavigate();
+
+  const isAuth = useIsAuthenticated()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,6 +51,8 @@ const ProductSections = () => {
         const fetchedProduct = response.data.product;
         setProduct(fetchedProduct);
         setTotalPrice(fetchedProduct.price * quantity);
+        setFaq(response.data.faq.faq)
+        setReview(response.data.review)
 
         if (fetchedProduct.images && fetchedProduct.images.length > 0) {
           setSelectedImage(fetchedProduct.images[0]);
@@ -105,6 +112,10 @@ const ProductSections = () => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
+  const toggleAnswer = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
   if (loading) {
     return (
       <div className='flex justify-center items-center mt-20'>
@@ -123,6 +134,12 @@ const ProductSections = () => {
     )
   }
 
+  const calculateReviewAverage = () => {
+    const sum = review.reduce((total, data) => total + data.rating, 0);
+    const reviewAvg = Number(sum / review.length);
+
+    return reviewAvg
+  }
   const buttonClassNames = (isSelected) =>
     `px-4 py-2 rounded-lg border ${isSelected ? 'bg-blue-600 text-white' : 'bg-white text-gray-800'} hover:bg-blue-500 hover:text-white transition-all`;
 
@@ -132,7 +149,7 @@ const ProductSections = () => {
       <div className="max-w-7xl mx-auto">
         {product ? (
           <>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="relative">
                 <Carousel
                   showThumbs={true}
@@ -159,13 +176,49 @@ const ProductSections = () => {
               <div className="flex flex-col">
                 <h1 className="text-3xl lg:text-4xl font-extrabold mb-6 text-gray-800">{product.name}</h1>
                 <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-4 mb-6">
                   <div className="flex text-yellow-500">
                     {[...Array(5)].map((_, index) => (
-                      <IoStarSharp key={index} className="text-xl lg:text-2xl" />
+                      <IoStarSharp
+                        key={index}
+                        className={`text-3xl cursor-pointer transition-colors ${
+                          index < Math.round(calculateReviewAverage()) ? 'text-yellow-500' : 'text-gray-300'
+                        }`}
+                        aria-label={`Rate ${index + 1} stars`}
+                      />
                     ))}
                   </div>
-                  <p className="text-sm lg:text-base text-gray-600">{product.rating.count} Reviews</p>
+                  <p className="text-sm lg:text-base text-gray-600">{review.length} { (review.length === 1 || review.length === 0)? 'Review' : 'Reviews'}</p>
                 </div>
+              </div>
+                {
+                  (faq && faq.length > 0) ? (
+                    <div className="">
+                      <h2 className="text-2xl font-bold mb-4">FAQ</h2>
+                      <ul>
+                        {faq.map((item, index) => (
+                          <li key={index} className="border-b border-gray-200 mb-4">
+                            <div
+                              className="flex justify-between items-center py-3 cursor-pointer"
+                              onClick={() => toggleAnswer(index)}
+                            >
+                              <h3 className="text-lg font-medium">{item.question}</h3>
+                              <span className={`text-xl ${openIndex === index ? 'text-blue-600' : 'text-gray-500'} transition-transform`}>
+                                {openIndex === index ? '-' : '+'}
+                              </span>
+                            </div>
+                            {openIndex === index && (
+                              <div className="py-2">
+                                <p className="text-gray-700">{item.answer}</p>
+                              </div>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null
+                }
+
                 <div className="flex gap-4 mb-6 items-center">
                   <p className="text-2xl lg:text-3xl text-gray-800 font-bold">
                     Total Price: ${formatPrice(totalPrice - (product.price * (product.percentOff / 100)) )}
@@ -239,18 +292,26 @@ const ProductSections = () => {
               </div>
               <div className="mt-12">
                 <h2 className="text-2xl lg:text-3xl font-semibold mb-8 text-gray-800">Customer Reviews</h2>
-                <ReviewList reviews={product.reviews} />
+                <ReviewList />
                 {writeReview ? (
                   <ReviewForm setWriteReview={setWriteReview} productId={params.id} />
                 ) : (
-                  <button
-                    onClick={() => setWriteReview(true)}
-                    className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                  >
-                    Write a Review
-                  </button>
+                  isAuth ? (
+                    <div>
+                      <h2 className="text-2xl font-semibold mb-4 text-gray-900">
+                        Submit Your Review
+                      </h2>
+                      <button
+                        onClick={() => setWriteReview(true)}
+                        className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                      >
+                        Write a Review
+                      </button>
+                    </div>
+                  ) : null
                 )}
               </div>
+
             </div>
           </>
         ) : (

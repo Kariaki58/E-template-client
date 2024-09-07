@@ -82,7 +82,7 @@ const EmailList = () => {
   return (
     <div className='container mx-auto p-8 bg-white shadow-lg rounded-lg'>
       <h1 className='text-3xl font-bold mb-6 text-gray-800'>Email List</h1>
-      <div className='flex flex-col lg:flex-row gap-8'>
+      <div className='flex flex-col lg:flex-row gap-8 flex-1'>
         {/* Email Form Section */}
         <div className='flex-1 bg-gray-50 p-8 rounded-lg shadow-md'>
           <h2 className='text-2xl font-semibold mb-6 text-gray-800'>Send Email</h2>
@@ -134,7 +134,7 @@ const EmailList = () => {
         </div>
 
         {/* Email List Section */}
-        <div className='flex-1 bg-gray-50 p-8 rounded-lg shadow-md'>
+        <div className='bg-gray-50 p-8 rounded-lg shadow-md'>
           <h2 className='text-2xl font-semibold mb-6 text-gray-800'>Manage Email List</h2>
           <ul className='list-disc list-inside space-y-2'>
             {emails.map((email, index) => (

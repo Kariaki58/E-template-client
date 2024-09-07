@@ -123,9 +123,6 @@ const ReviewForm = ({ setWriteReview, productId }) => {
 
   return (
     <div className="w-full max-w-lg p-6 rounded-lg">
-      <h2 className="text-2xl font-semibold mb-4 text-gray-900">
-        Submit Your Review
-      </h2>
       {isAuthenticated && (
         <>
           <form onSubmit={handleSubmit}>

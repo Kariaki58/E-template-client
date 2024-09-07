@@ -21,6 +21,8 @@ export const ProductUploadProvider = ({ children }) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [total, setTotal] = useState(0)
+  const [faqItems, setFaqItems] = useState([]);
+
 
 
   const uploadFile = async (file, type, timestamp, signature) => {
@@ -101,6 +103,7 @@ export const ProductUploadProvider = ({ children }) => {
           features: [],
           rating: {},
           category: selectedCategory ? selectedCategory.value : '',
+          faqItems
         },
         { withCredentials: true }
       );
@@ -274,7 +277,9 @@ export const ProductUploadProvider = ({ children }) => {
         setImagePreviews,
         total,
         setFilteredProducts,
-        setProducts
+        setProducts,
+        faqItems,
+        setFaqItems
       }}
     >
       {children}

@@ -5,7 +5,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useDropzone } from 'react-dropzone';
 import { FaTrash } from 'react-icons/fa';
-
+import Accordion from './Accordion'; // Import the updated Accordion component
 
 const sizeOptions = [
   { value: 'S', label: 'S' },
@@ -49,9 +49,10 @@ const Products = () => {
     loading,
     handleSubmit,
     imagePreviews,
-    setImagePreviews
+    setImagePreviews,
+    faqItems,
+    setFaqItems
   } = useProductUpload();
-
 
   const [images, setImages] = useState([]);
 
@@ -177,6 +178,8 @@ const Products = () => {
             />
           </div>
         </div>
+
+        <Accordion faqItems={faqItems} setFaqItems={setFaqItems} />
 
         <button
           type="submit"
