@@ -46,12 +46,26 @@ const EmailList = () => {
 
   const handleSendEmail = async () => {
     setSending(true);
+    if (emailContent.subject === '') {
+      setSending(false)
+      toast.error('subject is required')
+      return
+    }
+    if (emailContent.message === '') {
+      setSending(false)
+      toString.error('message is required')
+      return
+    }
     try {
       await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/send-email`, emailContent, { withCredentials: true });
       toast.success('Emails sent successfully!');
-      setEmailContent({ subject: '', message: '' }); // Clear content after sending
+      setEmailContent({ subject: '', message: '' });
     } catch (err) {
-      toast.error('Failed to send emails');
+      if (err.response && error.response.data) {
+        toast.error(err.response.data.error)
+      } else {
+        toast.error('Failed to send emails');
+      }
     } finally {
       setSending(false);
     }
