@@ -19,10 +19,16 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const { cartItems, loading: cartloading } = useContext(CartContext);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('payStack');
-  const isAuth = useIsAuthenticated();
+  const [selectedLocation, setSelectedLocation] = useState('');
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
-  const [shippingFee, setShippingFee] = useState(1000);
+  const [shippingFee, setShippingFee] = useState(0);
+  const isAuth = useIsAuthenticated();
+
+  const locations = [
+    { place: 'Nigeria', amount: 1000 },
+    { place: 'Ghana', amount: 3000 }
+  ];
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(price);
@@ -44,16 +50,7 @@ const Checkout = () => {
       try {
         setLoading(true);
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/address`, { withCredentials: true });
-        const {
-          address,
-          city,
-          state,
-          zipCode,
-          country,
-          phoneNumber,
-          email,
-          name,
-        } = response.data.message;
+        const { address, city, state, zipCode, country, phoneNumber, email, name } = response.data.message;
 
         setShippingDetails({
           name,
@@ -82,6 +79,13 @@ const Checkout = () => {
       ...prevDetails,
       [name]: value,
     }));
+  };
+
+  const handleLocationChange = (e) => {
+    const location = e.target.value;
+    setSelectedLocation(location);
+    const selectedFee = locations.find(loc => loc.place === location)?.amount || 0;
+    setShippingFee(selectedFee);
   };
 
   const calculateTotalAmount = () => {
@@ -198,6 +202,19 @@ const Checkout = () => {
             >
               Apply Coupon
             </button>
+          </div>
+          <div className="mt-4">
+            <h3 className="text-lg font-semibold">Pick up Location</h3>
+            <select
+              value={selectedLocation}
+              onChange={handleLocationChange}
+              className="border py-2 px-4 rounded-md w-full bg-gray-100 focus:ring-2 focus:ring-gray-500 outline-none"
+            >
+              <option value="">Select Location</option>
+              {locations.map((location, index) => (
+                <option key={index} value={location.place}>{location.place}</option>
+              ))}
+            </select>
           </div>
           <div className="flex justify-between items-center mt-4 pt-4">
             <span className="text-lg md:text-xl font-semibold">Shipping Fee:</span>

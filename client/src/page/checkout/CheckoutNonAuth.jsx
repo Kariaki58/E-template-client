@@ -24,7 +24,16 @@ const CheckoutNonAuth = () => {
 
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0); // percentage discount
-  const [shippingFee, setShippingFee] = useState(1000);
+  const [shippingFee, setShippingFee] = useState([
+    {
+      place: 'Nigeria',
+      amount: 1000
+    },
+    {
+      place: 'ganna',
+      amount: 3000
+    }
+  ]);
 
   const getQueryParams = () => {
     const queryParams = new URLSearchParams(window.location.search);
