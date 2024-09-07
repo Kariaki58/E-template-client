@@ -259,10 +259,10 @@ const CheckoutNonAuth = () => {
           </div>
           <button
             type="submit"
-            className="mt-6 w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-500 transition duration-150"
+            className="mt-6 w-full bg-gray-800 text-white py-3 rounded-lg hover:bg-gray-600 transition duration-150"
             disabled={loading}
           >
-            {loading ? 'Processing...' : 'Complete Payment'}
+            {loading ? 'Processing...' : 'Place Order'}
           </button>
         </form>
       </div>
