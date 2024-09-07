@@ -39,7 +39,8 @@
     "react-router-dom": "^6.26.0",
     "react-select": "^5.8.0",
     "react-toastify": "^10.0.5",
-    "recharts": "^2.12.7"
+    "recharts": "^2.12.7",
+    "rsuite": "^5.70.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

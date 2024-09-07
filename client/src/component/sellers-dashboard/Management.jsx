@@ -8,6 +8,8 @@ import { useDropzone } from "react-dropzone";
 import { FaTrash } from 'react-icons/fa';
 import { RotatingLines } from 'react-loader-spinner'
 import { Toaster, toast } from 'react-hot-toast';
+import { DatePicker } from 'rsuite';
+import 'rsuite/dist/rsuite.min.css';
 
 
 const sizeOptions = [
@@ -43,6 +45,11 @@ const ProductManagement = () => {
   const [updatedProduct, setUpdatedProduct] = useState({});
   const [couponCode, setCouponCode] = useState("");
   const [couponPercent, setCouponPercent] = useState("");
+  const [date, setDate] = useState(null);
+
+  const handleDateChange = (value) => {
+    setDate(value);
+  };
 
   const {
     loading,
@@ -134,6 +141,7 @@ const ProductManagement = () => {
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(price);
   };
+
 
   const uploadFile = async (file, type, timestamp, signature) => {
     const folder = type === "image" ? "images" : "videos";
@@ -228,10 +236,26 @@ const ProductManagement = () => {
   };
 
   const handleApplyCoupon = async () => {
+    if (!date) {
+      toast.error('date is required')
+      return
+    }
+    if (!couponCode) {
+      toast.error('code is required')
+      return
+    }
+    if (!couponPercent) {
+      toast.error('coupon percent is required')
+      return
+    }
+    if (Number(couponPercent) < 1) {
+      toast.error('coupon must be greater than zero')
+      return
+    }
     try {
       const selectedProductData = products.map(id => ( { productId: id._id, couponCode, couponPercent }))
       
-      await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/coupons`, { coupons: selectedProductData }, { withCredentials: true });
+      await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/coupons`, { coupons: selectedProductData, date }, { withCredentials: true });
       toast.success('Coupon applied to selected products');
     } catch (error) {
       toast.error(error.response?.data?.error || 'Failed to apply coupon');
@@ -259,6 +283,7 @@ const ProductManagement = () => {
     } finally {
       setCouponCode('')
       setCouponPercent('')
+      setDate(null)
     }
   }
 
@@ -284,42 +309,63 @@ const ProductManagement = () => {
     <div className="">
       <h1 className="text-2xl font-bold mb-4 text-gray-800">Product Management</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 items-center space-x-4 mb-4">
-        <input
-          type="text"
-          value={couponCode}
-          onChange={handleCouponInputChange}
-          className="p-2 border border-gray-300 rounded-md"
-          placeholder="Enter Coupon Code"
-        />
-        <button
-          onClick={handleGenerateCoupon}
-          className="mt-5 md:mt-0 md:px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        >
-          Generate Coupon
-        </button>
-      </div>
-      <div className="mb-4">
-        <label className="block font-medium mb-2">Coupon Percent Off</label>
-        <input
-          type="number"
-          value={couponPercent}
-          onChange={handleCouponPercentChange}
-          className="p-2 border border-gray-300 rounded-md"
-          placeholder="Enter percent off"
-        />
-      </div>
-      <div className="mb-10">
-        <button
-          onClick={handleApplyCoupon}
-          className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 mr-5"
-        >
-          Apply Coupon
-        </button>
-        <button className="px-4 py-2 mt-5 md:mt-0 bg-red-700 text-white rounded-md hover:bg-red-500" onClick={removeCoupon}>
-          Remove Coupon
-        </button>
-      </div>
+      <div className="space-y-6 mb-10">
+  {/* Coupon Code Input and Generate Button */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+    <input
+      type="text"
+      value={couponCode}
+      onChange={handleCouponInputChange}
+      className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-200"
+      placeholder="Enter Coupon Code"
+    />
+    <button
+      onClick={handleGenerateCoupon}
+      className="w-full md:w-auto px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-200"
+    >
+      Generate Coupon
+    </button>
+  </div>
+
+  {/* Coupon Percent and Expiration Date */}
+  <div className="flex flex-col md:flex-row items-center gap-8">
+    <div className="w-full md:w-auto">
+      <label className="block text-lg font-medium text-gray-700 mb-2">Coupon Percent Off</label>
+      <input
+        type="number"
+        value={couponPercent}
+        onChange={handleCouponPercentChange}
+        className="p-3 border border-gray-300 rounded-lg w-full focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-200"
+        placeholder="Enter percent off"
+      />
+    </div>
+    <div className="w-full md:w-auto">
+      <h1 className="block text-lg font-medium text-gray-700 mb-2">Select Coupon Expiration Date</h1>
+      <DatePicker 
+        value={date} 
+        onChange={handleDateChange} 
+        className="w-full p-3 rounded-lg border border-gray-300 focus:border-blue-500 shadow-sm focus:ring-2 focus:ring-blue-400 transition duration-200"
+      />
+    </div>
+  </div>
+
+  {/* Apply and Remove Coupon Buttons */}
+  <div className="flex items-center space-x-4">
+    <button
+      onClick={handleApplyCoupon}
+      className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:ring-2 focus:ring-green-400 transition duration-200"
+    >
+      Apply Coupon
+    </button>
+    <button
+      onClick={removeCoupon}
+      className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:ring-2 focus:ring-red-400 transition duration-200"
+    >
+      Remove Coupon
+    </button>
+    </div>
+  </div>
+
 
       {products.map((product, productIdx) => (
         <div key={product._id} className="mb-4">
