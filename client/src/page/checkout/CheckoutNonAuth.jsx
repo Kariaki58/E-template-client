@@ -18,58 +18,32 @@ const CheckoutNonAuth = () => {
   });
   const [product, setProduct] = useState(null);
   const [totalAmount, setTotalAmount] = useState(0);
-  const { id: productId } = useParams();
-  const isAuth = useIsAuthenticated();
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [shippingFee, setShippingFee] = useState(0);
   const [loading, setLoading] = useState(false);
-
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0); // percentage discount
-  const [shippingFee, setShippingFee] = useState([
-    {
-      place: 'Nigeria',
-      amount: 1000
-    },
-    {
-      place: 'ganna',
-      amount: 3000
-    }
-  ]);
+  const { id: productId } = useParams();
+  const isAuth = useIsAuthenticated();
 
-  const getQueryParams = () => {
-    const queryParams = new URLSearchParams(window.location.search);
-    return {
-      color: queryParams.get('color'),
-      size: queryParams.get('size'),
-      quantity: queryParams.get('quantity'),
-    };
-  };
-
-  const handleCouponApply = async () => {
-    try {
-      const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/apply-coupon`, { couponCode });
-      const { discount } = response.data;
-      setDiscount(discount);
-      toast.success('Coupon applied successfully!');
-    } catch (error) {
-      toast.error(error.response?.data.error || 'Failed to apply coupon.');
-    }
-  };
-
-  const { color, size, quantity } = getQueryParams();
+  const locations = [
+    { place: 'Nigeria', amount: 1000 },
+    { place: 'Ghana', amount: 3000 }
+  ];
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/products/${productId}`, { withCredentials: true });
         setProduct(response.data.product);
-        setTotalAmount(response.data.product.price * quantity); // Adjust total based on quantity
+        setTotalAmount(response.data.product.price * (getQueryParams().quantity || 1)); // Adjust total based on quantity
       } catch (error) {
         toast.error('Error fetching product details');
       }
     };
 
     fetchProduct();
-  }, [productId, quantity]);
+  }, [productId]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,6 +72,35 @@ const CheckoutNonAuth = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const location = locations.find(loc => loc.place === selectedLocation);
+    if (location) setShippingFee(location.amount);
+  }, [selectedLocation]);
+
+  const getQueryParams = () => {
+    const queryParams = new URLSearchParams(window.location.search);
+    return {
+      color: queryParams.get('color'),
+      size: queryParams.get('size'),
+      quantity: queryParams.get('quantity'),
+    };
+  };
+
+  const handleCouponApply = async () => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/apply-coupon`, { couponCode });
+      const { discount } = response.data;
+      setDiscount(discount);
+      toast.success('Coupon applied successfully!');
+    } catch (error) {
+      toast.error(error.response?.data.error || 'Failed to apply coupon.');
+    }
+  };
+
+  const handleLocationChange = (e) => {
+    setSelectedLocation(e.target.value);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setShippingDetails((prevDetails) => ({
@@ -112,7 +115,7 @@ const CheckoutNonAuth = () => {
 
   const calculateDiscountedPrice = () => {
     if (!product) return 0;
-    const productTotal = product.price * quantity;
+    const productTotal = product.price * (getQueryParams().quantity || 1);
     const discountAmount = productTotal * (discount / 100);
     return productTotal - discountAmount;
   };
@@ -136,9 +139,9 @@ const CheckoutNonAuth = () => {
             if (isAuth) {
               const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/place`, {
                 productId,
-                color,
-                size,
-                quantity,
+                color: getQueryParams().color,
+                size: getQueryParams().size,
+                quantity: getQueryParams().quantity,
                 shippingDetails,
                 status: 'Paid',
                 couponCode
@@ -182,8 +185,8 @@ const CheckoutNonAuth = () => {
               <ul className="space-y-4">
                 <li className="flex justify-between items-center border-b pb-3">
                   <img src={product.images[0]} className="h-16 w-16 object-cover rounded-md" alt={product.name} />
-                  <span className="text-lg font-medium">{quantity} x {formatPrice(product.price)}</span>
-                  <span className="text-lg font-medium">{formatPrice(product.price * quantity)}</span>
+                  <span className="text-lg font-medium">{(getQueryParams().quantity || 1)} x {formatPrice(product.price)}</span>
+                  <span className="text-lg font-medium">{formatPrice(product.price * (getQueryParams().quantity || 1))}</span>
                 </li>
               </ul>
             </div>
@@ -193,6 +196,19 @@ const CheckoutNonAuth = () => {
         </div>
         {/* Shipping and Coupon Section */}
         <div className="rounded-lg bg-white p-6 shadow-lg">
+          <div className="mt-4">
+            <h3 className="text-xl font-semibold text-gray-800">Pick up Location</h3>
+            <select
+              value={selectedLocation}
+              onChange={handleLocationChange}
+              className="border rounded-md py-2 px-4 mt-2 w-full bg-gray-100 focus:ring-2 focus:ring-gray-500 outline-none"
+            >
+              <option value="">Select your location</option>
+              {locations.map((loc) => (
+                <option key={loc.place} value={loc.place}>{loc.place}</option>
+              ))}
+            </select>
+          </div>
           <div className="mt-4">
             <h3 className="text-xl font-semibold text-gray-800">Coupon Code</h3>
             <input
