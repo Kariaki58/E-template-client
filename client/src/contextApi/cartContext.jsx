@@ -92,11 +92,10 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const clearCart = async () => {
+  const clearCart = async (id) => {
     try {
       if (isAuth) {
-        // need the user cart id
-        await axios.delete(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/cart/clear`, { withCredentials: true });
+        await axios.delete(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/cart/${id}`, { withCredentials: true });
         setCartItems([]);
       } else {
         localStorage.removeItem('items');

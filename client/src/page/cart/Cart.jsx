@@ -42,10 +42,6 @@ const CartPage = () => {
     if (error) {
         return <div className='text-red-700 text-2xl'>error</div>
     }
-
-    useEffect(() => {
-        fetchCartItems()
-    }, [])
     
     return (
         <div className="container mx-auto p-4 sm:p-8 min-h-screen">
