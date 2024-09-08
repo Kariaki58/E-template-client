@@ -28,6 +28,7 @@ import PaymentPlan from './page/billing/Offer'
 import About from './page/about/About'
 import Contact from './page/contact/Contact'
 import Faq from './page/faq/Faq'
+import AbondonCart from './component/sellers-dashboard/AbondonCart'
 
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
                 <Route path='products' element={<Products />} />
                 <Route path='emails' element={<Email />} />
                 <Route path='products/management' element={<Management />} />
+                <Route path='products/abandon/cart' element={<AbondonCart />} />
               </Route>
             </Route>
           </Routes>

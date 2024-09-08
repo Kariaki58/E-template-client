@@ -27,7 +27,11 @@ const Navigation = () => {
       openModal(true)
     }
 
-    if (user && user.isAdmin && (location.pathname.includes('/dashboard/user'))) {
+    if (user && (user.isAdmin && (location.pathname === '/cart'))) {
+      navigate('/dashboard/admin')
+    }
+
+    if (user && (user.isAdmin && (location.pathname.includes('/dashboard/user')))) {
       navigate('/dashboard/admin')
     }
     if (user && (location.pathname === '/dashboard/admin' && !user.isAdmin)) {
@@ -70,11 +74,16 @@ const Navigation = () => {
           </div>
         </li>
         <li className="flex items-center gap-6">
-          <div className="flex items-center">
-              <Link to='/cart'>
-                <PiShoppingCartLight className="hover:text-blue-500 transition duration-200 cursor-pointer text-2xl" />
-            </Link>
-          </div>
+          {
+            !user || (!user.isAdmin) ? (
+              <div className="flex items-center">
+                  <Link to='/cart'>
+                    <PiShoppingCartLight className="hover:text-blue-500 transition duration-200 cursor-pointer text-2xl" />
+                </Link>
+              </div>
+            ) : <></>
+          }
+          
           <div className="flex items-center relative">
             <GoPerson className="hover:text-blue-500 transition duration-200 cursor-pointer text-2xl" onClick={() => setIsOpen(prev => !prev)}/>
             {

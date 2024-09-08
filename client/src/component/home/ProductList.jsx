@@ -10,6 +10,7 @@ import './ProductList.css';
 import { RotatingLines } from 'react-loader-spinner'
 import { EmailPopUp } from './Footer';
 import ScrollToTop from '../../ScrollToTop';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 
 const cld = new Cloudinary({
@@ -39,6 +40,7 @@ const ProductList = () => {
   const [productsPerPage] = useState(10);
   const isAuthenticated = useIsAuthenticated();
   const [display, setDisplay] = useState(false);
+  const user = useAuthUser()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -222,14 +224,19 @@ const ProductList = () => {
                   ) : <></>
                 }
               </div>
-                <div className="flex justify-center mt-auto">
-                  <button
-                    className="border text-black border-gray-950 hover:text-white py-2 px-4 rounded-lg sm:text-xl hover:bg-gray-950 w-60"
-                    onClick={() => handleAddToCart(data)}
-                  >
-                    Add to Cart
-                  </button>
-                </div>
+                {
+                  !user || (!user.isAdmin) ? (
+                    <div className="flex justify-center mt-auto">
+                      <button
+                        className="border text-black border-gray-950 hover:text-white py-2 px-4 rounded-lg sm:text-xl hover:bg-gray-950 w-60"
+                        onClick={() => handleAddToCart(data)}
+                      >
+                        Add to Cart
+                      </button>
+                    </div>
+                  ) : <></>
+                }
+                
             </div>
           ))}
         </div>

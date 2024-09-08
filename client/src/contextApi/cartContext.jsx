@@ -54,7 +54,6 @@ export const CartProvider = ({ children }) => {
         );
         setCartItems(response.data.cart);
       } else {
-        console.log(currentPage)
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}?page=${currentPage}`, { withCredentials: true });
         const product = response.data.message.find((item) => item._id === productId);
 

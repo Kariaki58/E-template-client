@@ -12,6 +12,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { RotatingLines } from 'react-loader-spinner'
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { ProductUploadContext } from '../../contextApi/ProductContext';
 
 
@@ -38,6 +39,8 @@ const ProductSections = () => {
   const [openIndex, setOpenIndex] = useState(null);
   const [review, setReview] = useState([])
   const navigate = useNavigate();
+
+  const user = useAuthUser()
 
 
   const isAuth = useIsAuthenticated()
@@ -271,20 +274,26 @@ const ProductSections = () => {
                     />
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4 mt-6">
-                  <button
-                    onClick={handleAddToCart}
-                    className="w-full sm:w-auto bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
-                  >
-                    Add to Cart
-                  </button>
-                  <button
-                    onClick={handleCheckout}
-                    className="w-full sm:w-auto bg-gray-950 text-white py-2 px-4 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all"
-                  >
-                    Place Order
-                  </button>
-                </div>
+                {
+                  !user || !user.isAdmin ? (
+                    <div className="flex flex-col sm:flex-row gap-4 mt-6">
+                  
+                      <button
+                        onClick={handleAddToCart}
+                        className="w-full sm:w-auto bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
+                      >
+                        Add to Cart
+                      </button>
+                      <button
+                        onClick={handleCheckout}
+                        className="w-full sm:w-auto bg-gray-950 text-white py-2 px-4 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all"
+                      >
+                        Place Order
+                      </button>
+                    </div>
+                  ) : <></>
+                }
+                
               </div>
             </div>
 

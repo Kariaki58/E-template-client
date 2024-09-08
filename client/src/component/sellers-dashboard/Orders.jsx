@@ -14,7 +14,7 @@ const Orders = () => {
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [isCustomEmailModalOpen, setIsCustomEmailModalOpen] = useState(false);
   const [customTemplate, setCustomTemplate] = useState('');
-  const [statusLoading, setStatusLoading] = useState(false); // Track status update loading
+  const [statusLoading, setStatusLoading] = useState(false); 
   
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);

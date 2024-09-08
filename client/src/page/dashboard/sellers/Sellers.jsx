@@ -64,6 +64,12 @@ const Sellers = () => {
               <p className='hidden md:block'>Management</p>
             </li>
           </Link>
+          <Link to='/dashboard/admin/products/abandon/cart'>
+            <li className='flex items-center text-xl gap-4 mt-3 cursor-pointer bg-gray-950 text-white sm:bg-gray-950 sm:text-white rounded-lg p-4'>
+              <BsCartCheck className='text-2xl' />
+              <p className='hidden md:block'>Abandon Cart</p>
+            </li>
+          </Link>
           <Link to="/dashboard/admin/emails">
             <li className="flex items-center text-xl gap-4 mt-3 cursor-pointer text-white bg-gray-950 sm:bg-gray-950 sm:text-white rounded-lg p-4">
               <FaRegAddressBook className="text-2xl" />
