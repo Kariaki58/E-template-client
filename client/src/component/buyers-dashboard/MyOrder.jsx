@@ -28,12 +28,12 @@ const MyOrder = () => {
     const doc = new jsPDF();
     doc.text('My Orders', 20, 10);
 
-    const tableColumn = ['Product ID', 'Size', 'Color', 'Quantity', 'Price'];
+    const tableColumn = ['Product Name', 'Size', 'Color', 'Quantity', 'Price'];
     const tableRows = [];
 
     orders.forEach(order => {
       const orderData = [
-        order._id,
+        order.productName,
         order.size,
         order.color,
         order.quantity,
@@ -81,7 +81,7 @@ const MyOrder = () => {
             <table className="min-w-full bg-white border-collapse">
               <thead className="bg-gray-100">
                 <tr className="text-gray-800">
-                  <th className="py-2 px-2 sm:px-4 text-left">Product ID</th>
+                  <th className="py-2 px-2 sm:px-4 text-left">Product Name</th>
                   <th className="py-2 px-2 sm:px-4 text-left">Size</th>
                   <th className="py-2 px-2 sm:px-4 text-left">Color</th>
                   <th className="py-2 px-2 sm:px-4 text-left">Quantity</th>
@@ -90,7 +90,7 @@ const MyOrder = () => {
               </thead>
               <tbody>
                 <tr className="border-t text-gray-800">
-                  <td className="py-2 px-2 sm:px-4">{order._id}</td>
+                  <td className="py-2 px-2 sm:px-4">{order.productName}</td>
                   <td className="py-2 px-2 sm:px-4">{order.size}</td>
                   <td className="py-2 px-2 sm:px-4">{order.color}</td>
                   <td className="py-2 px-2 sm:px-4">{order.quantity}</td>

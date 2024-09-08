@@ -97,6 +97,12 @@ const Checkout = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (selectedLocation === '') {
+      toast.error('Please select a pickup location before placing the order.');
+      return;
+    }
+
     const totalAmountBeforeDiscount = calculateTotalAmount();
     const discountedAmount = totalAmountBeforeDiscount * (1 - discount / 100);
     const totalAmount = discountedAmount + shippingFee;
@@ -124,19 +130,21 @@ const Checkout = () => {
         try {
           if (isAuth) {
             const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order`,
-              { cartId: cartItems._id, shippingDetails, status: transaction.status }, { withCredentials: true }
+              { cartId: cartItems._id, shippingDetails, status: transaction.status, totalAmount }, { withCredentials: true }
             );
             toast.success(response.data.message);
           } else {
             const getLocalCart = JSON.parse(localStorage.getItem('items') || '[]');
-            const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/add`, { cart: getLocalCart, shippingDetails, status: transaction.status, couponCode });
+            const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/add`, { cart: getLocalCart, shippingDetails, status: transaction.status, couponCode, totalAmount });
             if (response.data.error) {
               toast.error(response.data.error);
             } else { 
               toast.success(response.data.message);
+              localStorage.setItem('items', [])
             }
           }
         } catch (error) {
+          console.log(error)
           toast.error(error.response?.data.error || 'Payment verification failed');
         }
       },

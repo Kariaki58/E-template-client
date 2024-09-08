@@ -54,20 +54,17 @@ const Products = () => {
     setFaqItems
   } = useProductUpload();
 
-  const [images, setImages] = useState([]);
-
   const onDrop = async (acceptedFiles) => {
-    setImages([...images, ...acceptedFiles]);
-    setImagePreviews([...imagePreviews, ...acceptedFiles.map(file => URL.createObjectURL(file))]);
-    setProductImages(prev => [...productImages, ...Array.from(acceptedFiles)])
+    const newPreviews = acceptedFiles.map(file => URL.createObjectURL(file)); // URL for preview
+    setImagePreviews([...imagePreviews, ...newPreviews]); // Update image previews
+    setProductImages(prev => [...productImages, ...acceptedFiles]); // Keep raw files for upload
   };
 
   const removeImage = (index) => {
-    const newImages = images.filter((_, i) => i !== index);
-    const newImagePreviews = imagePreviews.filter((_, i) => i !== index);
-    setImages(newImages);
-    setImagePreviews(newImagePreviews);
-    setProductImages(prev => newImagePreviews)
+    const updatedImagePreviews = imagePreviews.filter((_, i) => i !== index);
+    const updatedProductImages = productImages.filter((_, i) => i !== index);
+    setImagePreviews(updatedImagePreviews);
+    setProductImages(updatedProductImages);
   };
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: 'image/*', multiple: true });

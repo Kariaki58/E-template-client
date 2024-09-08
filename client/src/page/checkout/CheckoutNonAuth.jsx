@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import PaystackPop from '@paystack/inline-js';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { Toaster, toast } from 'react-hot-toast';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
+
 
 const CheckoutNonAuth = () => {
   const [shippingDetails, setShippingDetails] = useState({
@@ -23,8 +24,10 @@ const CheckoutNonAuth = () => {
   const [loading, setLoading] = useState(false);
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0); // percentage discount
-  const { id: productId } = useParams();
+  const { id: productId} = useParams();
   const isAuth = useIsAuthenticated();
+  const [searchParams] = useSearchParams();
+
 
   const locations = [
     { place: 'Nigeria', amount: 1000 },
@@ -63,7 +66,6 @@ const CheckoutNonAuth = () => {
           phone: phoneNumber,
         });
       } catch (error) {
-        toast.error('Error fetching shipping details');
       } finally {
         setLoading(false);
       }
@@ -127,6 +129,11 @@ const CheckoutNonAuth = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (selectedLocation === '') {
+      toast.error('Please select a pickup location before placing the order.');
+      return;
+    }
+
     const popup = new PaystackPop();
     try {
       popup.newTransaction({
@@ -143,18 +150,26 @@ const CheckoutNonAuth = () => {
                 size: getQueryParams().size,
                 quantity: getQueryParams().quantity,
                 shippingDetails,
-                status: 'Paid',
-                couponCode
+                couponCode,
+                totalAmount: calculateTotalAmount() * 100
               }, { withCredentials: true });
               toast.success(response.data.message);
             } else {
-              const getLocalCart = JSON.parse(localStorage.getItem('items') || '[]');
-              const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/add`, {
-                cart: getLocalCart,
-                status: transaction.success,
+              const color = searchParams.get('color');
+              const size = searchParams.get('size');
+              const quantity = searchParams.get('quantity');
+
+              const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/place`, {
+                productId,
+                color,
+                size,
+                quantity,
                 shippingDetails,
-              });
+                couponCode,
+                totalAmount: calculateTotalAmount() * 100
+              }, { withCredentials: true });
               toast.success(response.data.message);
+              localStorage.setItem('items', [])
             }
           } catch (error) {
             const errorMessage = error.response?.data?.error || 'Payment verification failed';

@@ -304,7 +304,7 @@ const ProductManagement = () => {
   }
 
   return (
-    <div className="">
+    <div className="h-screen">
       <h1 className="text-2xl font-bold mb-4 text-gray-800">Product Management</h1>
 
       <div className="space-y-6 mb-10">
@@ -363,8 +363,6 @@ const ProductManagement = () => {
     </button>
     </div>
   </div>
-
-
       {products.map((product, productIdx) => (
         <div key={product._id} className="mb-4">
           {editingProductId === product._id ? (

@@ -19,7 +19,8 @@ const useEmailSubscription = () => {
                 toast.error(response.data.error);
             } else {
                 toast.success(response.data.message);
-                if (onSuccess) onSuccess();
+                localStorage.setItem('is-sub', false);
+                if (onSuccess) onSuccess(); // Trigger onSuccess callback on successful subscription
             }
         } catch (error) {
             const errorMessage = error.response?.data?.error || "Please try again!";
@@ -53,9 +54,14 @@ const EmailForm = ({ email, setEmail, handleSubscribe, loading, buttonText }) =>
 );
 
 export const EmailPopUp = () => {
-    const [isPopupVisible, setIsPopupVisible] = useState(true);
+    const [isPopupVisible, setIsPopupVisible] = useState((JSON.parse(localStorage.getItem('is-sub')) === undefined));
     const [email, setEmail] = useState('');
     const { loading, handleSubscribe } = useEmailSubscription();
+
+    const handleSuccess = () => {
+        setEmail(''); // Clear the email field
+        setIsPopupVisible(false); // Close the popup
+    };
 
     return (
         <>
@@ -75,7 +81,7 @@ export const EmailPopUp = () => {
                         <EmailForm
                             email={email}
                             setEmail={setEmail}
-                            handleSubscribe={handleSubscribe}
+                            handleSubscribe={(email) => handleSubscribe(email, handleSuccess)}
                             loading={loading}
                             buttonText="Get Access Now"
                         />
@@ -88,7 +94,6 @@ export const EmailPopUp = () => {
         </>
     );
 };
-
 const SocialLink = ({ href, src, alt }) => (
     <Link to={href} className="text-gray-400 hover:text-white transition duration-300">
         <img src={src} alt={alt} width={40} height={40} className='rounded-full' />

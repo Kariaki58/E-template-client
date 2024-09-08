@@ -85,7 +85,7 @@ const Orders = () => {
       alert('Please enter a message');
       return;
     }
-    handleStatusChange(selectedOrder._id, 'Cancelled', customTemplate); // Pass orderId, status, and custom template
+    handleStatusChange(selectedOrder._id, 'Cancelled', customTemplate);
     onClose();
   };
 
@@ -115,7 +115,7 @@ const Orders = () => {
         <table className="w-full border-collapse overflow-x-auto">
           <thead>
             <tr className="bg-gray-100">
-              <th className="py-2 px-4 text-left whitespace-nowrap text-gray-800">Order ID</th>
+              <th className="py-2 px-4 text-left whitespace-nowrap text-gray-800">Product Name</th>
               <th className="py-2 px-4 text-left whitespace-nowrap text-gray-800">User</th>
               <th className="py-2 px-4 text-left whitespace-nowrap text-gray-800">Total Amount</th>
               <th className="py-2 px-4 text-left whitespace-nowrap text-gray-800">Qty</th>
@@ -128,7 +128,7 @@ const Orders = () => {
           <tbody>
             {orders.map((order) => (
               <tr key={order._id} className="border-t">
-                <td className="py-2 px-4 whitespace-nowrap text-gray-700">{order._id}</td>
+                <td className="py-2 px-4 whitespace-nowrap text-gray-700">{order.productName}</td>
                 <td
                   className="py-2 px-4 cursor-pointer underline whitespace-nowrap text-gray-700"
                   onClick={() => fetchUserAddress(order)}

@@ -285,7 +285,7 @@ const ProductSections = () => {
               </div>
             </div>
 
-            <div className="mt-12">
+            <div className="mt-3 container max-w-5xl mx-auto">
               <h2 className="text-2xl lg:text-3xl font-semibold mb-8 text-gray-800">Product Details</h2>
               <div className="product-details text-base lg:text-lg text-gray-700 leading-relaxed">
                 <p dangerouslySetInnerHTML={{ __html: product.description }} />

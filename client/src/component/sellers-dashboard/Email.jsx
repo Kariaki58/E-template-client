@@ -18,7 +18,6 @@ const EmailList = () => {
     const fetchEmails = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/email`, { withCredentials: true });
-
         if (response.data.error) {
           throw new Error(response.data.error);
         }
@@ -138,7 +137,7 @@ const EmailList = () => {
           <h2 className='text-2xl font-semibold mb-6 text-gray-800'>Manage Email List</h2>
           <ul className='list-disc list-inside space-y-2'>
             {emails.map((email, index) => (
-              <li key={index} className='text-lg text-gray-700'>{email}</li>
+              <li key={email._id} className='text-lg text-gray-700'>{email.email}</li>
             ))}
           </ul>
         </div>
