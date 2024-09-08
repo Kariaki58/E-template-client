@@ -15,10 +15,22 @@ const Orders = () => {
   const [isCustomEmailModalOpen, setIsCustomEmailModalOpen] = useState(false);
   const [customTemplate, setCustomTemplate] = useState('');
   const [statusLoading, setStatusLoading] = useState(false); // Track status update loading
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 10; // Set the number of orders per page
 
   useEffect(() => {
     fetchAllOrders(); // Fetch orders when the component mounts
   }, []);
+
+  // Calculate the current orders to display based on the current page
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Handle status update, including custom email for cancellation
   const handleStatusChange = async (orderId, newStatus, customTemplate = '') => {
@@ -108,6 +120,10 @@ const Orders = () => {
   // Error state
   if (error) return <p>Error: {error}</p>;
 
+  // Pagination buttons
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
   return (
     <div className="mb-10 custom-scrollbar w-full">
       <h1 className="text-2xl font-bold mb-4 text-center text-gray-800">Admin Orders</h1>
@@ -126,7 +142,7 @@ const Orders = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
+            {currentOrders.map((order) => (
               <tr key={order._id} className="border-t">
                 <td className="py-2 px-4 whitespace-nowrap text-gray-700">{order.productName}</td>
                 <td
@@ -180,42 +196,28 @@ const Orders = () => {
         </table>
       </div>
 
-      {/* User Address Modal */}
-      <UserAddressModal
-        isOpen={isAddressModalOpen}
-        onClose={() => setIsAddressModalOpen(false)}
-        address={selectedOrder?.address}
-      />
+      {/* Pagination */}
+      <div className="flex justify-center mt-4">
+        {pageNumbers.map((number) => (
+          <button
+            key={number}
+            onClick={() => paginate(number)}
+            className={`px-4 py-2 border ${
+              currentPage === number ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
+            }`}
+          >
+            {number}
+          </button>
+        ))}
+      </div>
 
-      {isCustomEmailModalOpen && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-white p-6 md:p-8 rounded-lg shadow-xl w-11/12 max-w-lg">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Custom Email for Cancelled Order</h2>
-            <textarea
-              value={customTemplate}
-              onChange={(e) => setCustomTemplate(e.target.value)}
-              placeholder="Enter the email message"
-              className="w-full border p-4"
-            ></textarea>
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={onClose}
-                className="mr-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
-              >
-                Save & Send
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Address Modal */}
+      {isAddressModalOpen && selectedOrder && (
+        <UserAddressModal
+          selectedOrder={selectedOrder}
+          closeModal={() => setIsAddressModalOpen(false)}
+        />
       )}
-
-      <Toaster />
     </div>
   );
 };
