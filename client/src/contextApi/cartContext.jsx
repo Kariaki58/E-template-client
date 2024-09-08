@@ -44,7 +44,7 @@ export const CartProvider = ({ children }) => {
     return cart.reduce((sum, item) => sum + item.productId.price * item.quantity, 0);
   };
 
-  const addToCart = async (productId, quantity, size = '', color = '') => {
+  const addToCart = async (productId, quantity, size = '', color = '', currentPage) => {
     try {
       if (isAuth) {
         const response = await axios.post(
@@ -54,7 +54,8 @@ export const CartProvider = ({ children }) => {
         );
         setCartItems(response.data.cart);
       } else {
-        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}`, { withCredentials: true });
+        console.log(currentPage)
+        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}?page=${currentPage}`, { withCredentials: true });
         const product = response.data.message.find((item) => item._id === productId);
 
         if (product) {

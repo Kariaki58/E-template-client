@@ -27,6 +27,8 @@ const ProductList = () => {
     fetchAllProducts,
     setSortOption,
     total,
+    currentPage,
+    setCurrentPage
   } = useContext(ProductUploadContext);
 
 
@@ -34,7 +36,6 @@ const ProductList = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(10);
   const isAuthenticated = useIsAuthenticated();
   const [display, setDisplay] = useState(false);
@@ -67,7 +68,7 @@ const ProductList = () => {
     if (product.sizes.length > 0 || product.colors.length > 0) {
       setSelectedProduct(product);
     } else {
-      addToCart(product._id, 1);
+      addToCart(product._id, 1, currentPage);
       toast.success(`${product.name} added to cart!`);
     }
   };
@@ -91,7 +92,7 @@ const ProductList = () => {
       return;
     }
 
-    addToCart(selectedProduct._id, 1, selectedSize, selectedColor);
+    addToCart(selectedProduct._id, 1, selectedSize, selectedColor, currentPage);
     toast.success(
       `${selectedProduct.name} added to cart with ${selectedColor || 'default'} color and ${selectedSize || 'default'} size!`
     );

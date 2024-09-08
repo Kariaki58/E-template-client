@@ -21,6 +21,7 @@ export const ProductUploadProvider = ({ children }) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [total, setTotal] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1);
   const [faqItems, setFaqItems] = useState([]);
 
 
@@ -279,7 +280,9 @@ export const ProductUploadProvider = ({ children }) => {
         setFilteredProducts,
         setProducts,
         faqItems,
-        setFaqItems
+        setFaqItems,
+        currentPage,
+        setCurrentPage
       }}
     >
       {children}

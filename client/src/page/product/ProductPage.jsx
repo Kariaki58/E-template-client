@@ -12,6 +12,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { RotatingLines } from 'react-loader-spinner'
+import { ProductUploadContext } from '../../contextApi/ProductContext';
 
 
 const cld = new Cloudinary({
@@ -22,6 +23,7 @@ const cld = new Cloudinary({
 
 const ProductSections = () => {
   const { addToCart } = useContext(CartContext);
+  const { currentPage } = useContext(ProductUploadContext)
   const [selectedImage, setSelectedImage] = useState('');
   const params = useParams();
   const [writeReview, setWriteReview] = useState(false);
@@ -36,6 +38,7 @@ const ProductSections = () => {
   const [openIndex, setOpenIndex] = useState(null);
   const [review, setReview] = useState([])
   const navigate = useNavigate();
+
 
   const isAuth = useIsAuthenticated()
 
@@ -81,7 +84,7 @@ const ProductSections = () => {
       return;
     }
 
-    addToCart(params.id, quantity, selectedSize, selectedColor);
+    addToCart(params.id, quantity, selectedSize, selectedColor, currentPage);
     toast.success(`${product.name} added to cart with ${selectedColor || ''} color and ${selectedSize || ''} size!`);
   };
 
