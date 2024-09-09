@@ -1,0 +1,33 @@
+.analytics-container {
+  background: #1f2937; /* Dark background for a sleek look */
+  color: #e5e7eb; /* Light text color for contrast */
+}
+
+.analytics-container .error-message {
+  color: #f87171; /* Error message color */
+}
+
+.view-selector {
+  margin-bottom: 1.5rem;
+}
+
+.view-selector select {
+  background-color: #374151; /* Dark background for select */
+  color: #e5e7eb; /* Light text color for select */
+  border: 1px solid #4b5563; /* Border color */
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+}
+
+.analytics-container .loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.chart-container {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: #1f2937; /* Dark background for chart */
+}

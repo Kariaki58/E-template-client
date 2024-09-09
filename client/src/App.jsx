@@ -13,7 +13,6 @@ import Modal from './contextApi/Modal'
 import Buyer from './page/dashboard/buyers/Buyer'
 import MyOrder from './component/buyers-dashboard/MyOrder'
 import Sellers from './page/dashboard/sellers/Sellers'
-import Analytics from './component/sellers-dashboard/Analytics'
 import Orders from './component/sellers-dashboard/Orders'
 import Products from './component/sellers-dashboard/Products'
 import Email from './component/sellers-dashboard/Email'
@@ -29,6 +28,7 @@ import About from './page/about/About'
 import Contact from './page/contact/Contact'
 import Faq from './page/faq/Faq'
 import AbondonCart from './component/sellers-dashboard/AbondonCart'
+import Analytics from './Analytics/Analytics'
 
 
 function App() {
