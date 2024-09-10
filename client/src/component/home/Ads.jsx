@@ -1,17 +1,33 @@
 import React, { useState } from 'react';
 import { RxCross1 } from "react-icons/rx";
 
-
 const Ads = () => {
-    const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(true);
+
+  // Toggle visibility of the ad
+  const handleClose = () => setIsOpen(prev => !prev);
+
   return (
-    <div className={`flex justify-center relative bg-gray-950 text-white p-2 ${isOpen? 'block': 'hidden'}`}>
-        <p className='text-sm sm:text-base'>
-            buy 5 get 1 free writing long ads writing long ads again
-        </p>
-        <RxCross1 className='absolute top-1/2 transform -translate-y-1/2 right-10 cursor-pointer bottom-0' onClick={() => setIsOpen(prev => !prev)}/>
-    </div>
+    <aside 
+      className={`flex justify-center items-center relative bg-gray-950 text-white p-2 ${isOpen ? 'block' : 'hidden'}`}
+      aria-hidden={!isOpen}  // Hides from screen readers if not open
+      aria-label="Advertisement"  // Add context for screen readers
+      role="complementary"  // Define a complementary landmark for ads
+    >
+      <p className='text-sm sm:text-base'>
+        Buy 5 get 1 free! Best offers on writing services.
+      </p>
+      
+      {/* Close button with aria-label */}
+      <button 
+        aria-label="Close advertisement"
+        className='absolute top-1/2 transform -translate-y-1/2 right-10 cursor-pointer'
+        onClick={handleClose}
+      >
+        <RxCross1 />
+      </button>
+    </aside>
   );
 }
 
-export default Ads;
+export default React.memo(Ads);
