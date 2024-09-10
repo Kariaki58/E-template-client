@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { ProductUploadContext } from '../../contextApi/ProductContext';
 import { CartContext } from '../../contextApi/cartContext';
 import { Toaster, toast } from 'react-hot-toast';
@@ -7,11 +7,13 @@ import { Link } from 'react-router-dom';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Cloudinary } from '@cloudinary/url-gen';
 import './ProductList.css';
-import { RotatingLines } from 'react-loader-spinner'
-import { EmailPopUp } from './Footer';
+import { RotatingLines } from 'react-loader-spinner';
 import ScrollToTop from '../../ScrollToTop';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { Helmet } from 'react-helmet'; // For SEO
 
+// Lazy load EmailPopUp
+const EmailPopUp = React.lazy(() => import('./Footer'));
 
 const cld = new Cloudinary({
   cloud: {
@@ -29,9 +31,8 @@ const ProductList = () => {
     setSortOption,
     total,
     currentPage,
-    setCurrentPage
+    setCurrentPage,
   } = useContext(ProductUploadContext);
-
 
   const { addToCart } = useContext(CartContext);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -40,28 +41,36 @@ const ProductList = () => {
   const [productsPerPage] = useState(10);
   const isAuthenticated = useIsAuthenticated();
   const [display, setDisplay] = useState(false);
-  const user = useAuthUser()
+  const user = useAuthUser();
+
+  // Debounce scroll handler
+  const debounce = (func, delay) => {
+    let timeout;
+    return (...args) => {
+      if (timeout) clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
-      return
+      return;
     }
-    const handleScroll = () => {
+    const handleScroll = debounce(() => {
       if (window.scrollY >= 1100 && window.scrollY <= 1500) {
         if (JSON.parse(localStorage.getItem('is-sub')) === null) {
-          setDisplay(true)
+          setDisplay(true);
         }
       }
-    };
+    }, 200);
 
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [isAuthenticated]);
 
-  
-
+  // Format price
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-NG', {
       style: 'currency',
@@ -69,14 +78,15 @@ const ProductList = () => {
     }).format(price);
   };
 
-  const handleAddToCart = (product) => {
+  // Add to cart handler with memoization
+  const handleAddToCart = useCallback((product) => {
     if (product.sizes.length > 0 || product.colors.length > 0) {
       setSelectedProduct(product);
     } else {
       addToCart(product._id, 1, currentPage);
       toast.success(`${product.name} added to cart!`);
     }
-  };
+  }, [addToCart, currentPage]);
 
   const handleConfirmSelection = () => {
     if (!selectedProduct) {
@@ -123,33 +133,30 @@ const ProductList = () => {
     };
   
     fetchData();
-  
   }, [currentPage]);
 
-
-  const sortedProducts = sortProducts(products, sortOption);
+  // Memoized sorting
+  const sortedProducts = useMemo(() => sortProducts(products, sortOption), [products, sortOption]);
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = sortedProducts
+  const currentProducts = sortedProducts;
 
   const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber)
-  }
+    setCurrentPage(pageNumber);
+  };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
     fetchAllProducts(page);
   };
-  
-  // Example usage with buttons or pagination controls
-  // Assuming you have a total number of pages
-  const totalPages = Math.ceil(total / productsPerPage);
-  
 
+  const totalPages = Math.ceil(total / productsPerPage);
+
+  // Handle loading state
   if (loading) {
     return (
-      <div className='flex justify-center items-center mt-2'>
+      <div className="flex justify-center items-center mt-2">
         <RotatingLines
           visible={true}
           height="96"
@@ -158,17 +165,34 @@ const ProductList = () => {
           strokeWidth="5"
           animationDuration="0.75"
           ariaLabel="rotating-lines-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
         />
       </div>
-    )
+    );
   }
-
 
   return (
     <>
-      {display ? <EmailPopUp /> : <></>}
+      <Helmet>
+        <title>Product List - Your Store</title>
+        <meta name="description" content="Browse through our selection of high-quality products." />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "http://schema.org",
+            "@type": "Product",
+            "name": selectedProduct?.name || "Product List",
+            "image": selectedProduct?.images ? selectedProduct.images[0] : '',
+            "description": selectedProduct ? truncateText(selectedProduct.description, 160) : '',
+            "sku": selectedProduct?._id,
+            "offers": {
+              "@type": "Offer",
+              "priceCurrency": "NGN",
+              "price": selectedProduct ? formatPrice(selectedProduct?.price.$numberDecimal) : '',
+            }
+          })}
+        </script>
+      </Helmet>
+
+      {display ? <React.Suspense fallback={<div>Loading...</div>}><EmailPopUp /></React.Suspense> : <></>}
       <div className="flex flex-col mt-5 px-4 mb-10">
         <div className="w-full flex justify-center mb-4">
           <select
@@ -183,20 +207,17 @@ const ProductList = () => {
         </div>
         <div className="gap-2 responsive">
           {currentProducts.map((data) => (
-            <div
-              className="w-full p-4 hover:shadow-md rounded-lg flex flex-col justify-between bg-white relative"
-              key={data._id}
-            >
+            <div className="w-full p-4 hover:shadow-md rounded-lg flex flex-col justify-between bg-white relative" key={data._id}>
               <Link to={`products/content/${data._id}`}>
                 <img
-                  key={data._id}
+                  loading="lazy"  // Lazy-load images for performance
                   src={cld
                     .image(`images/${data.images[0].split('/')[8].split('.')[0]}`)
                     .resize('c_fill,w_500,h_500,g_auto')
                     .delivery('q_auto')
                     .format('auto')
                     .toURL()}
-                  alt={data.name}
+                  alt={`${data.name} product image`}  // Descriptive alt text
                   className="rounded-lg"
                 />
               </Link>
@@ -204,11 +225,11 @@ const ProductList = () => {
                 <p className="font-semibold text-gray-800">
                   {truncateText(data.name, 17)}
                 </p>
-                {
-                  data.percentOff > 1 ? 
-                  <span className='bg-orange-500 text-white p-2 rounded-full absolute top-5 right-5'>{data.percentOff}%</span>
-                  : <></>
-                }
+                {data.percentOff > 1 ? (
+                  <span className='bg-orange-500 text-white p-2 rounded-full absolute top-5 right-5'>
+                    {data.percentOff}%
+                  </span>
+                ): <></>}
                 <div className={`text-gray-800 font-semibold ${data.percentOff ? 'line-through' : ''}`}>
                   {formatPrice(
                     data.price.$numberDecimal
@@ -216,160 +237,107 @@ const ProductList = () => {
                       : data.price
                   )}
                 </div>
-                {
-                  data.percentOff ? (
-                    <div className='text-gray-800 font-semibold'>
-                      {formatPrice(
-                        data.price.$numberDecimal ? parseFloat(data.price - ((data.price.$numberDecimal) * (Number(data.percentOff) / 100))) :
-                        data.price - (data.price * (Number(data.percentOff) / 100))
-                      )}
-                    </div>
-                  ) : <></>
-                }
+                {data.percentOff ? (
+                  <div className='text-gray-800 font-semibold'>
+                    {formatPrice(
+                      data.price.$numberDecimal
+                        ? parseFloat(data.price - (data.price.$numberDecimal * (Number(data.percentOff) / 100)))
+                        : data.price - (data.price * (Number(data.percentOff) / 100))
+                    )}
+                  </div>
+                ): <></>}
               </div>
-                {
-                  !user || (!user.isAdmin) ? (
-                    <div className="flex justify-center mt-auto">
-                      <button
-                        className="border text-black border-gray-950 hover:text-white py-2 px-4 rounded-lg sm:text-xl hover:bg-gray-950 w-60"
-                        onClick={() => handleAddToCart(data)}
-                      >
-                        Add to Cart
-                      </button>
-                    </div>
-                  ) : <></>
-                }
-                
+              {!user || (!user.isAdmin) ? (
+                <div className="flex justify-center mt-auto">
+                  <button
+                    className="border text-black border-gray-950 hover:text-white py-2 px-4 rounded-lg sm:text-xl hover:bg-gray-950 w-60"
+                  onClick={() => handleAddToCart(data)}
+                  disabled={loading}
+                >
+                  Add to Cart
+                </button>
+              </div>
+              ): <></>}
             </div>
           ))}
         </div>
-        <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
-          <div className="flex flex-1 justify-between sm:hidden">
+
+        {/* Pagination */}
+        <div className="flex justify-center my-6">
+          {Array.from({ length: totalPages }, (_, index) => (
             <button
-              onClick={() =>
-                paginate(currentPage > 1 ? currentPage - 1 : currentPage)
-              }
-              className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              key={index}
+              onClick={() => handlePageChange(index + 1)}
+              className={`px-3 py-1 mx-1 rounded-lg ${currentPage === index + 1 ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'}`}
             >
-              Previous
+              {index + 1}
             </button>
-            <button
-              onClick={() =>
-                paginate(currentPage < totalPages ? currentPage + 1 : currentPage)
-              }
-              className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
-            >
-              Next
-            </button>
-          </div>
-          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm text-gray-700">
-                Showing{' '}
-                <span className="font-medium">
-                  {indexOfFirstProduct + 1}
-                </span>{' '}
-                to <span className="font-medium">{indexOfLastProduct}</span> of{' '}
-                <span className="font-medium">{sortedProducts.length}</span>{' '}
-                products
-              </p>
-            </div>
-            <div>
-              <nav
-                className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-                aria-label="Pagination"
-              >
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <button
-                    key={page}
-                    onClick={() => handlePageChange(page)}
-                    className={`${
-                      page === currentPage
-                        ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600'
-                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                    } relative inline-flex items-center border px-4 py-2 text-sm font-medium`}
+          ))}
+        </div>
+
+        {/* Add to cart with selection modal */}
+        {selectedProduct ? (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">{selectedProduct.name}</h2>
+
+              {selectedProduct.sizes.length > 0 && (
+                <div className="mb-4">
+                  <label htmlFor="size" className="block font-semibold mb-2">Select Size:</label>
+                  <select
+                    id="size"
+                    value={selectedSize}
+                    onChange={(e) => setSelectedSize(e.target.value)}
+                    className="border rounded-lg py-2 px-3"
                   >
-                    {page}
-                  </button>
-                ))}
+                    <option value="">-- Select Size --</option>
+                    {selectedProduct.sizes.map((size) => (
+                      <option key={size} value={size}>{size}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {selectedProduct.colors.length > 0 && (
+                <div className="mb-4">
+                  <label htmlFor="color" className="block font-semibold mb-2">Select Color:</label>
+                  <select
+                    id="color"
+                    value={selectedColor}
+                    onChange={(e) => setSelectedColor(e.target.value)}
+                    className="border rounded-lg py-2 px-3"
+                  >
+                    <option value="">-- Select Color --</option>
+                    {selectedProduct.colors.map((color) => (
+                      <option key={color} value={color}>{color}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <div className="flex justify-between mt-4">
                 <button
-                  onClick={() =>
-                    paginate(currentPage > 1 ? currentPage - 1 : currentPage)
-                  }
-                  className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  onClick={handleConfirmSelection}
+                  className="bg-gray-800 text-white py-2 px-4 rounded-lg"
                 >
-                  Previous
+                  Confirm
                 </button>
                 <button
-                  onClick={() =>
-                    paginate(currentPage < totalPages ? currentPage + 1 : currentPage)
-                  }
-                  className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  onClick={handleCancelSelection}
+                  className="bg-gray-400 text-black py-2 px-4 rounded-lg"
                 >
-                  Next
+                  Cancel
                 </button>
-              </nav>
+              </div>
             </div>
           </div>
-        </div>
+        ): <></>}
       </div>
-      {selectedProduct && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-xl font-semibold mb-4">Select Options</h2>
-            {selectedProduct.sizes && selectedProduct.sizes.length > 0 && (
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Size:</label>
-                <select
-                  value={selectedSize}
-                  onChange={(e) => setSelectedSize(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                >
-                  <option value="">Select size</option>
-                  {selectedProduct.sizes.map((size) => (
-                    <option key={size} value={size}>
-                      {size}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-            {selectedProduct.colors && selectedProduct.colors.length > 0 && (
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Color:</label>
-                <select
-                  value={selectedColor}
-                  onChange={(e) => setSelectedColor(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                >
-                  <option value="">Select color</option>
-                  {selectedProduct.colors.map((color) => (
-                    <option key={color} value={color}>
-                      {color}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-            <div className="flex justify-end mt-6">
-              <button
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded mr-2"
-                onClick={handleCancelSelection}
-              >
-                Cancel
-              </button>
-              <button
-                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-                onClick={handleConfirmSelection}
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      <Toaster />
+
+      {/* Scroll to Top */}
       <ScrollToTop />
+      
+      <Toaster />
     </>
   );
 };
