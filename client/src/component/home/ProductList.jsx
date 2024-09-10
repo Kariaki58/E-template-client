@@ -43,9 +43,12 @@ const ProductList = () => {
   const user = useAuthUser()
 
   useEffect(() => {
+    if (isAuthenticated) {
+      return
+    }
     const handleScroll = () => {
       if (window.scrollY >= 1100 && window.scrollY <= 1500) {
-        if (!isAuthenticated) {
+        if (JSON.parse(localStorage.getItem('is-sub')) === null) {
           setDisplay(true)
         }
       }

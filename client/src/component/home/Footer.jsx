@@ -54,13 +54,14 @@ const EmailForm = ({ email, setEmail, handleSubscribe, loading, buttonText }) =>
 );
 
 export const EmailPopUp = () => {
-    const [isPopupVisible, setIsPopupVisible] = useState((JSON.parse(localStorage.getItem('is-sub')) === undefined));
+    const [isPopupVisible, setIsPopupVisible] = useState(true);
     const [email, setEmail] = useState('');
     const { loading, handleSubscribe } = useEmailSubscription();
 
     const handleSuccess = () => {
-        setEmail(''); // Clear the email field
-        setIsPopupVisible(false); // Close the popup
+        setEmail('');
+        setIsPopupVisible(false);
+        localStorage.setItem('is-sub', true)
     };
 
     return (

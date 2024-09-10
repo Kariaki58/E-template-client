@@ -115,11 +115,11 @@ const LoginPage = () => {
                     <p className="text-center mt-6">
                         Don’t have an account? <Link to="/sign-up" className="text-blue-500 hover:underline">Sign Up</Link>
                     </p>
-                    <Link className='text-blue-500 hover:underline'>
+                    {/* <Link className='text-blue-500 hover:underline'>
                         <p className='text-center mt-2'>
                             forgot password ?
                         </p>
-                    </Link>
+                    </Link> */}
                     <RxCross1 className='absolute top-10 right-10 text-2xl hover:cursor-pointer' onClick={handleToggle}/>
                 </div>
             </div>
