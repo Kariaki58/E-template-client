@@ -12,11 +12,12 @@ import logo from '/assets/betterlogo.png'
 
 
 const Navigation = () => {
-  const { handleToggle, setIsOpen: openModal } = useContext(context)
+  const { handleToggle, setIsOpen: openModal } = useContext(context);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const navigate = useNavigate()
-  const user = useAuthUser()
-  const isAuthenticated = useIsAuthenticated()
+  const [isScrolled, setIsScrolled] = useState(false);  // Scroll state for navigation
+  const navigate = useNavigate();
+  const user = useAuthUser();
+  const isAuthenticated = useIsAuthenticated();
 
   useEffect(() => {
     if (isAuthenticated && (location.pathname === '/login' || location.pathname === '/sign-up')) {
@@ -40,6 +41,18 @@ const Navigation = () => {
     }
   }, [location.pathname])
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
 
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
@@ -48,7 +61,7 @@ const Navigation = () => {
   const isAuth = useIsAuthenticated()
 
   return (
-    <div className="bg-white shadow-md py-4">
+    <div className={`bg-white shadow-md py-4 fixed w-full top-0 left-0 z-50 transition-all duration-300 ${isScrolled ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'}`}>
       <ul className="mx-auto flex items-center justify-between px-4 gap-2">
         <li className='bg-blue-800'>
           <Link to='/'>
@@ -73,7 +86,7 @@ const Navigation = () => {
             </span>            
           </div>
         </li>
-        <li className="flex items-center gap-6">
+        <li className="flex items-center gap-2">
           {
             !user || (!user.isAdmin) ? (
               <div className="flex items-center">
