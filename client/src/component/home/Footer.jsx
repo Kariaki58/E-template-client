@@ -7,6 +7,7 @@ import x from '/x.png';
 import axios from 'axios';
 import { Toaster, toast } from 'react-hot-toast';
 
+
 const useEmailSubscription = () => {
     const [loading, setLoading] = useState(false);
 
@@ -15,15 +16,15 @@ const useEmailSubscription = () => {
         try {
             const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/newsletter`, { email }, { withCredentials: true });
             if (response.data.error) {
-                toast.error(response.data.error, { position: "top-right" });
+                toast.error(response.data.error);
             } else {
-                toast.success(response.data.message, { position: "top-right" });
+                toast.success(response.data.message);
                 localStorage.setItem('is-sub', false);
-                if (onSuccess) onSuccess();
+                if (onSuccess) onSuccess(); // Trigger onSuccess callback on successful subscription
             }
         } catch (error) {
             const errorMessage = error.response?.data?.error || "Please try again!";
-            toast.error(errorMessage, { position: "top-right" });
+            toast.error(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -33,11 +34,7 @@ const useEmailSubscription = () => {
 };
 
 const EmailForm = ({ email, setEmail, handleSubscribe, loading, buttonText }) => (
-    <form
-        className="flex"
-        onSubmit={(e) => { e.preventDefault(); handleSubscribe(email, () => setEmail('')); }}
-        aria-label="Email Subscription Form"
-    >
+    <form className="flex" onSubmit={(e) => { e.preventDefault(); handleSubscribe(email, () => setEmail('')); }}>
         <input
             type="email"
             value={email}
@@ -46,13 +43,10 @@ const EmailForm = ({ email, setEmail, handleSubscribe, loading, buttonText }) =>
             pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
             onChange={(e) => setEmail(e.target.value)}
             required
-            aria-label="Email input"
         />
         <button
             type="submit"
             className={`px-4 py-2 text-sm bg-blue-500 text-white font-semibold rounded-r hover:bg-blue-600 transition duration-300`}
-            disabled={loading}
-            aria-live="polite"
         >
             {loading ? 'Sending...' : buttonText}
         </button>
@@ -67,23 +61,22 @@ export const EmailPopUp = () => {
     const handleSuccess = () => {
         setEmail('');
         setIsPopupVisible(false);
-        localStorage.setItem('is-sub', true);
+        localStorage.setItem('is-sub', true)
     };
 
     return (
         <>
             {isPopupVisible && (
-                <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50" role="dialog" aria-labelledby="popup-title" aria-describedby="popup-description">
+                <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
                     <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg p-8 w-full max-w-lg relative text-center shadow-lg transform transition-transform duration-300 ease-in-out hover:scale-105">
                         <button
                             className="absolute top-3 right-4 text-gray-300 text-2xl hover:text-white"
                             onClick={() => setIsPopupVisible(false)}
-                            aria-label="Close popup"
                         >
                             &times;
                         </button>
-                        <h2 id="popup-title" className="text-xl md:text-3xl font-bold mb-4">Join Our Creative Community!</h2>
-                        <p id="popup-description" className="mb-6 text-md md:text-lg">
+                        <h2 className="text-xl md:text-3xl font-bold mb-4">Join Our Creative Community!</h2>
+                        <p className="mb-6 text-md md:text-lg">
                             Be the first to get exclusive updates, tips, and offers straight to your inbox.
                         </p>
                         <EmailForm
@@ -102,11 +95,10 @@ export const EmailPopUp = () => {
         </>
     );
 };
-
 const SocialLink = ({ href, src, alt }) => (
-    <a href={href} className="text-gray-400 hover:text-white transition duration-300" target="_blank" rel="noopener noreferrer" aria-label={alt}>
-        <img src={src} alt={alt} width={40} height={40} className="rounded-full lazyload" />
-    </a>
+    <Link to={href} className="text-gray-400 hover:text-white transition duration-300">
+        <img src={src} alt={alt} width={40} height={40} className='rounded-full' />
+    </Link>
 );
 
 const Footer = () => {
@@ -122,13 +114,8 @@ const Footer = () => {
                         <p className="text-gray-400 mb-6">
                             Your one-stop shop for all your needs. Enjoy a seamless shopping experience with our wide range of products.
                         </p>
-                        <div className="text-gray-100 font-bold">
-                            <p>
-                                Feel the impact of selling online, get a professional website -{" "}
-                                <Link to="/offer/paymentPlan" className="text-blue-500">
-                                    click here
-                                </Link>
-                            </p>
+                        <div className='text-gray-100 font-bold'>
+                            <p>Feel the impact of selling online, get a professional website - <span><Link to='/offer/paymentPlan' className='text-blue-500'>click here</Link></span></p>
                         </div>
                     </div>
 
@@ -153,7 +140,7 @@ const Footer = () => {
                     </div>
 
                     <div className="w-full md:w-1/4">
-                        <h3 className="text-xl font-semibold text-white mb-2">Newsletter</h3>
+                        <h3 className="text-xl sm:text-lg font-semibold text-white mb-2">Newsletter</h3>
                         <p className="text-gray-400 mb-4">
                             Subscribe to our newsletter to get the latest updates and offers.
                         </p>

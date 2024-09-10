@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Toaster, toast } from 'react-hot-toast';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
@@ -104,20 +104,19 @@ const Address = () => {
       <h2 className='text-2xl font-semibold mb-6 border-b pb-2'>Shipping Details</h2>
       <form onSubmit={handleSubmit}>
         <div className='grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 mb-8'>
-        <div>
-          <label htmlFor='name' className='block mb-2 text-sm md:text-base font-medium'>Full Name</label>
-          <input
-            type='text'
-            id='name'
-            name='name'
-            placeholder='Full Name'
-            value={shippingDetails.name}
-            onChange={handleChange}
-            className='border border-gray-300 rounded-md w-full py-2 px-3 text-sm md:text-base focus:outline-none focus:border-gray-500'
-            required
-            aria-required="true"
-          />
-        </div>
+          <div>
+            <label htmlFor='name' className='block mb-2 text-sm md:text-base font-medium'>Full Name</label>
+            <input
+              type='text'
+              id='name'
+              name='name'
+              placeholder='Full Name'
+              value={shippingDetails.name}
+              onChange={handleChange}
+              className='border border-gray-300 rounded-md w-full py-2 px-3 text-sm md:text-base focus:outline-none focus:border-gray-500'
+              required
+            />
+          </div>
           <div>
             <label htmlFor='email' className='block mb-2 text-sm md:text-base font-medium'>Email Address</label>
             <input
@@ -218,7 +217,8 @@ const Address = () => {
           Save
         </button>
       </form>
-      <Toaster role="alert" aria-live="assertive" />
+
+      <Toaster />
     </div>
   );
 };
