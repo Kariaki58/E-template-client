@@ -15,7 +15,7 @@ const Ads = () => {
       role="complementary"  // Define a complementary landmark for ads
     >
       <p className='text-sm sm:text-base'>
-        Buy 5 get 1 free! Best offers on writing services.
+        Free Shipping for orders up to 100k
       </p>
       
       {/* Close button with aria-label */}
