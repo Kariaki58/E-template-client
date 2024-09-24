@@ -1,3 +1,4 @@
+// order management dashboard for admin
 import React, { useState, useEffect } from 'react';
 import { useContext } from 'react';
 import { OrderContext } from '../../contextApi/Orders';

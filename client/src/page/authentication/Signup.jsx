@@ -1,3 +1,4 @@
+// sign up authentication page
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { RxCross1 } from 'react-icons/rx';

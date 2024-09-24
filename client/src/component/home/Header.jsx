@@ -1,3 +1,4 @@
+// header component
 import React from 'react';
 import banner from '/assets/banner1.png';
 

@@ -1,3 +1,4 @@
+// review form component
 import React, { useState } from 'react';
 import { IoStarSharp } from 'react-icons/io5';
 import { AiOutlineCloseCircle } from 'react-icons/ai';

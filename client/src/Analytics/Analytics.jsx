@@ -7,6 +7,7 @@ import { useSpring, animated } from 'react-spring';
 
 const API_URL = `${import.meta.env.VITE_APP_BACKEND_BASEURL}/orders`; // Update with your actual API endpoint
 
+// display chart function
 const OrdersChart = () => {
   const [data, setData] = useState([]);
   const [timeFrame, setTimeFrame] = useState('day');

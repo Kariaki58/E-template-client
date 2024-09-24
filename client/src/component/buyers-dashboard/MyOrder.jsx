@@ -1,3 +1,5 @@
+// orders for buyers
+
 import React, { useContext, useState } from 'react';
 import { OrderContext } from '../../contextApi/Orders';
 import ReactPaginate from 'react-paginate';

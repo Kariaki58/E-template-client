@@ -1,3 +1,4 @@
+// profile component
 import React from 'react';
 
 const Profile = () => {

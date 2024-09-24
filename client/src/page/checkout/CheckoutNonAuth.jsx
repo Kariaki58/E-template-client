@@ -1,3 +1,4 @@
+// checkout for non authenticated users
 import React, { useState, useEffect } from 'react';
 import PaystackPop from '@paystack/inline-js';
 import axios from 'axios';

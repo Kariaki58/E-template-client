@@ -1,3 +1,4 @@
+// policy page
 import React from 'react';
 
 const Policy = () => {

@@ -1,18 +1,18 @@
+// top ads display
 import React, { useState } from 'react';
 import { RxCross1 } from "react-icons/rx";
 
 const Ads = () => {
   const [isOpen, setIsOpen] = useState(true);
 
-  // Toggle visibility of the ad
   const handleClose = () => setIsOpen(prev => !prev);
 
   return (
     <aside 
       className={`flex justify-center items-center relative bg-gray-950 text-white p-2 ${isOpen ? 'block' : 'hidden'}`}
-      aria-hidden={!isOpen}  // Hides from screen readers if not open
-      aria-label="Advertisement"  // Add context for screen readers
-      role="complementary"  // Define a complementary landmark for ads
+      aria-hidden={!isOpen}
+      aria-label="Advertisement"
+      role="complementary"
     >
       <p className='text-sm sm:text-base'>
         Free Shipping for orders up to 100k

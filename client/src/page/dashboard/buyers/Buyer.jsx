@@ -1,3 +1,4 @@
+// buyer page
 import React from 'react';
 import { BsCartCheck } from 'react-icons/bs';
 import { FaRegAddressBook } from 'react-icons/fa';

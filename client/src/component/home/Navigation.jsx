@@ -1,3 +1,4 @@
+// navigation component
 import React, { useEffect, useState } from 'react';
 import { GoPerson } from "react-icons/go";
 import { PiShoppingCartLight } from "react-icons/pi";

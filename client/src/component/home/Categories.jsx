@@ -1,3 +1,4 @@
+// cateogry component
 import React, { useContext, useState } from 'react';
 import { ProductUploadContext } from '../../contextApi/ProductContext';
 

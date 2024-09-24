@@ -1,3 +1,4 @@
+// footer component
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import facebook from '/facebook.png';
@@ -20,7 +21,7 @@ const useEmailSubscription = () => {
             } else {
                 toast.success(response.data.message);
                 localStorage.setItem('is-sub', false);
-                if (onSuccess) onSuccess(); // Trigger onSuccess callback on successful subscription
+                if (onSuccess) onSuccess();
             }
         } catch (error) {
             const errorMessage = error.response?.data?.error || "Please try again!";

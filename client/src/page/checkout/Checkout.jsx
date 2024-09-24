@@ -1,3 +1,4 @@
+// checkout page
 import React, { useContext, useEffect, useState } from 'react';
 import PaystackPop from '@paystack/inline-js';
 import axios from 'axios';

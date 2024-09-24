@@ -1,3 +1,4 @@
+// product list component
 import React, { useContext, useState, useEffect } from 'react';
 import { ProductUploadContext } from '../../contextApi/ProductContext';
 import { CartContext } from '../../contextApi/cartContext';

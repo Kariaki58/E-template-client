@@ -1,3 +1,4 @@
+// home page
 import React, { useContext, useState } from 'react';
 import Header from '../../component/home/Header';
 import ProductList from '../../component/home/ProductList';
