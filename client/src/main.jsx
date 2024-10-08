@@ -26,7 +26,7 @@ createRoot(document.getElementById('root')).render(
       <SpeedInsights/>
       <ScrollToTop />
       <AuthProvider store={authStore}>
-        <App />                                 
+        <App />                            
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
