@@ -1,4 +1,3 @@
-// sellers page
 import React from 'react';
 import { BsCartCheck } from 'react-icons/bs';
 import { FaRegAddressBook } from 'react-icons/fa';
@@ -6,10 +5,12 @@ import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { GrLogout } from 'react-icons/gr';
 import { PiChartLineUpBold } from 'react-icons/pi';
 import { MdOutlineProductionQuantityLimits } from 'react-icons/md';
+import { IoMdPeople } from "react-icons/io";
 import { GrCloudUpload } from "react-icons/gr";
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import axios from 'axios';
 import { Toaster, toast } from 'react-hot-toast';
+import { IoSettings } from "react-icons/io5";
 
 
 const Sellers = () => {
@@ -65,16 +66,22 @@ const Sellers = () => {
               <p className='hidden md:block'>Management</p>
             </li>
           </Link>
-          <Link to='/dashboard/admin/products/abandon/cart'>
-            <li className='flex items-center text-xl gap-4 mt-3 cursor-pointer bg-gray-950 text-white sm:bg-gray-950 sm:text-white rounded-lg p-4'>
-              <BsCartCheck className='text-2xl' />
-              <p className='hidden md:block'>Abandon Cart</p>
+          <Link to="/dashboard/admin/customers">
+            <li className="flex items-center text-xl gap-4 mt-3 cursor-pointer text-white bg-gray-950 sm:bg-gray-950 sm:text-white rounded-lg p-4">
+              <IoMdPeople className="text-2xl"/>
+              <p className="hidden md:block">Customers</p>
             </li>
           </Link>
-          <Link to="/dashboard/admin/emails">
+          {/* <Link to="/dashboard/admin/emails">
             <li className="flex items-center text-xl gap-4 mt-3 cursor-pointer text-white bg-gray-950 sm:bg-gray-950 sm:text-white rounded-lg p-4">
               <FaRegAddressBook className="text-2xl" />
               <p className="hidden md:block">Email</p>
+            </li>
+          </Link> */}
+          <Link to="/dashboard/admin/settings">
+            <li className="flex items-center text-xl gap-4 mt-3 cursor-pointer text-white bg-gray-950 sm:bg-gray-950 sm:text-white rounded-lg p-4">
+              <IoSettings className="text-2xl" />
+              <p className="hidden md:block">Settings</p>
             </li>
           </Link>
           <li onClick={handleSignOut} className="flex items-center text-xl gap-4 mt-16 cursor-pointer bg-gray-950 text-white sm:bg-gray-950 sm:text-white rounded-lg p-4">

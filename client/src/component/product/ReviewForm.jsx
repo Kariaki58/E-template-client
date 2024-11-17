@@ -8,6 +8,7 @@ import { Toaster, toast } from 'react-hot-toast';
 
 
 const ReviewForm = ({ setWriteReview, productId }) => {
+  const [name, setName] = useState("")
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [file, setFile] = useState(null);
@@ -17,7 +18,9 @@ const ReviewForm = ({ setWriteReview, productId }) => {
   const handleRatingChange = (newRating) => {
     setRating(newRating);
   };
-
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+  }
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
@@ -85,6 +88,7 @@ const ReviewForm = ({ setWriteReview, productId }) => {
   
       const reviewData = {
         rating,
+        name,
         comment,
         imageUrl,
         productId,
@@ -144,6 +148,22 @@ const ReviewForm = ({ setWriteReview, productId }) => {
                   />
                 ))}
               </div>
+            </div>
+            <div className='mb-4'>
+              <label
+                className="block text-sm font-medium text-gray-700 mb-2"
+                htmlFor="name"
+              >
+                Name
+              </label>
+              <input
+                id="name"
+                value={name}
+                onChange={handleNameChange}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                placeholder="Your name..."
+                required
+              />
             </div>
             <div className="mb-4">
               <label

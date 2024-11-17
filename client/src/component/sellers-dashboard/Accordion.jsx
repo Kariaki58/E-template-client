@@ -1,5 +1,7 @@
 // accordion display conponent
-import React, { useState } from 'react';
+import React from 'react';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+
 
 const Accordion = ({ faqItems, setFaqItems }) => {
   const handleToggle = (index) => {
@@ -32,7 +34,10 @@ const Accordion = ({ faqItems, setFaqItems }) => {
             className="faq-question cursor-pointer p-4 bg-gray-100 hover:bg-gray-200 flex justify-between items-center"
           >
             <span className="font-medium text-gray-700">{item.question || 'Add a question'}</span>
-            <span className="text-gray-500">{item.isOpen ? '−' : '+'}</span>
+            <span className="text-gray-500">{item.isOpen ? (
+              <FaChevronUp className="text-gray-500" /> )
+              : (
+              <FaChevronDown className="text-gray-500" />)}</span>
           </div>
           {item.isOpen && (
             <div className="faq-answer p-4 bg-gray-50">

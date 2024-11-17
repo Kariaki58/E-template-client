@@ -1,9 +1,9 @@
 // product dashboard
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import CreatableSelect from 'react-select/creatable';
 import { useProductUpload } from '../../contextApi/ProductContext';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import 'quill/dist/quill.snow.css';
+import Quill from 'quill';
 import { useDropzone } from 'react-dropzone';
 import { FaTrash } from 'react-icons/fa';
 import Accordion from './Accordion'; // Import the updated Accordion component
@@ -23,10 +23,9 @@ const colorOptions = [
 ];
 
 const categoryOptions = [
-  { value: 'electronics', label: 'Electronics' },
-  { value: 'clothing', label: 'Clothing' },
-  { value: 'home', label: 'Home' },
-  { value: 'toys', label: 'Toys' },
+  { value: 'Men Collection', label: 'Men collection' },
+  { value: 'Female Collection', label: 'Female Collection' },
+  { value: 'Kids Collection', label: 'Kids Collection' },
 ];
 
 const Products = () => {
@@ -54,6 +53,34 @@ const Products = () => {
     faqItems,
     setFaqItems
   } = useProductUpload();
+
+  const editorRef = useRef(null);
+  const quillInstance = useRef(null);
+
+  useEffect(() => {
+    if (editorRef.current && !quillInstance.current) {
+      quillInstance.current = new Quill(editorRef.current, {
+        theme: 'snow',
+        modules: {
+          toolbar: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'align': [] }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            ['image', 'video', 'blockquote', 'code-block'],
+            ['clean'],
+          ],
+        },
+      });
+
+      quillInstance.current.on('text-change', () => {
+        const currentContent = quillInstance.current.root.innerHTML;
+        setDescription(currentContent);
+      });
+    }
+  }, [description]);
+
 
   const onDrop = async (acceptedFiles) => {
     const newPreviews = acceptedFiles.map(file => URL.createObjectURL(file)); // URL for preview
@@ -168,12 +195,7 @@ const Products = () => {
 
           <div className="sm:col-span-2 max-sm:mb-10">
             <label className="block text-gray-950">Description:</label>
-            <ReactQuill 
-              value={description} 
-              onChange={(value) => setDescription(value)}
-              required
-              className="w-full mt-1 p-2 border-gray-300 rounded-md focus:ring-gray-900 focus:border-gray-900 h-52 mb-8"
-            />
+            <div ref={editorRef} style={{ height: '300px', border: '1px solid #ccc' }} />
           </div>
         </div>
 
@@ -189,6 +211,6 @@ const Products = () => {
       </form>
     </div>
   );
-};
+  };
 
 export default Products;

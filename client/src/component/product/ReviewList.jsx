@@ -71,13 +71,6 @@ const ReviewList = () => {
                 <div className="text-sm text-gray-600">{new Date(review.createdAt).toLocaleDateString()}</div>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                <div className="flex-shrink-0 w-12 h-12 overflow-hidden rounded-full bg-gray-200">
-                  <img
-                    src={cute_gril}
-                    alt="User Avatar"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
                 <div className="flex-1">
                   <p className="font-semibold text-gray-800">{review.userId.email.split('@')[0]}</p>
                   <p className="mt-2 text-gray-700">{review.comment}</p>

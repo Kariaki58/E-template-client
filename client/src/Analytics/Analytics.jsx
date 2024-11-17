@@ -21,12 +21,11 @@ const OrdersChart = () => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${API_URL}/${timeFrame}`);
+      const response = await axios.get(`${API_URL}/${timeFrame}`, { withCredentials: true });
       const getAllTotal = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/total/data`, { withCredentials: true })
-
       setTotalOrders(getAllTotal.data.totalOrders)
       setTotalProducts(getAllTotal.data.totalProducts)
-      setTotalEmailSubs(getAllTotal.data.totalEmailSubs)
+      setTotalEmailSubs(getAllTotal.data.totalEmails)
       setData(response.data);
     } catch (error) {
       console.error('Error fetching data', error);
@@ -76,13 +75,9 @@ const OrdersChart = () => {
             <div className="text-2xl font-bold">Total Orders</div>
             <div className="text-xl mt-2">{totalOrders}</div>
           </div>
-          <div className="bg-yellow-500 p-6 shadow-lg rounded-lg flex flex-col items-center text-white">
-            <div className="text-2xl font-bold">Total Revenue</div>
-            <div className="text-xl mt-2">${totalRevenue}</div>
-          </div>
           <div className="bg-purple-500 p-6 shadow-lg rounded-lg flex flex-col items-center text-white">
-            <div className="text-2xl font-bold">Email Subscriptions</div>
-            <div className="text-xl mt-2">10</div>
+            <div className="text-2xl font-bold">Subscriptions</div>
+            <div className="text-xl mt-2">{totalEmailSubs}</div>
           </div>
         </div>
       </div>

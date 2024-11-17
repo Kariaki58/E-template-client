@@ -7,11 +7,11 @@ import { Outlet } from 'react-router-dom';
 import { context } from '../../contextApi/Modal';
 
 
-const Home = () => {
+const Home = ({ banner }) => {
     const { isOpen } = useContext(context)
   return (
     <div>
-      <Header />
+      <Header banner={banner}/>
       <Categories />
       <ProductList />
       {

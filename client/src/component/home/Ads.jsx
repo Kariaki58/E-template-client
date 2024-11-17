@@ -2,31 +2,40 @@
 import React, { useState } from 'react';
 import { RxCross1 } from "react-icons/rx";
 
-const Ads = () => {
+const Ads = ({ offer }) => {
   const [isOpen, setIsOpen] = useState(true);
 
   const handleClose = () => setIsOpen(prev => !prev);
 
   return (
-    <aside 
-      className={`flex justify-center items-center relative bg-gray-950 text-white p-2 ${isOpen ? 'block' : 'hidden'}`}
-      aria-hidden={!isOpen}
-      aria-label="Advertisement"
-      role="complementary"
-    >
-      <p className='text-sm sm:text-base'>
-        Free Shipping for orders up to 100k
-      </p>
-      
-      {/* Close button with aria-label */}
-      <button 
-        aria-label="Close advertisement"
-        className='absolute top-1/2 transform -translate-y-1/2 right-10 cursor-pointer'
-        onClick={handleClose}
+    <>
+    {
+      offer ? (
+        <aside 
+        className={`flex justify-center items-center relative bg-gray-950 text-white p-2 ${isOpen ? 'block' : 'hidden'}`}
+        aria-hidden={!isOpen}
+        aria-label="Advertisement"
+        role="complementary"
       >
-        <RxCross1 />
-      </button>
-    </aside>
+        <p className='text-sm sm:text-base'>
+          {offer}
+        </p>
+        
+        {/* Close button with aria-label */}
+        <button 
+          aria-label="Close advertisement"
+          className='absolute top-1/2 transform -translate-y-1/2 right-10 cursor-pointer'
+          onClick={handleClose}
+        >
+          <RxCross1 />
+        </button>
+      </aside>
+      ): (
+        <></>
+      )
+    }
+    </>
+    
   );
 }
 

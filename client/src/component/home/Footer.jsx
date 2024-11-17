@@ -5,7 +5,9 @@ import facebook from '/facebook.png';
 import instagram from '/instagram.jpeg';
 import linkedin from '/linkedin.png';
 import x from '/x.png';
+import tiktok from '/images.png'
 import axios from 'axios';
+import whatsApp from '/WhatsApp.svg.png';
 import { Toaster, toast } from 'react-hot-toast';
 
 
@@ -97,12 +99,12 @@ export const EmailPopUp = () => {
     );
 };
 const SocialLink = ({ href, src, alt }) => (
-    <Link to={href} className="text-gray-400 hover:text-white transition duration-300">
+    <a href={href} target="_blank" className="text-gray-400 hover:text-white transition duration-300">
         <img src={src} alt={alt} width={40} height={40} className='rounded-full' />
-    </Link>
+    </a>
 );
 
-const Footer = () => {
+const Footer = ({ socialLinks, storeName, aboutUs }) => {
     const [email, setEmail] = useState('');
     const { loading, handleSubscribe } = useEmailSubscription();
 
@@ -111,9 +113,9 @@ const Footer = () => {
             <div className="mx-auto px-4">
                 <div className="flex flex-wrap justify-between gap-2">
                     <div className="w-full md:w-1/4 mb-8 md:mb-0">
-                        <h2 className="text-2xl font-bold text-white mb-6">OverLow</h2>
+                        <h2 className="text-2xl font-bold text-white mb-6">{storeName}</h2>
                         <p className="text-gray-400 mb-6">
-                            Your one-stop shop for all your needs. Enjoy a seamless shopping experience with our wide range of products.
+                            {aboutUs}
                         </p>
                         <div className='text-gray-100 font-bold'>
                             <p>Feel the impact of selling online, get a professional website - <span><Link to='/offer/paymentPlan' className='text-blue-500'>click here</Link></span></p>
@@ -124,19 +126,8 @@ const Footer = () => {
                         <h3 className="text-xl font-semibold text-white mb-6">Quick Links</h3>
                         <ul className="space-y-3">
                             <li><Link to="/" className="hover:text-white">Home</Link></li>
-                            <li><Link to="/about-us" className="hover:text-white">About Us</Link></li>
                             <li><Link to="/contact" className="hover:text-white">Contact</Link></li>
                             <li><Link to="/faq" className="hover:text-white">FAQs</Link></li>
-                        </ul>
-                    </div>
-
-                    <div className="w-full md:w-1/4 mb-8 md:mb-0">
-                        <h3 className="text-xl font-semibold text-white mb-6">Company</h3>
-                        <ul className="space-y-3">
-                            <li><Link to="/careers" className="hover:text-white">Careers</Link></li>
-                            <li><Link to="/blog" className="hover:text-white">Blog</Link></li>
-                            <li><Link to="/privacy-policy" className="hover:text-white">Privacy Policy</Link></li>
-                            <li><Link to="/terms-conditions" className="hover:text-white">Terms & Conditions</Link></li>
                         </ul>
                     </div>
 
@@ -156,12 +147,14 @@ const Footer = () => {
                 </div>
 
                 <div className="mt-12 pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center">
-                    <p className="text-gray-500 text-sm">© {new Date().getFullYear()} OverLow. All rights reserved.</p>
+                    <p className="text-gray-500 text-sm">© {new Date().getFullYear()} {storeName}. All rights reserved.</p>
                     <div className="flex space-x-6 mt-4 md:mt-0">
-                        <SocialLink href="https://www.facebook.com" src={facebook} alt="Facebook" />
-                        <SocialLink href="https://www.instagram.com" src={instagram} alt="Instagram" />
-                        <SocialLink href="https://www.linkedin.com/in/kariakistephen58/" src={linkedin} alt="LinkedIn" />
-                        <SocialLink href="https://x.com" src={x} alt="X" />
+                        <SocialLink href={socialLinks?.facebookUrl} src={facebook} alt="Facebook" />
+                        <SocialLink href={socialLinks?.instagramUrl} src={instagram} alt="Instagram" />
+                        <SocialLink href={socialLinks?.linkedinUrl} src={linkedin} alt="LinkedIn" />
+                        <SocialLink href={socialLinks?.twitterUrl} src={x} alt="X" />
+                        <SocialLink href={socialLinks?.whatsappUrl} src={whatsApp} alt="whatsapp icon" />
+                        <SocialLink href={socialLinks?.tiktokUrl} src={tiktok} alt="tiktok icon" />
                     </div>
                 </div>
             </div>

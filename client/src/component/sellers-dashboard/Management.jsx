@@ -1,9 +1,7 @@
 // admin management dashboard
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import CreatableSelect from 'react-select/creatable';
-import ReactQuill from "react-quill";
-import 'react-quill/dist/quill.snow.css';
 import { useProductUpload } from '../../contextApi/ProductContext';
 import { useDropzone } from "react-dropzone";
 import { FaTrash } from 'react-icons/fa';
@@ -11,6 +9,9 @@ import { RotatingLines } from 'react-loader-spinner'
 import { Toaster, toast } from 'react-hot-toast';
 import { DatePicker } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
+import 'quill/dist/quill.snow.css';
+import Quill from 'quill';
+
 
 
 const sizeOptions = [
@@ -48,6 +49,10 @@ const ProductManagement = () => {
   const [couponPercent, setCouponPercent] = useState("");
   const [date, setDate] = useState(null);
 
+  
+  const editorRef = useRef(null);
+  const quillInstance = useRef(null);
+
   const handleDateChange = (value) => {
     setDate(value);
   };
@@ -70,6 +75,7 @@ const ProductManagement = () => {
         `${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/products?page=${page}&limit=10`,
         { withCredentials: true }
       );
+      console.log(response.data)
       setProducts(response.data.products);
       setTotalPages(Math.ceil(response.data.total / 10));
       setCouponCode(response.data.products[0].coupon)
@@ -95,11 +101,12 @@ const ProductManagement = () => {
 
   const handleEditClick = (product) => {
     setEditingProductId(product._id);
+    console.log(product.category)
     setUpdatedProduct({
       ...product,
       size: product.sizes.map(size => ({ value: size, label: size })),
       color: product.colors.map(color => ({ value: color, label: color })),
-      category: categoryOptions.find(cat => cat.value === product.category),
+      category:  { value: product.category, label: product.category },
     });
     setProductImages(product.images || []);
     setImagePreviews(product.images || []);
@@ -286,6 +293,37 @@ const ProductManagement = () => {
     }
   }
 
+  useEffect(() => {
+    if (editorRef.current && !quillInstance.current) {
+      quillInstance.current = new Quill(editorRef.current, {
+        theme: 'snow',
+        modules: {
+          toolbar: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'align': [] }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            ['image', 'video', 'blockquote', 'code-block'],
+            ['clean'],
+          ],
+        },
+      });
+  
+      // When Quill editor content changes, update state
+      quillInstance.current.on('text-change', () => {
+        const currentContent = quillInstance.current.root.innerHTML;
+        setUpdatedProduct((prevState) => ({ ...prevState, description: currentContent }));
+      });
+    }
+  
+    // Set the initial content of Quill editor only if it's not yet initialized
+    if (quillInstance.current && updatedProduct.description !== undefined && quillInstance.current.root.innerHTML !== updatedProduct.description) {
+      quillInstance.current.root.innerHTML = updatedProduct.description;
+    }
+  }, [updatedProduct.description]);
+  
+
   if (loading) {
     return (
       <div className='flex justify-center items-center mt-2'>
@@ -405,12 +443,7 @@ const ProductManagement = () => {
                 placeholder="Stock"
               />
               <label className="mt-5 block">Product Description</label>
-              <ReactQuill 
-                value={updatedProduct.description} 
-                onChange={handleQuillChange}
-                placeholder="Description"
-                className="w-full mt-1 border-gray-300 rounded-md focus:ring-gray-900 focus:border-gray-900 h-52"
-              />
+              <div ref={editorRef} style={{ height: '300px', border: '1px solid #ccc' }} />
               <div className="h-8"></div>
               <label className="mt-5 block">Sizes</label>
               <CreatableSelect

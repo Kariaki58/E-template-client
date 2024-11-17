@@ -1,5 +1,5 @@
 // product context api
-import { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext } from 'react';
 import axios from 'axios';
 import { Toaster, toast } from 'react-hot-toast';
 
@@ -24,8 +24,6 @@ export const ProductUploadProvider = ({ children }) => {
   const [total, setTotal] = useState(0)
   const [currentPage, setCurrentPage] = useState(1);
   const [faqItems, setFaqItems] = useState([]);
-
-
 
   const uploadFile = async (file, type, timestamp, signature) => {
     const folder = type === 'image' ? 'images' : 'videos';
@@ -52,7 +50,7 @@ export const ProductUploadProvider = ({ children }) => {
 
   const getSignatureForUpload = async (folder) => {
     try {
-      const res = await axios.post(
+       const res = await axios.post(
         `${import.meta.env.VITE_APP_BACKEND_BASEURL}/api/gensignature`,
         { folder },
         { withCredentials: true }
@@ -190,6 +188,7 @@ export const ProductUploadProvider = ({ children }) => {
         setFilteredProducts(data || []);
       }
     } catch (error) {
+      console.log(error.message)
       if (error.response && error.response.data) {
         toast.error(error.response.data.error)
       } else {
