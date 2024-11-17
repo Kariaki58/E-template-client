@@ -63,7 +63,6 @@ const Contact = ({ location, contact, support, openHours, storeDescription }) =>
     userEmail: '',
   });
   const [loading, setLoading] = useState(false);
-  // console.log(store)
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({

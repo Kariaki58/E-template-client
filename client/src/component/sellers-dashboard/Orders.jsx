@@ -6,7 +6,6 @@ import axios from 'axios';
 import UserAddressModal from './UserAddressModal';
 import '../../App.css';
 import { RotatingLines } from 'react-loader-spinner';
-import 'react-quill/dist/quill.snow.css';
 import { Toaster, toast } from 'react-hot-toast';
 
 const Orders = () => {

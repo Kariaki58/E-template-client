@@ -149,12 +149,49 @@ const Footer = ({ socialLinks, storeName, aboutUs }) => {
                 <div className="mt-12 pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center">
                     <p className="text-gray-500 text-sm">© {new Date().getFullYear()} {storeName}. All rights reserved.</p>
                     <div className="flex space-x-6 mt-4 md:mt-0">
-                        <SocialLink href={socialLinks?.facebookUrl} src={facebook} alt="Facebook" />
-                        <SocialLink href={socialLinks?.instagramUrl} src={instagram} alt="Instagram" />
-                        <SocialLink href={socialLinks?.linkedinUrl} src={linkedin} alt="LinkedIn" />
-                        <SocialLink href={socialLinks?.twitterUrl} src={x} alt="X" />
-                        <SocialLink href={socialLinks?.whatsappUrl} src={whatsApp} alt="whatsapp icon" />
-                        <SocialLink href={socialLinks?.tiktokUrl} src={tiktok} alt="tiktok icon" />
+                        {
+                            socialLinks?.facebookUrl ? (
+                                <SocialLink href={socialLinks?.facebookUrl} src={facebook} alt="Facebook" />
+
+                            ): (
+                                <></>
+                            )
+                        }
+                        {
+                            socialLinks?.instagramUrl ? (
+                                <SocialLink href={socialLinks?.instagramUrl} src={instagram} alt="Instagram" />
+                            ): (
+                                <></>
+                            )
+                        }
+                        {
+                            socialLinks?.linkedinUrl ? (
+                                <SocialLink href={socialLinks?.linkedinUrl} src={linkedin} alt="LinkedIn" />
+                            ): (
+                                <></>
+                            )
+                        }
+                        {
+                            socialLinks?.twitterUrl ? (
+                                <SocialLink href={socialLinks?.twitterUrl} src={x} alt="X" />
+                            ): (
+                                <></>
+                            )
+                        }
+                        {
+                            socialLinks?.whatsappUrl ? (
+                                <SocialLink href={socialLinks?.whatsappUrl} src={whatsApp} alt="whatsapp icon" />
+                            ): (
+                                <></>
+                            )
+                        }
+                        {
+                            socialLinks?.tiktokUrl ? (
+                                <SocialLink href={socialLinks?.tiktokUrl} src={tiktok} alt="tiktok icon" />
+                            ): (
+                                <></>
+                            )
+                        }
                     </div>
                 </div>
             </div>

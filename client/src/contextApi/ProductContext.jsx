@@ -24,6 +24,8 @@ export const ProductUploadProvider = ({ children }) => {
   const [total, setTotal] = useState(0)
   const [currentPage, setCurrentPage] = useState(1);
   const [faqItems, setFaqItems] = useState([]);
+  const [search, setSearch] = useState('');
+
 
   const uploadFile = async (file, type, timestamp, signature) => {
     const folder = type === 'image' ? 'images' : 'videos';
@@ -188,7 +190,6 @@ export const ProductUploadProvider = ({ children }) => {
         setFilteredProducts(data || []);
       }
     } catch (error) {
-      console.log(error.message)
       if (error.response && error.response.data) {
         toast.error(error.response.data.error)
       } else {
@@ -282,7 +283,9 @@ export const ProductUploadProvider = ({ children }) => {
         faqItems,
         setFaqItems,
         currentPage,
-        setCurrentPage
+        setCurrentPage,
+        search,
+        setSearch
       }}
     >
       {children}

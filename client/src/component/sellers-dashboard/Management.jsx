@@ -75,7 +75,6 @@ const ProductManagement = () => {
         `${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/products?page=${page}&limit=10`,
         { withCredentials: true }
       );
-      console.log(response.data)
       setProducts(response.data.products);
       setTotalPages(Math.ceil(response.data.total / 10));
       setCouponCode(response.data.products[0].coupon)
@@ -101,7 +100,6 @@ const ProductManagement = () => {
 
   const handleEditClick = (product) => {
     setEditingProductId(product._id);
-    console.log(product.category)
     setUpdatedProduct({
       ...product,
       size: product.sizes.map(size => ({ value: size, label: size })),

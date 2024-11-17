@@ -49,11 +49,10 @@ function App() {
         await fetchAllProducts()
         if (res.data) {
           const response = res.data;
-          console.log(response)
+          changeFavicon(response.logoImage)
           setSettings(response)
         }
       } catch (error) {
-        console.log(error)
         toast.error('Failed to load settings');
       }
       setLoading(false);
@@ -62,6 +61,16 @@ function App() {
     fetchSettings()
 
   }, [])
+
+  const changeFavicon = (newIconUrl) => {
+    let link = document.querySelector("link[rel*='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.href = newIconUrl;
+  };
 
   // Check if the current route is a dashboard route
   const isDashboardRoute = location.pathname.includes('/dashboard');

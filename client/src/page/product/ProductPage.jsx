@@ -25,7 +25,7 @@ const cld = new Cloudinary({
 
 const ProductSections = () => {
   const { addToCart } = useContext(CartContext);
-  const { currentPage } = useContext(ProductUploadContext)
+  const { currentPage, setSearch } = useContext(ProductUploadContext)
   const [selectedImage, setSelectedImage] = useState('');
   const params = useParams();
   const [writeReview, setWriteReview] = useState(false);
@@ -47,6 +47,7 @@ const ProductSections = () => {
   const isAuth = useIsAuthenticated()
 
   useEffect(() => {
+    setSearch('')
     const fetchData = async () => {
       setLoading(true)
       try {

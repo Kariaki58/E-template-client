@@ -61,7 +61,6 @@ const TextAreaInput = ({ label, value, setValue }) => (
 const Settings = ({ faq }) => {
   const [mainBannerImage, setMainBannerImage] = useState(null);
   const [logoImage, setLogoImage] = useState(null);
-  const [paystackKey, setPaystackKey] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [oldPassword, setOldPassword] = useState("");
@@ -95,13 +94,11 @@ const Settings = ({ faq }) => {
     const fetchSettings = async () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/content`, { withCredentials: true });
-        console.log(res.data)
         
         if (res.data) {
           const {
             mainBannerImage,
             logoImage,
-            paystackKey,
             email,
             password,
             old_password,
@@ -118,7 +115,6 @@ const Settings = ({ faq }) => {
           setMainBannerImage(mainBannerImage);
           setLogoImage(logoImage);
           setOffer(offer);
-          setPaystackKey(paystackKey);
           setEmail(email);
           setPassword(password);
           setOldPassword(old_password);
@@ -219,7 +215,7 @@ const Settings = ({ faq }) => {
       const payload = {
         mainBannerImage: uploadedMainBannerImage,
         logoImage: uploadedLogoImage,
-        paystackKey,
+        
         email,
         password,
         oldPassword,
@@ -255,7 +251,6 @@ const Settings = ({ faq }) => {
           toast.success('All settings updated successfully');
         }
       } catch (error) {
-        console.log(error)
         if (error.response?.data?.error) {
           toast.error(error.response.data.error);
         } else {
@@ -283,7 +278,6 @@ const Settings = ({ faq }) => {
           {/* User Settings Section */}
           <div className="bg-white rounded-lg shadow-lg p-8">
             <h1 className="text-3xl font-semibold text-gray-800 mb-6">User Settings</h1>
-            <TextInput label="Paystack Key" value={paystackKey} setValue={setPaystackKey} />
             <TextInput label="Email" type="email" value={email} setValue={setEmail} />
             <TextInput label="Password" type="password" value={password} setValue={setPassword} />
             <TextInput label="Old Password" type="password" value={oldPassword} setValue={setOldPassword} />
