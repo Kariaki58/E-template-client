@@ -51,6 +51,7 @@ function App() {
           const response = res.data;
           changeFavicon(response.logoImage)
           console.log("passedIn link")
+          console.log(response)
           setSettings(response)
         }
       } catch (error) {
