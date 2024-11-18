@@ -83,6 +83,8 @@ function App() {
   // Check if the current route is a dashboard route
   const isDashboardRoute = location.pathname.includes('/dashboard');
 
+  console.log(settings)
+
   return (
     <div className='max-w-screen-2xl mx-auto'>
       {
