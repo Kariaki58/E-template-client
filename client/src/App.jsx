@@ -50,9 +50,11 @@ function App() {
         if (res.data) {
           const response = res.data;
           changeFavicon(response.logoImage)
+          console.log("passedIn link")
           setSettings(response)
         }
       } catch (error) {
+        console.log(error)
         toast.error('Failed to load settings');
       }
       setLoading(false);
