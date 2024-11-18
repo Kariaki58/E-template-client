@@ -28,7 +28,6 @@ const OrdersChart = () => {
       setTotalEmailSubs(getAllTotal.data.totalEmails)
       setData(response.data);
     } catch (error) {
-      console.error('Error fetching data', error);
     } finally {
       setIsLoading(false);
     }
