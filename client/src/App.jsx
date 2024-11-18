@@ -47,19 +47,24 @@ function App() {
       try {
         const res = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/layout`, { withCredentials: true });
         await fetchAllProducts()
-        if (res.data) {
+ 
+        console.log(res.status); // Log the status code
+        console.log(res.data);   // Log the actual response
+        
+        if (res.status === 200 && res.data) {
           const response = res.data;
-          changeFavicon(response.logoImage)
-          console.log("passedIn link")
-          console.log(response)
-          setSettings(response)
+          changeFavicon(response.logoImage);
+          console.log("passedIn link");
+          console.log(response);
+          setSettings(response);
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
         toast.error('Failed to load settings');
       }
       setLoading(false);
     }
+    
 
     fetchSettings()
 
