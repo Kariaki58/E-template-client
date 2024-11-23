@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { Toaster, toast } from 'react-hot-toast';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
+import { useNavigate } from 'react-router-dom';
 
 
 const CheckoutNonAuth = () => {
@@ -28,6 +29,7 @@ const CheckoutNonAuth = () => {
   const { id: productId} = useParams();
   const isAuth = useIsAuthenticated();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
 
   const locations = [
@@ -171,6 +173,7 @@ const CheckoutNonAuth = () => {
               }, { withCredentials: true });
               toast.success(response.data.message);
               localStorage.setItem('items', [])
+              navigate("/")
             }
           } catch (error) {
             const errorMessage = error.response?.data?.error || 'Payment verification failed';
@@ -242,12 +245,12 @@ const CheckoutNonAuth = () => {
             </button>
           </div>
           <div className="flex justify-between items-center mt-6">
-            <span className="text-lg font-semibold text-gray-600">Shipping Fee:</span>
-            <span className="text-lg font-semibold text-gray-800">{formatPrice(shippingFee)}</span>
+            <span className="font-semibold text-gray-600">Shipping Fee:</span>
+            <span className="font-semibold text-gray-800">{formatPrice(shippingFee)}</span>
           </div>
           <div className="flex justify-between items-center mt-2">
-            <span className="text-lg font-semibold text-gray-600">Discount:</span>
-            <span className="text-lg font-semibold text-gray-800">{discount}%</span>
+            <span className="font-semibold text-gray-600">Discount:</span>
+            <span className="font-semibold text-gray-800">{discount}%</span>
           </div>
           <div className="flex justify-between items-center mt-4 border-t pt-4">
             <span className="text-2xl font-bold text-gray-800">Total:</span>

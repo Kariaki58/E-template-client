@@ -5,6 +5,8 @@ import axios from 'axios';
 import { Toaster, toast } from 'react-hot-toast';
 import { CartContext } from '../../contextApi/cartContext';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
+import { useNavigate } from 'react-router-dom';
+
 
 const Checkout = () => {
   const [shippingDetails, setShippingDetails] = useState({
@@ -17,6 +19,7 @@ const Checkout = () => {
     phone: '',
     country: '',
   });
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { cartItems, loading: cartloading } = useContext(CartContext);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('payStack');
@@ -28,7 +31,7 @@ const Checkout = () => {
 
   const locations = [
     { place: 'Nigeria', amount: 1000 },
-    { place: 'Ghana', amount: 3000 }
+    // { place: 'Ghana', amount: 3000 }
   ];
 
   const formatPrice = (price) => {
@@ -141,7 +144,8 @@ const Checkout = () => {
               toast.error(response.data.error);
             } else { 
               toast.success(response.data.message);
-              localStorage.setItem('items', [])
+              localStorage.setItem('items', []);
+              navigate('/');
             }
           }
         } catch (error) {
@@ -225,16 +229,16 @@ const Checkout = () => {
             </select>
           </div>
           <div className="flex justify-between items-center mt-4 pt-4">
-            <span className="text-lg md:text-xl font-semibold">Shipping Fee:</span>
-            <span className="text-lg md:text-xl font-semibold">{formatPrice(shippingFee)}</span>
+            <span className="font-semibold">Shipping Fee:</span>
+            <span className="font-semibold">{formatPrice(shippingFee)}</span>
           </div>
           <div className="flex justify-between items-center mt-2">
-            <span className="text-lg md:text-xl font-semibold">Discount:</span>
-            <span className="text-lg md:text-xl font-semibold">{discount}%</span>
+            <span className="font-semibold">Discount:</span>
+            <span className="font-semibold">{discount}%</span>
           </div>
           <div className="flex justify-between items-center mt-2">
-            <span className="text-lg md:text-xl font-semibold">Total:</span>
-            <span className="text-lg md:text-xl font-semibold">{formatPrice(calculateTotalAmount() - (discount / 100 * calculateTotalAmount()) + shippingFee)}</span>
+            <span className="font-semibold">Total:</span>
+            <span className="font-semibold">{formatPrice(calculateTotalAmount() - (discount / 100 * calculateTotalAmount()) + shippingFee)}</span>
           </div>
         </div>
       </div>
@@ -266,9 +270,9 @@ const Checkout = () => {
               className="border py-2 px-4 rounded-md w-full bg-gray-100 focus:ring-2 focus:ring-gray-500 outline-none"
             >
               <option value="payStack">PayStack</option>
-              <option value="flutterwave">Flutterwave</option>
+              {/* <option value="flutterwave">Flutterwave</option>
               <option value="paypal">PayPal</option>
-              <option value="stripe">Stripe</option>
+              <option value="stripe">Stripe</option> */}
             </select>
           </div>
 

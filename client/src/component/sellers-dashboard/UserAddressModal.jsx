@@ -1,7 +1,7 @@
 // user address modal
 import React from 'react';
 
-const UserAddressModal = ({ isOpen, onClose, address }) => {
+const UserAddressModal = ({ isAddressModalOpen: isOpen, closeModal: onClose, selectedOrder: address }) => {
   if (!isOpen) return null;
 
   return (

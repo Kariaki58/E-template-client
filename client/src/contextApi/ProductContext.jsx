@@ -1,5 +1,5 @@
 // product context api
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useRef } from 'react';
 import axios from 'axios';
 import { Toaster, toast } from 'react-hot-toast';
 
@@ -13,7 +13,7 @@ export const ProductUploadProvider = ({ children }) => {
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [stock, setStock] = useState('');
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState(null);
   const [price, setPrice] = useState('');
   const [loading, setLoading] = useState(false);
   const [sortOption, setSortOption] = useState('');
@@ -25,6 +25,7 @@ export const ProductUploadProvider = ({ children }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [faqItems, setFaqItems] = useState([]);
   const [search, setSearch] = useState('');
+  const quillInstance = useRef(null);
 
 
   const uploadFile = async (file, type, timestamp, signature) => {
@@ -115,7 +116,7 @@ export const ProductUploadProvider = ({ children }) => {
       } else {
         toast.success(editingProductId ? 'Product updated successfully!' : 'Product uploaded successfully!');
         resetForm();
-        fetchAllProducts(); // Fetch updated products after submission
+        fetchAllProducts();
       }
     } catch (error) {
       if (error.response && error.response.data){
@@ -209,12 +210,16 @@ export const ProductUploadProvider = ({ children }) => {
     setSelectedColors([]);
     setSelectedCategory(null);
     setStock('');
-    setDescription('');
+    setDescription(null);
     setPrice('');
-    setEditingProductId(null); // Reset editing state
-    setImagePreviews([])
-  };
+    setEditingProductId(null);
+    setImagePreviews([]);
 
+    if (quillInstance.current) {
+      quillInstance.current.root.innerHTML = '';
+    }
+  };
+  
   const filterProductsByCategory = (products, category) => {
     if (!category) return products;
     if (category === 'All') return products
@@ -285,7 +290,8 @@ export const ProductUploadProvider = ({ children }) => {
         currentPage,
         setCurrentPage,
         search,
-        setSearch
+        setSearch,
+        quillInstance
       }}
     >
       {children}

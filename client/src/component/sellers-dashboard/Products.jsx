@@ -51,11 +51,11 @@ const Products = () => {
     imagePreviews,
     setImagePreviews,
     faqItems,
-    setFaqItems
+    setFaqItems,
+    quillInstance
   } = useProductUpload();
 
   const editorRef = useRef(null);
-  const quillInstance = useRef(null);
 
   useEffect(() => {
     if (editorRef.current && !quillInstance.current) {

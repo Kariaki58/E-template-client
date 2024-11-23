@@ -63,27 +63,30 @@ const CartPage = () => {
 
                     <div className="grid grid-cols-1 gap-6 sm:gap-8">
                         {cartItems && cartItems.items && cartItems.items.map((item, index) => (
-                            <div key={item._id} className="flex flex-col sm:flex-row p-4 sm:p-6 shadow-md rounded-lg">
-                                <img src={item.productId.images[0]} alt={item.productId.name} className="w-full sm:w-40 h-40 object-cover rounded-md" />
+                            <div key={item._id} className="flex gap-2 flex-row p-4 sm:p-6 shadow-md rounded-lg">
+                                <Link to={`/products/content/${item.productId._id}`}>
+                                    <img src={item.productId.images[0]} alt={item.productId.name} className="w-40 h-40 object-cover rounded-md" />
+                                </Link>
                                 <div className="ml-0 sm:ml-4 flex-1 mt-4 sm:mt-0">
-                                    <h2 className="text-xl sm:text-2xl font-medium text-gray-800">{item.productId.name}</h2>
-                                    {item.size && <p className="text-gray-600">Size: {item.size}</p>}
-                                    {item.color && <p className="text-gray-600">Color: {item.color}</p>}
-                                    <div className="mt-4 flex items-center">
+                                    <h2 className="text-xl sm:text-2xl font-medium text-gray-800">Product to upload is this one it's can be very very long so be okay with that so that things don't fall in place {item.productId.name}</h2>
+                                    {item.size && <p className="text-gray-800"><span>Size:</span> <span className="font-semibold">{item.size}</span></p>}
+                                    {item.color && <p className="text-gray-800 text-sm"><span>Color:</span> <span className="font-semibold">{item.color}</span></p>}
+                                    <div className="mt-4 flex items-center justify-center space-x-2">
                                         <button
                                             onClick={() => handleDecreaseQuantity(item.productId._id, 1, index)}
-                                            className="px-2 sm:px-3 py-1 bg-gray-300 text-gray-700 rounded-l-md hover:bg-gray-400 transition duration-300 text-xs sm:text-sm"
+                                            className="px-3 py-2 bg-primary text-black font-bold text-xl rounded-md hover:bg-primary-dark transition-all duration-300 ease-in-out flex items-center justify-center shadow-md transform hover:scale-105"
                                         >
                                             -
                                         </button>
-                                        <span className="px-2 sm:px-4 py-1 border-t border-b border-gray-300 text-sm sm:text-base">{item.quantity}</span>
+                                        <span className="px-4 py-2 border border-gray-300 bg-white text-gray-800 rounded-md text-lg font-semibold shadow-sm">{item.quantity}</span>
                                         <button
                                             onClick={() => handleIncreaseQuantity(item.productId._id, 1, index)}
-                                            className="px-2 sm:px-3 py-1 bg-gray-300 text-gray-700 rounded-r-md hover:bg-gray-400 transition duration-300 text-xs sm:text-sm"
+                                            className="px-3 py-2 bg-primary text-black font-bold text-xl rounded-md hover:bg-primary-dark transition-all duration-300 ease-in-out flex items-center justify-center shadow-md transform hover:scale-105"
                                         >
                                             +
                                         </button>
                                     </div>
+
                                     <div className="mt-4 flex justify-between items-center">
                                         <p className="text-lg sm:text-xl font-semibold text-gray-800">
                                             {formatPrice((parseFloat(item.price) * item.quantity).toFixed(2))}

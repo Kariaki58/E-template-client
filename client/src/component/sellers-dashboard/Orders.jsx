@@ -24,6 +24,10 @@ const Orders = () => {
     fetchAllOrders(); // Fetch orders when the component mounts
   }, []);
 
+  const closeModal = () => {
+    setIsAddressModalOpen(false)
+  }
+
   // Calculate the current orders to display based on the current page
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
@@ -74,8 +78,11 @@ const Orders = () => {
 
   // Fetch user address and open modal
   const fetchUserAddress = async (order) => {
+    // console.log(order)
     try {
       const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/user/address/${order.shippingAddress._id}`);
+      console.log("feching...")
+      console.log(response.data)
       setSelectedOrder({ ...order, address: response.data }); // Set selected order with address
       setIsAddressModalOpen(true); // Open address modal
     } catch (err) {
@@ -214,8 +221,9 @@ const Orders = () => {
       {/* Address Modal */}
       {isAddressModalOpen && selectedOrder && (
         <UserAddressModal
-          selectedOrder={selectedOrder}
-          closeModal={() => setIsAddressModalOpen(false)}
+          isAddressModalOpen
+          selectedOrder={selectedOrder.shippingAddress}
+          closeModal={closeModal}
         />
       )}
     </div>
