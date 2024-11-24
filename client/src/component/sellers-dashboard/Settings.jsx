@@ -176,6 +176,7 @@ const Settings = ({ faq }) => {
         const { secure_url } = res.data;
         return secure_url;
       } catch (error) {
+        console.log(error)
         toast.error('File upload failed');
         return null;
       }
