@@ -68,7 +68,7 @@ const CartPage = () => {
                                     <img src={item.productId.images[0]} alt={item.productId.name} className="w-40 h-40 object-cover rounded-md" />
                                 </Link>
                                 <div className="ml-0 sm:ml-4 flex-1 mt-4 sm:mt-0">
-                                    <h2 className="text-xl sm:text-2xl font-medium text-gray-800">Product to upload is this one it's can be very very long so be okay with that so that things don't fall in place {item.productId.name}</h2>
+                                    <h2 className="text-xl sm:text-2xl font-medium text-gray-800">{item.productId.name}</h2>
                                     {item.size && <p className="text-gray-800"><span>Size:</span> <span className="font-semibold">{item.size}</span></p>}
                                     {item.color && <p className="text-gray-800 text-sm"><span>Color:</span> <span className="font-semibold">{item.color}</span></p>}
                                     <div className="mt-4 flex items-center justify-center space-x-2">
