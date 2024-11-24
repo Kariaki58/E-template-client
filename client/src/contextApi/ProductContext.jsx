@@ -25,7 +25,6 @@ export const ProductUploadProvider = ({ children }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [faqItems, setFaqItems] = useState([]);
   const [search, setSearch] = useState('');
-  const quillInstance = useRef(null);
 
 
   const uploadFile = async (file, type, timestamp, signature) => {
@@ -215,10 +214,6 @@ export const ProductUploadProvider = ({ children }) => {
     setPrice('');
     setEditingProductId(null);
     setImagePreviews([]);
-
-    if (quillInstance.current) {
-      quillInstance.current.root.innerHTML = '';
-    }
   };
   
   const filterProductsByCategory = (products, category) => {
@@ -291,8 +286,7 @@ export const ProductUploadProvider = ({ children }) => {
         currentPage,
         setCurrentPage,
         search,
-        setSearch,
-        quillInstance
+        setSearch
       }}
     >
       {children}

@@ -52,10 +52,20 @@ const Products = () => {
     setImagePreviews,
     faqItems,
     setFaqItems,
-    quillInstance
   } = useProductUpload();
 
   const editorRef = useRef(null);
+  const quillInstance = useRef(null);
+
+  const handleSubmitProduct = async (e) => {
+    e.preventDefault();
+    await handleSubmit(e);
+    if (!loading && quillInstance.current) {
+      quillInstance.current.root.innerHTML = '';
+    }
+  }
+  
+
 
   useEffect(() => {
     if (editorRef.current && !quillInstance.current) {
@@ -100,7 +110,7 @@ const Products = () => {
   return (
     <div className="max-w-4xl mx-auto p-3 bg-white rounded-lg">
       <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Upload Product</h2>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmitProduct} className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <label className="block text-gray-950">Product Name:</label>
