@@ -38,16 +38,17 @@ export const ProductUploadProvider = ({ children }) => {
     data.append('folder', folder);
 
     try {
-      const cloudName = import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME;
-      const resourceType = type === 'image' ? 'image' : 'video';
-      const api = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
+        const cloudName = import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME;
+        const resourceType = type === 'image' ? 'image' : 'video';
+        const api = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
 
-      const res = await axios.post(api, data);
-      const { secure_url } = res.data;
-      return secure_url;
+        const res = await axios.post(api, data);
+        const { secure_url } = res.data;
+        return secure_url;
     } catch (error) {
-      toast.error('Something went wrong on the server');
-      return null;
+        console.log('Something went wrong in the server');
+        setError('Something went wrong in the server');
+        return null; // Return null on error
     }
   };
 
