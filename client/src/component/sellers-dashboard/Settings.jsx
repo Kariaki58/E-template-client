@@ -159,33 +159,33 @@ const Settings = ({ faq }) => {
       new URL(file); // Check if it's already a URL
       return file;
     } catch (error) {
-      const folder = type === 'image' ? 'images' : 'videos';
-      const data = new FormData();
-      data.append('file', file);
-      data.append('timestamp', timestamp);
-      data.append('signature', signature);
-      data.append('api_key', import.meta.env.VITE_APP_CLOUDINARY_API_KEY);
-      data.append('folder', folder);
+        const folder = type === 'image' ? 'images' : 'videos';
+        const data = new FormData();
+        data.append('file', file);
+        data.append('timestamp', timestamp);
+        data.append('signature', signature);
+        data.append('api_key', import.meta.env.VITE_APP_CLOUDINARY_API_KEY);
+        data.append('folder', folder);
 
-      const cloudName = import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME;
-      const resourceType = type === 'image' ? 'image' : 'video';
-      const api = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
+        try {
+            const cloudName = import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME;
+            const resourceType = type === 'image' ? 'image' : 'video';
+            const api = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
 
-      try {
-        const res = await axios.post(api, data);
-        const { secure_url } = res.data;
-        return secure_url;
-      } catch (error) {
-        console.log(error)
-        toast.error('File upload failed');
-        return null;
-      }
+            const res = await axios.post(api, data);
+            const { secure_url } = res.data;
+            return secure_url;
+        } catch (error) {
+            console.log('Something went wrong in the server');
+            setError('Something went wrong in the server');
+            return null; // Return null on error
+        }
     }
   };
 
   const getSignatureForUpload = async (folder) => {
     try {
-      const res = await axios.post(
+       const res = await axios.post(
         `${import.meta.env.VITE_APP_BACKEND_BASEURL}/api/gensignature`,
         { folder },
         { withCredentials: true }
@@ -193,7 +193,11 @@ const Settings = ({ faq }) => {
       if (res.data.error) throw new Error(res.data.error);
       return res.data;
     } catch (error) {
-      toast.error('Failed to get upload signature');
+      if (error.response && error.response.data && error.response.data.error) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error('Something went wrong');
+      }
       return null;
     }
   };
