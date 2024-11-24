@@ -176,7 +176,7 @@ const Settings = ({ faq }) => {
             const { secure_url } = res.data;
             return secure_url;
         } catch (error) {
-            console.log('Something went wrong in the server');
+            console.log(error)
             setError('Something went wrong in the server');
             return null; // Return null on error
         }
