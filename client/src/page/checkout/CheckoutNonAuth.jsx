@@ -34,7 +34,7 @@ const CheckoutNonAuth = () => {
 
   const locations = [
     { place: 'Nigeria', amount: 1000 },
-    { place: 'Ghana', amount: 3000 }
+    // { place: 'Ghana', amount: 3000 }
   ];
 
   useEffect(() => {
