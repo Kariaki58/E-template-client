@@ -438,7 +438,7 @@ const ProductManagement = () => {
               <label className="mt-5 block">Percent Off</label>
               <input
                 type="number"
-                name="percent"
+                name="percentOff"
                 value={updatedProduct.percentOff || ""}
                 onChange={handleInputChange}
                 className="w-full p-2 border border-gray-300 rounded-md"
