@@ -83,7 +83,6 @@ export const ProductUploadProvider = ({ children }) => {
         }
     } catch (error) {
         if (error.response && error.response.data) {
-          console.log({ error })
           toast.error(error.response.data.error);
         } else {
           console.error(error);

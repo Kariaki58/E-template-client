@@ -63,31 +63,23 @@ const Products = () => {
   const handleSubmitProduct = async (e) => {
     e.preventDefault();
 
-    console.log("submiting")
 
     if (!productName) {
-      console.log({ productName })
       toast.error("Product Name is required")
       return
     } else if (!description) {
-      console.log({ description })
-
       toast.error("Description is required")
       return
     } else if (price <= 0) {
-      console.log({ price })
       toast.error("price is required")
       return
     } else if (!stock) {
-      console.log({ stock })
       toast.error("stock is required")
       return
     } else if(!selectedCategory) {
-      console.log({ selectedCategory })
       toast.error("category is required")
       return
     } else if (productImages.length < 1) {
-      console.log({ productImages })
       toast.error("product images are required")
       return
     }
