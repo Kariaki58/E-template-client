@@ -184,27 +184,23 @@ const ProductList = () => {
         </div>
         <div className="gap-2 responsive">
           {currentProducts.map((data) => (
-            <div
-              className="w-full p-4 hover:shadow-md rounded-lg flex flex-col justify-between bg-white relative"
-              key={data._id}
-            >
+            <div className="product-container" key={data._id}>
               <Link to={`products/content/${data._id}`}>
                 <img
-                  key={data._id}
                   src={data.images[0]}
                   alt={data.name}
-                  className="rounded-lg"
+                  className="product-image"
                 />
               </Link>
-              <div className="p-4">
+              <div className="product-details">
                 <p className="font-semibold text-gray-800">
                   {truncateText(data.name, 17)}
                 </p>
-                {
-                  data.percentOff > 1 ? 
-                  <span className='bg-orange-500 text-white p-2 rounded-full absolute top-5 right-5'>{data.percentOff}%</span>
-                  : <></>
-                }
+                {data.percentOff > 1 && (
+                  <span className="bg-orange-500 text-white p-2 rounded-full absolute top-5 right-5">
+                    {data.percentOff}%
+                  </span>
+                )}
                 <div className={`text-gray-800 font-semibold ${data.percentOff ? 'line-through' : ''}`}>
                   {formatPrice(
                     data.price.$numberDecimal
@@ -212,33 +208,28 @@ const ProductList = () => {
                       : data.price
                   )}
                 </div>
-                {
-                  data.percentOff ? (
-                    <div className='text-gray-800 font-semibold'>
-                      {formatPrice(
-                        data.price.$numberDecimal ? parseFloat(data.price - ((data.price.$numberDecimal) * (Number(data.percentOff) / 100))) :
-                        data.price - (data.price * (Number(data.percentOff) / 100))
-                      )}
-                    </div>
-                  ) : <></>
-                }
+                {data.percentOff ? (
+                  <div className="text-gray-800 font-semibold">
+                    {formatPrice(
+                      data.price.$numberDecimal
+                        ? data.price - data.price.$numberDecimal * (data.percentOff / 100)
+                        : data.price - data.price * (data.percentOff / 100)
+                    )}
+                  </div>
+                ): null}
               </div>
-                {
-                  !user || (!user.isAdmin) ? (
-                    <div className="flex justify-center mt-auto">
-                      <button
-                        className="border text-black border-gray-950 hover:text-white py-2 px-4 rounded-lg sm:text-xl hover:bg-gray-950 w-60"
-                        onClick={() => handleAddToCart(data)}
-                      >
-                        Add to Cart
-                      </button>
-                    </div>
-                  ) : <></>
-                }
-                
+              {!user || (!user.isAdmin) ? (
+                <button
+                  className="add-to-cart-btn"
+                  onClick={() => handleAddToCart(data)}
+                >
+                  Add to Cart
+                </button>
+              ) : null}
             </div>
           ))}
         </div>
+
         <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
           <div className="flex flex-1 justify-between sm:hidden">
             <button
