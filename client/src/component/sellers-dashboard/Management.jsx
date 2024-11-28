@@ -439,7 +439,7 @@ const ProductManagement = () => {
               <input
                 type="number"
                 name="percent"
-                value={updatedProduct.percent || ""}
+                value={updatedProduct.percentOff || ""}
                 onChange={handleInputChange}
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="percentage off"
@@ -494,12 +494,12 @@ const ProductManagement = () => {
                 {imagePreviews.map((preview, idx) => (
                   <div key={idx} className="relative">
                     <img src={preview} alt="Preview" className="w-20 h-20 object-cover rounded-md" />
-                    <button
+                    {/* <button
                       onClick={() => removeImage(product._id, idx)}
                       className="absolute top-0 right-0 bg-red-600 text-white p-1 rounded-full"
                     >
                       <FaTrash />
-                    </button>
+                    </button> */}
                   </div>
                 ))}
               </div>
