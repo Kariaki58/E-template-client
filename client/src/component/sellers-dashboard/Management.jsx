@@ -91,7 +91,17 @@ const ProductManagement = () => {
     setImagePreviews((prev) => [...prev, ...acceptedFiles.map(file => URL.createObjectURL(file))]);
   };
 
-  const removeImage = (index) => {
+  const removeImage = async (productId, index) => {
+    try {
+      const id = imagePreviews[index]
+      await axios.delete(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/${productId}/delete?imageUrl=${encodeURIComponent(id)}`, { withCredentials: true });
+    } catch (error) {
+      if (error && error.response && error.response.data) {
+        toast.error(error.response.data.error)
+      } else {
+        toast.error("sorry can't delete at the moment")
+      }
+    }
     setProductImages((prev) => prev.filter((_, i) => i !== index));
     setImagePreviews((prev) => prev.filter((_, i) => i !== index));
   };
@@ -174,15 +184,21 @@ const ProductManagement = () => {
     event.preventDefault();
     try {
       const { timestamp: imgTimestamp, signature: imgSignature } = await getSignatureForUpload('images');
-
+  
       let images = [];
   
       if (productImages.length > 0) {
         const uploadPromises = productImages.map(async (img) => {
-          let imgUrl = await uploadFile(img, "image", imgTimestamp, imgSignature);
-          imgUrl = String(imgUrl)
-          if (imgUrl.startsWith('https://')) {
-            images.push(imgUrl);
+          // Check if the image is already a URL
+          if (typeof img === 'string' && img.startsWith('https://')) {
+            images.push(img); // Already a URL, push it directly to the images array
+          } else {
+            // Only upload if it's not a URL
+            let imgUrl = await uploadFile(img, "image", imgTimestamp, imgSignature);
+            imgUrl = String(imgUrl);
+            if (imgUrl.startsWith('https://')) {
+              images.push(imgUrl);
+            }
           }
         });
         await Promise.all(uploadPromises);
@@ -211,12 +227,13 @@ const ProductManagement = () => {
       setEditingProductId(null);
     } catch (error) {
       if (error.response && error.response.data) {
-        toast.error(error.response.data.error)
+        toast.error(error.response.data.error);
       } else {
         toast.error("Failed to update product");
       }
     }
   };
+  
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -225,10 +242,6 @@ const ProductManagement = () => {
 
   const handleSelectChange = (field, selected) => {
     setUpdatedProduct({ ...updatedProduct, [field]: selected });
-  };
-
-  const handleQuillChange = (value) => {
-    setUpdatedProduct({ ...updatedProduct, description: value });
   };
 
   const handlePageClick = (pageNumber) => {
@@ -302,7 +315,7 @@ const ProductManagement = () => {
             [{ 'color': [] }, { 'background': [] }],
             [{ 'align': [] }],
             [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            ['image', 'video', 'blockquote', 'code-block'],
+            ['blockquote', 'code-block'],
             ['clean'],
           ],
         },
@@ -404,7 +417,7 @@ const ProductManagement = () => {
         <div key={product._id} className="mb-4">
           {editingProductId === product._id ? (
             <form onSubmit={handleUpdate} className="space-y-4">
-              <lable>Product Name</lable>
+              <label>Product Name</label>
               <input
                 type="text"
                 name="name"
@@ -413,7 +426,7 @@ const ProductManagement = () => {
                 className="w-full p-2 border border-gray-300 rounded-md"
                 placeholder="Product Name"
               />
-              <lable className="mt-5 block">Price</lable>
+              <label className="mt-5 block">Price</label>
               <input
                 type="number"
                 name="price"
@@ -472,7 +485,7 @@ const ProductManagement = () => {
                 className="w-full"
                 classNamePrefix="select"
               />
-              <lable className="mt-5 block">Images</lable>
+              <label className="mt-5 block">Images</label>
               <div {...getRootProps()} className="border-2 border-dashed p-4 text-center cursor-pointer mb-4">
                 <input {...getInputProps()} />
                 <p>Drag & drop images here, or click to select images</p>
@@ -482,7 +495,7 @@ const ProductManagement = () => {
                   <div key={idx} className="relative">
                     <img src={preview} alt="Preview" className="w-20 h-20 object-cover rounded-md" />
                     <button
-                      onClick={() => removeImage(idx)}
+                      onClick={() => removeImage(product._id, idx)}
                       className="absolute top-0 right-0 bg-red-600 text-white p-1 rounded-full"
                     >
                       <FaTrash />

@@ -191,12 +191,7 @@ const ProductList = () => {
               <Link to={`products/content/${data._id}`}>
                 <img
                   key={data._id}
-                  src={cld
-                    .image(`images/${data.images[0].split('/')[8].split('.')[0]}`)
-                    .resize('c_fill,w_500,h_500,g_auto')
-                    .delivery('q_auto')
-                    .format('auto')
-                    .toURL()}
+                  src={data.images[0]}
                   alt={data.name}
                   className="rounded-lg"
                 />

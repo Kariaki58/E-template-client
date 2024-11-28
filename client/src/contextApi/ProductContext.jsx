@@ -26,108 +26,74 @@ export const ProductUploadProvider = ({ children }) => {
   const [faqItems, setFaqItems] = useState([]);
   const [search, setSearch] = useState('');
 
-
-  const uploadFile = async (file, type, timestamp, signature) => {
-    const folder = type === 'image' ? 'images' : 'videos';
-    const data = new FormData();
-    data.append('file', file);
-    data.append('timestamp', timestamp);
-    data.append('signature', signature);
-    data.append('api_key', import.meta.env.VITE_APP_CLOUDINARY_API_KEY);
-    data.append('folder', folder);
-
-    try {
-        const cloudName = import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME;
-        const resourceType = type === 'image' ? 'image' : 'video';
-        const api = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
-
-        const res = await axios.post(api, data);
-        const { secure_url } = res.data;
-        return secure_url;
-    } catch (error) {
-        setError('Something went wrong in the server');
-        return null; // Return null on error
-    }
-  };
-
-  const getSignatureForUpload = async (folder) => {
-    try {
-       const res = await axios.post(
-        `${import.meta.env.VITE_APP_BACKEND_BASEURL}/api/gensignature`,
-        { folder },
-        { withCredentials: true }
-      );
-      if (res.data.error) throw new Error(res.data.error);
-      return res.data;
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.error) {
-        toast.error(error.response.data.error);
-      } else {
-        toast.error('Something went wrong');
-      }
-      return null;
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const { timestamp: imgTimestamp, signature: imgSignature } = await getSignatureForUpload('images');
-      let images = [];
-      const uploadPromises = productImages.map(async (img) => {
-        const imgUrl = await uploadFile(img, 'image', imgTimestamp, imgSignature);
-        if (imgUrl) {
-          images.push(imgUrl);
+        // Create FormData instance to package all data
+        const formData = new FormData();
+
+        // Add product details to FormData
+        formData.append('productName', productName);
+        formData.append('description', description);
+        formData.append('percentOff', 0);
+        formData.append('price', parseFloat(price));
+        formData.append('stock', parseInt(stock, 10));
+        formData.append('category', selectedCategory.value);
+        
+        // Add sizes and colors
+        selectedSizes.forEach((size, index) => {
+            formData.append(`sizes[${index}]`, size.value);
+        });
+        selectedColors.forEach((color, index) => {
+            formData.append(`colors[${index}]`, color.value);
+        });
+
+        productImages.forEach((image) => {
+          formData.append('images', image);
+        });
+
+
+        // Add FAQ items if applicable
+        faqItems.forEach((faq, index) => {
+            formData.append(`faqItems[${index}][question]`, faq.question);
+            formData.append(`faqItems[${index}][answer]`, faq.answer);
+        });
+
+        // Decide endpoint based on whether it's an edit or new upload
+        const url = editingProductId
+            ? `${import.meta.env.VITE_APP_BACKEND_BASEURL}/upload/update/${editingProductId}`
+            : `${import.meta.env.VITE_APP_BACKEND_BASEURL}/upload/add`;
+
+        // Make the API request
+        const response = await axios.post(url, formData, {
+          headers: {
+              'Content-Type': 'multipart/form-data',
+          },
+          withCredentials: true,
+        });
+
+        if (response.data.error) {
+            toast.error(response.data.error);
+        } else {
+            toast.success(editingProductId ? 'Product updated successfully!' : 'Product uploaded successfully!');
+            resetForm();
+            fetchAllProducts();
         }
-      });
-
-      await Promise.all(uploadPromises);
-
-      const url = editingProductId
-        ? `${import.meta.env.VITE_APP_BACKEND_BASEURL}/upload/update/${editingProductId}`
-        : `${import.meta.env.VITE_APP_BACKEND_BASEURL}/upload/add`;
-
-      const response = await axios.post(
-        url,
-        {
-          productName,
-          description,
-          gender: '',
-          percentOff: 0,
-          size: selectedSizes.map((option) => option.value),
-          color: selectedColors.map((option) => option.value),
-          price: parseFloat(price),
-          stock: parseInt(stock, 10),
-          images,
-          materials: [],
-          features: [],
-          rating: {},
-          category: selectedCategory ? selectedCategory.value : '',
-          faqItems
-        },
-        { withCredentials: true }
-      );
-
-      if (response.data.error) {
-        toast.error(response.data.error);
-      } else {
-        toast.success(editingProductId ? 'Product updated successfully!' : 'Product uploaded successfully!');
-        resetForm();
-        fetchAllProducts();
-      }
     } catch (error) {
-      if (error.response && error.response.data){
-        toast.error(error.response.data.error)
-      } else {
-        console.log(error)
-        toast.error('An unexpected error occurred.');
-      }
+        if (error.response && error.response.data) {
+          console.log({ error })
+          toast.error(error.response.data.error);
+        } else {
+          console.error(error);
+          toast.error('An unexpected error occurred.');
+        }
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
   };
+
 
   const handleEditProduct = (product) => {
     setEditingProductId(product._id);

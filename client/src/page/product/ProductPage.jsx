@@ -171,11 +171,7 @@ const ProductSections = () => {
                   {product.images.map((image, index) => (
                     <img
                     key={index}
-                    src={cld.image(`images/${image.split('/')[8].split('.')[0]}`)
-                      .resize('c_fill,w_600,h_600,g_auto')
-                      .delivery('q_auto:best')
-                      .format('auto')
-                      .toURL()}
+                    src={image}
                     alt="Optimized Image"
                   />                  
                   ))}
