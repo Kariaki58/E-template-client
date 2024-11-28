@@ -156,6 +156,7 @@ export const ProductUploadProvider = ({ children }) => {
         setFilteredProducts(data || []);
       }
     } catch (error) {
+    console.log(error)
       if (error.response && error.response.data) {
         toast.error(error.response.data.error)
       } else {
