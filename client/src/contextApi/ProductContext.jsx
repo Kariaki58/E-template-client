@@ -85,7 +85,6 @@ export const ProductUploadProvider = ({ children }) => {
         if (error.response && error.response.data) {
           toast.error(error.response.data.error);
         } else {
-          console.error(error);
           toast.error('An unexpected error occurred.');
         }
     } finally {

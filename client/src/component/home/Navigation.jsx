@@ -11,9 +11,12 @@ import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import { context } from '../../contextApi/Modal';
 import { motion } from 'framer-motion';
 import { ProductUploadContext } from '../../contextApi/ProductContext';
+import { CartContext} from "../../contextApi/cartContext";
+
 
 const Navigation = ({ logoImage }) => {
   const { handleToggle, setIsOpen: openModal } = useContext(context);
+  const { cartItems } = useContext(CartContext);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -121,7 +124,10 @@ const Navigation = ({ logoImage }) => {
             {/* Cart Icon */}
             {!user || !user.isAdmin ? (
               <Link to='/cart'>
-                <PiShoppingCartLight className="text-2xl text-gray-700 hover:text-blue-600 transition duration-200 cursor-pointer" />
+                <div className="relative">
+                  <PiShoppingCartLight className="text-2xl text-gray-700 hover:text-blue-600 transition duration-200 cursor-pointer" />
+                  <p className="absolute -top-5 -right-3 font-bold bg-green-800 text-white p-1 rounded-full">{cartItems?.items?.length}</p>
+                </div>
               </Link>
             ) : null}
 

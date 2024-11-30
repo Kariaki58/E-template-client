@@ -315,7 +315,7 @@ const ProductManagement = () => {
             [{ 'color': [] }, { 'background': [] }],
             [{ 'align': [] }],
             [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            ['blockquote', 'code-block'],
+            ['image', 'video', 'blockquote', 'code-block'],
             ['clean'],
           ],
         },

@@ -6,19 +6,14 @@ import { Toaster, toast } from 'react-hot-toast';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import { Link } from 'react-router-dom';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { Cloudinary } from '@cloudinary/url-gen';
 import './ProductList.css';
 import { RotatingLines } from 'react-loader-spinner'
 import { EmailPopUp } from './Footer';
 import ScrollToTop from '../../ScrollToTop';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 
-const cld = new Cloudinary({
-  cloud: {
-    cloudName: import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME,
-  },
-});
 
 const ProductList = () => {
   const {
@@ -42,6 +37,8 @@ const ProductList = () => {
   const isAuthenticated = useIsAuthenticated();
   const [display, setDisplay] = useState(false);
   const user = useAuthUser()
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -71,10 +68,11 @@ const ProductList = () => {
   };
 
   const handleAddToCart = (product) => {
+    
     if (product.sizes.length > 0 || product.colors.length > 0) {
       setSelectedProduct(product);
     } else {
-      addToCart(product._id, 1, currentPage);
+      addToCart(product._id, 1, null, null, currentPage);
       toast.success(`${product.name} added to cart!`);
     }
   };
@@ -127,6 +125,14 @@ const ProductList = () => {
   
   }, [currentPage]);
 
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const pageFromUrl = queryParams.get('page');
+    const page = pageFromUrl ? parseInt(pageFromUrl, 10) : 1;
+    setCurrentPage(page);
+    fetchAllProducts(page);
+  }, [location.search]);
+
 
   const sortedProducts = sortProducts(products, sortOption);
 
@@ -140,6 +146,7 @@ const ProductList = () => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    navigate(`?page=${page}`);
     fetchAllProducts(page);
   };
   
@@ -184,7 +191,7 @@ const ProductList = () => {
         </div>
         <div className="gap-2 responsive">
           {currentProducts.map((data) => (
-            <div className="product-container" key={data._id}>
+            <div className="product-container relative" key={data._id}>
               <Link to={`products/content/${data._id}`}>
                 <img
                   src={data.images[0]}
@@ -230,43 +237,48 @@ const ProductList = () => {
           ))}
         </div>
 
-        <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
-          <div className="flex flex-1 justify-between sm:hidden">
+      <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+      <div className="flex flex-1 items-center justify-between">
+        <div className="hidden md:block">
+          <p className="text-sm text-gray-700">
+            Showing{' '}
+            <span className="font-medium">
+              {indexOfFirstProduct + 1}
+            </span>{' '}
+            to <span className="font-medium">{indexOfLastProduct}</span> of{' '}
+            <span className="font-medium">{sortedProducts.length}</span>{' '}
+            products
+          </p>
+        </div>
+      <div>
+      <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+        {totalPages > 1 && (
+          <>
+            {/* Previous Button */}
             <button
-              onClick={() =>
-                paginate(currentPage > 1 ? currentPage - 1 : currentPage)
-              }
-              className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : currentPage)}
+              className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               Previous
             </button>
-            <button
-              onClick={() =>
-                paginate(currentPage < totalPages ? currentPage + 1 : currentPage)
-              }
-              className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
-            >
-              Next
-            </button>
-          </div>
-          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm text-gray-700">
-                Showing{' '}
-                <span className="font-medium">
-                  {indexOfFirstProduct + 1}
-                </span>{' '}
-                to <span className="font-medium">{indexOfLastProduct}</span> of{' '}
-                <span className="font-medium">{sortedProducts.length}</span>{' '}
-                products
-              </p>
-            </div>
-            <div>
-              <nav
-                className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-                aria-label="Pagination"
-              >
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+
+            {/* Page Numbers with Ellipsis */}
+            {currentPage > 3 && (
+              <>
+                <button
+                  onClick={() => handlePageChange(1)}
+                  className="relative inline-flex items-center border px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
+                >
+                  1
+                </button>
+                <span className="px-4 py-2 text-sm text-gray-500">...</span>
+              </>
+            )}
+
+            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+              const page = Math.max(1, currentPage - 2) + i;
+              if (page <= totalPages) {
+                return (
                   <button
                     key={page}
                     onClick={() => handlePageChange(page)}
@@ -278,27 +290,38 @@ const ProductList = () => {
                   >
                     {page}
                   </button>
-                ))}
+                );
+              }
+              return null;
+            })}
+
+            {currentPage < totalPages - 2 && (
+              <>
+                <span className="px-4 py-2 text-sm text-gray-500">...</span>
                 <button
-                  onClick={() =>
-                    paginate(currentPage > 1 ? currentPage - 1 : currentPage)
-                  }
-                  className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  onClick={() => handlePageChange(totalPages)}
+                  className="relative inline-flex items-center border px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
                 >
-                  Previous
+                  {totalPages}
                 </button>
-                <button
-                  onClick={() =>
-                    paginate(currentPage < totalPages ? currentPage + 1 : currentPage)
-                  }
-                  className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
-                >
-                  Next
-                </button>
-              </nav>
-            </div>
-          </div>
-        </div>
+              </>
+            )}
+
+            {/* Next Button */}
+            <button
+              onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : currentPage)}
+              className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
+            >
+              Next
+            </button>
+          </>
+        )}
+      </nav>
+
+      </div>
+      </div>
+      </div>
+
       </div>
       {selectedProduct && (
         <div className="fixed inset-0 flex items-center justify-center z-50">

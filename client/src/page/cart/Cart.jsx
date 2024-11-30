@@ -63,7 +63,9 @@ const CartPage = () => {
 
                     <div className="grid grid-cols-1 gap-6 sm:gap-8">
                         {cartItems && cartItems.items && cartItems.items.map((item, index) => (
-                            <div key={item._id} className="flex gap-2 flex-row p-4 sm:p-6 shadow-md rounded-lg">
+                            
+                            <div key={index} className="flex gap-2 flex-row p-4 sm:p-6 shadow-md rounded-lg">
+                                
                                 <Link to={`/products/content/${item.productId._id}`}>
                                     <img src={item.productId.images[0]} alt={item.productId.name} className="w-40 h-40 object-cover rounded-md" />
                                 </Link>

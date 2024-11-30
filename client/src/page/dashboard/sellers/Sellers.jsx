@@ -26,7 +26,7 @@ const Sellers = () => {
         toast.error(response.data.error || 'An error occurred while signing out.');
       } else {
         toast.success(response.data.message || 'Signed out successfully!');
-        navigate('/login');
+        navigate('/');
       }
     } catch (error) {
       if (error.response && error.response.data) {
