@@ -238,90 +238,88 @@ const ProductList = () => {
         </div>
 
       <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
-      <div className="flex flex-1 items-center justify-between">
-        <div className="hidden md:block">
-          <p className="text-sm text-gray-700">
-            Showing{' '}
-            <span className="font-medium">
-              {indexOfFirstProduct + 1}
-            </span>{' '}
-            to <span className="font-medium">{indexOfLastProduct}</span> of{' '}
-            <span className="font-medium">{sortedProducts.length}</span>{' '}
-            products
-          </p>
-        </div>
-      <div>
-      <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-        {totalPages > 1 && (
-          <>
-            {/* Previous Button */}
-            <button
-              onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : currentPage)}
-              className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
-            >
-              Previous
-            </button>
-
-            {/* Page Numbers with Ellipsis */}
-            {currentPage > 3 && (
-              <>
-                <button
-                  onClick={() => handlePageChange(1)}
-                  className="relative inline-flex items-center border px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
-                >
-                  1
-                </button>
-                <span className="px-4 py-2 text-sm text-gray-500">...</span>
-              </>
-            )}
-
-            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              const page = Math.max(1, currentPage - 2) + i;
-              if (page <= totalPages) {
-                return (
+        <div className="flex flex-1 items-center justify-between">
+          <div className="hidden md:block">
+            <p className="text-sm text-gray-700">
+              Showing{' '}
+              <span className="font-medium">
+                {indexOfFirstProduct + 1}
+              </span>{' '}
+              to <span className="font-medium">{indexOfLastProduct}</span> of{' '}
+              <span className="font-medium">{sortedProducts.length}</span>{' '}
+              products
+            </p>
+          </div>
+          <div>
+            <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+              {totalPages > 1 && (
+                <>
+                  {/* Previous Button */}
                   <button
-                    key={page}
-                    onClick={() => handlePageChange(page)}
-                    className={`${
-                      page === currentPage
-                        ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600'
-                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                    } relative inline-flex items-center border px-4 py-2 text-sm font-medium`}
+                    onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : currentPage)}
+                    className="hidden md:block relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
                   >
-                    {page}
+                    Previous
                   </button>
-                );
-              }
-              return null;
-            })}
 
-            {currentPage < totalPages - 2 && (
-              <>
-                <span className="px-4 py-2 text-sm text-gray-500">...</span>
-                <button
-                  onClick={() => handlePageChange(totalPages)}
-                  className="relative inline-flex items-center border px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
-                >
-                  {totalPages}
-                </button>
-              </>
-            )}
+                  {/* Page Numbers with Ellipsis */}
+                  {currentPage > 3 && (
+                    <>
+                      <button
+                        onClick={() => handlePageChange(1)}
+                        className="relative inline-flex items-center border px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
+                      >
+                        1
+                      </button>
+                      <span className="px-4 py-2 text-sm text-gray-500">...</span>
+                    </>
+                  )}
 
-            {/* Next Button */}
-            <button
-              onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : currentPage)}
-              className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
-            >
-              Next
-            </button>
-          </>
-        )}
-      </nav>
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    const page = Math.max(1, currentPage - 2) + i;
+                    if (page <= totalPages) {
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => handlePageChange(page)}
+                          className={`${
+                            page === currentPage
+                              ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600'
+                              : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                          } relative inline-flex items-center border px-4 py-2 text-sm font-medium`}
+                        >
+                          {page}
+                        </button>
+                      );
+                    }
+                    return null;
+                  })}
 
+                  {currentPage < totalPages - 2 && (
+                    <>
+                      <span className="px-4 py-2 text-sm text-gray-500">...</span>
+                      <button
+                        onClick={() => handlePageChange(totalPages)}
+                        className="relative inline-flex items-center border px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
+                      >
+                        {totalPages}
+                      </button>
+                    </>
+                  )}
+
+                  {/* Next Button */}
+                  <button
+                    onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : currentPage)}
+                    className="hidden md:block relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  >
+                    Next
+                  </button>
+                </>
+              )}
+            </nav>
+          </div>
+        </div>
       </div>
-      </div>
-      </div>
-
       </div>
       {selectedProduct && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
