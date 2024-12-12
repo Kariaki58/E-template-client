@@ -17,7 +17,12 @@ const useEmailSubscription = () => {
     const handleSubscribe = async (email, onSuccess) => {
         setLoading(true);
         try {
-            const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/newsletter`, { email }, { withCredentials: true });
+            const localtoken = localStorage.getItem('_auth')
+            const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/newsletter`, { email }, {
+                headers: {
+                    'Authorization': `Bearer ${localtoken}`
+                }
+            });
             if (response.data.error) {
                 toast.error(response.data.error);
             } else {

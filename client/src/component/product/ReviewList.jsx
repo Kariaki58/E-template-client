@@ -19,6 +19,7 @@ const ReviewList = () => {
     const fetchReviews = async () => {
       try {
         setLoading(true);
+        const localtoken = localStorage.getItem('_auth')
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/review/get/${params.id}`);
         setReviews(response.data.message);
         setTotalPages(Math.ceil(response.data.message.length / reviewsPerPage));

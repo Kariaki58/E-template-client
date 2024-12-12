@@ -34,7 +34,14 @@ const LoginPage = () => {
                 if (checkLocalCart && checkLocalCart.length <= 0) {
                     checkLocalCart = null
                 }
-                const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/login`, { email, password, checkLocalCart }, { withCredentials: true })
+
+                const localtoken = localStorage.getItem('_auth');
+
+                const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/login`, { email, password, checkLocalCart }, {
+                    headers: {
+                        'Authorization': `Bearer ${localtoken}`
+                    }
+                })
                 if (response.data.error) {
                     throw new Error(response.data.error)
                 }

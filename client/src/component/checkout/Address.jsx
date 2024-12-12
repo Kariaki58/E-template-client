@@ -30,7 +30,12 @@ const Address = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/address`, { withCredentials: true });
+        const localtoken = localStorage.getItem('_auth')
+        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/address`, {
+          headers: {
+            'Authorization': `Bearer ${localtoken}`
+          }
+        });
         const {
           address,
           city,
@@ -71,7 +76,12 @@ const Address = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/address/add`, shippingDetails, { withCredentials: true });
+      const localtoken = localStorage.getItem('_auth')
+      const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/address/add`, shippingDetails, {
+        headers: {
+          'Authorization': `Bearer ${localtoken}`
+        }
+      });
       const { address, city, state, zipCode, country, phoneNumber, email, name } = response.data.address;
 
       setShippingDetails({

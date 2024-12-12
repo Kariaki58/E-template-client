@@ -44,10 +44,11 @@ const Orders = () => {
       if (newStatus === 'Cancelled' && customTemplate) {
         payload.customTemplate = customTemplate; // Send custom template for cancellation
       }
+      const localtoken = localStorage.getItem('_auth')
       await axios.patch(
         `${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/admin/${orderId}`,
         payload,
-        { withCredentials: true }
+        { headers: { 'Authorization': `Bearer ${localtoken}` } }
       );
       fetchAllOrders(); // Refetch orders after update
       toast.success('Order status updated successfully');

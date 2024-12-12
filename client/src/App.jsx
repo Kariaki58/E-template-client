@@ -34,7 +34,7 @@ import { RotatingSquare } from 'react-loader-spinner'
 import { ProductUploadContext } from './contextApi/ProductContext'
 
 
-
+const localtoken = localStorage.getItem('_auth')
 function App() {
   const location = useLocation();
   const [settings, setSettings] = useState()
@@ -45,7 +45,7 @@ function App() {
     setLoading(true)
     const fetchSettings = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/layout`, { withCredentials: true });
+        const res = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/layout`, { headers: { 'Authorization': `Bearer ${localtoken}` }, });
         await fetchAllProducts()
         
         if (res.status === 200 && res.data) {

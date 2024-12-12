@@ -21,8 +21,19 @@ const OrdersChart = () => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${API_URL}/${timeFrame}`, { withCredentials: true });
-      const getAllTotal = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/total/data`, { withCredentials: true })
+
+      const localtoken = localStorage.getItem('_auth');
+
+      const response = await axios.get(`${API_URL}/${timeFrame}`, {
+        headers: {
+          'Authorization': `Bearer ${localtoken}`
+        }
+      });
+      const getAllTotal = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/total/data`, {
+        headers: {
+          'Authorization': `Bearer ${localtoken}`
+        }
+      })
       setTotalOrders(getAllTotal.data.totalOrders)
       setTotalProducts(getAllTotal.data.totalProducts)
       setTotalEmailSubs(getAllTotal.data.totalEmails)

@@ -8,7 +8,7 @@ import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import axios from 'axios';
 import { Toaster, toast } from 'react-hot-toast';
 
-
+const localtoken = localStorage.getItem('_auth')
 const Buyer = () => {
   const signOut = useSignOut();
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const Buyer = () => {
   const handleSignOut = async () => {
     try {
       signOut();
-      const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/signout`, {}, { withCredentials: true });
+      const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/signout`, {}, { headers: { 'Authorization': `Bearer ${localtoken}` }, });
       
       if (response.data.error) {
         toast.error(response.data.error || 'An error occurred while signing out.');

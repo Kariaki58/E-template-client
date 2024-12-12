@@ -12,7 +12,7 @@ import axios from 'axios';
 import { Toaster, toast } from 'react-hot-toast';
 import { IoSettings } from "react-icons/io5";
 
-
+const localtoken = localStorage.getItem('_auth')
 const Sellers = () => {
   const signOut = useSignOut()
   const navigate = useNavigate()
@@ -20,7 +20,7 @@ const Sellers = () => {
   const handleSignOut = async () => {
     try {
       signOut();
-      const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/signout`, {}, { withCredentials: true });
+      const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/signout`, {}, { headers: { 'Authorization': `Bearer ${localtoken}` }, });
       
       if (response.data.error) {
         toast.error(response.data.error || 'An error occurred while signing out.');

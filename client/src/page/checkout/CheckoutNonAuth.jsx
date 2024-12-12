@@ -7,7 +7,7 @@ import { Toaster, toast } from 'react-hot-toast';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import { useNavigate } from 'react-router-dom';
 
-
+const localtoken = localStorage.getItem('_auth')
 const CheckoutNonAuth = () => {
   const [shippingDetails, setShippingDetails] = useState({
     name: '',
@@ -40,7 +40,7 @@ const CheckoutNonAuth = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/products/${productId}`, { withCredentials: true });
+        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/products/${productId}`, { headers: { 'Authorization': `Bearer ${localtoken}` }, });
         setProduct(response.data.product);
         setTotalAmount(response.data.product.price * (getQueryParams().quantity || 1)); // Adjust total based on quantity
       } catch (error) {
@@ -55,7 +55,7 @@ const CheckoutNonAuth = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/address`, { withCredentials: true });
+        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/address`, { headers: { 'Authorization': `Bearer ${localtoken}` }, });
         const { address, city, state, zipCode, country, phoneNumber, email, name } = response.data.message;
 
         setShippingDetails({
@@ -155,7 +155,7 @@ const CheckoutNonAuth = () => {
                 shippingDetails,
                 couponCode,
                 totalAmount: calculateTotalAmount() * 100
-              }, { withCredentials: true });
+              }, { headers: { 'Authorization': `Bearer ${localtoken}` }, });
               toast.success(response.data.message);
             } else {
               const color = searchParams.get('color');
@@ -170,7 +170,7 @@ const CheckoutNonAuth = () => {
                 shippingDetails,
                 couponCode,
                 totalAmount: calculateTotalAmount() * 100
-              }, { withCredentials: true });
+              }, { headers: { 'Authorization': `Bearer ${localtoken}` }, });
               toast.success(response.data.message);
               localStorage.setItem('items', [])
               navigate("/")

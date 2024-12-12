@@ -93,7 +93,13 @@ const Settings = ({ faq }) => {
     setLoading(true)
     const fetchSettings = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/content`, { withCredentials: true });
+        const localtoken = localStorage.getItem('_auth')
+
+        const res = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/content`, {
+          headers: {
+            'Authorization': `Bearer ${localtoken}`
+          }
+        });
         
         if (res.data) {
           const {
@@ -184,10 +190,16 @@ const Settings = ({ faq }) => {
 
   const getSignatureForUpload = async (folder) => {
     try {
+      const localtoken = localStorage.getItem('_auth')
+
        const res = await axios.post(
         `${import.meta.env.VITE_APP_BACKEND_BASEURL}/api/gensignature`,
         { folder },
-        { withCredentials: true }
+        {
+          headers: {
+            'Authorization': `Bearer ${localtoken}`
+          }
+        }
       );
       if (res.data.error) throw new Error(res.data.error);
       return res.data;
@@ -243,10 +255,16 @@ const Settings = ({ faq }) => {
       };
 
       try {
+        const localtoken = localStorage.getItem('_auth')
+
         const response = await axios.post(
           `${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/content`,
           payload,
-          { withCredentials: true }
+          {
+            headers: {
+              'Authorization': `Bearer ${localtoken}`
+            }
+          }
         );
 
         if (response.data.error) {

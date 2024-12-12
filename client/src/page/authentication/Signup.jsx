@@ -41,7 +41,12 @@ const SignupPage = () => {
                 if (checkLocalCart && checkLocalCart.length <= 0) {
                     checkLocalCart = null
                 }
-                const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/register`, { email, password, checkLocalCart }, { withCredentials: true });
+                const localtoken = localStorage.getItem('_auth');
+                const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/register`, { email, password, checkLocalCart }, {
+                    headers: {
+                        'Authorization': `Bearer ${localtoken}`
+                    }
+                });
                 const { message, token, isAdmin } = response.data;
 
                 toast.success(message)

@@ -15,7 +15,11 @@ export const CartProvider = ({ children }) => {
     if (isAuth) {
       setLoading(true);
       try {
-        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/cart`, { withCredentials: true });
+
+        const localtoken = localStorage.getItem('_auth');
+        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/cart`, {
+          headers: { 'Authorization': `Bearer ${localtoken}` },
+        });
         setCartItems(response.data.cart);
       } catch (error) {
         if (error.response && error.response.data) {
@@ -48,14 +52,21 @@ export const CartProvider = ({ children }) => {
   const addToCart = async (productId, quantity, size = '', color = '', currentPage) => {
     try {
       if (isAuth) {
+        const localtoken = localStorage.getItem('_auth')
+
         const response = await axios.post(
           `${import.meta.env.VITE_APP_BACKEND_BASEURL}/cart/add`,
           { productId, quantity, size, color },
-          { withCredentials: true }
+          {
+              headers: { 'Authorization': `Bearer ${localtoken}` },
+          }
         );
         setCartItems(response.data.cart);
       } else {
-        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}?page=${currentPage}`, { withCredentials: true });
+        const localtoken = localStorage.getItem('_auth')
+        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}?page=${currentPage}`, {
+            headers: { 'Authorization': `Bearer ${localtoken}` },
+        });
         const product = response.data.message.find((item) => item._id === productId);
 
         if (product) {
@@ -96,7 +107,10 @@ export const CartProvider = ({ children }) => {
   const clearCart = async (id) => {
     try {
       if (isAuth) {
-        await axios.delete(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/cart/${id}`, { withCredentials: true });
+        const localtoken = localStorage.getItem('_auth')
+        await axios.delete(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/cart/${id}`, {
+            headers: { 'Authorization': `Bearer ${localtoken}` },
+        });
         setCartItems([]);
       } else {
         localStorage.removeItem('items');
@@ -114,10 +128,13 @@ export const CartProvider = ({ children }) => {
   const decrementCart = async (productId, quantity, pos) => {
     try {
       if (isAuth) {
+        const localtoken = localStorage.getItem('_auth')
         const response = await axios.patch(
           `${import.meta.env.VITE_APP_BACKEND_BASEURL}/cart/decrement`,
           { productId, quantity, pos },
-          { withCredentials: true }
+            {
+                headers: { 'Authorization': `Bearer ${localtoken}` },
+            }
         );
         setCartItems(response.data.cart);
       } else {
@@ -143,10 +160,13 @@ export const CartProvider = ({ children }) => {
   const incrementCart = async (productId, quantity, pos) => {
     try {
       if (isAuth) {
+        const localtoken = localStorage.getItem('_auth')
         const response = await axios.patch(
           `${import.meta.env.VITE_APP_BACKEND_BASEURL}/cart/increment`,
           { productId, quantity, pos },
-          { withCredentials: true }
+          {
+              headers: { 'Authorization': `Bearer ${localtoken}` },
+          }
         );
         setCartItems(response.data.cart);
       } else {
@@ -172,7 +192,10 @@ export const CartProvider = ({ children }) => {
   const removeFromCart = async (pos, cartItemId) => {
     try {
       if (isAuth) {
-        const response = await axios.delete(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/delete/cart/${pos}/${cartItemId}`, { withCredentials: true });
+        const localtoken = localStorage.getItem('_auth')
+        const response = await axios.delete(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/delete/cart/${pos}/${cartItemId}`, {
+          headers: { 'Authorization': `Bearer ${localtoken}` },
+        });
         setCartItems(response.data.cart);
       } else {
         const cart = JSON.parse(localStorage.getItem('items') || '[]');

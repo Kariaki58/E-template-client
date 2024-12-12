@@ -71,9 +71,14 @@ const ProductManagement = () => {
 
   const fetchProducts = async (page) => {
     try {
+      const localtoken = localStorage.getItem('_auth')
       const response = await axios.get(
         `${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/products?page=${page}&limit=10`,
-        { withCredentials: true }
+        {
+          headers: {
+            'Authorization': `Bearer ${localtoken}`
+          }
+        }
       );
       setProducts(response.data.products);
       setTotalPages(Math.ceil(response.data.total / 10));
@@ -94,7 +99,12 @@ const ProductManagement = () => {
   const removeImage = async (productId, index) => {
     try {
       const id = imagePreviews[index]
-      await axios.delete(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/${productId}/delete?imageUrl=${encodeURIComponent(id)}`, { withCredentials: true });
+      const localtoken = localStorage.getItem('_auth')
+      await axios.delete(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/${productId}/delete?imageUrl=${encodeURIComponent(id)}`, {
+        headers: {
+          'Authorization': `Bearer ${localtoken}`
+        }
+      });
     } catch (error) {
       if (error && error.response && error.response.data) {
         toast.error(error.response.data.error)
@@ -122,9 +132,14 @@ const ProductManagement = () => {
 
   const handleDeleteClick = async (productId) => {
     try {
+      const localtoken = localStorage.getItem('_auth')
       await axios.delete(
         `${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/product/${productId}`,
-        { withCredentials: true }
+        {
+          headers: {
+            'Authorization': `Bearer ${localtoken}`
+          }
+        }
       );
       setProducts(products.filter((product) => product._id !== productId));
       toast.success("Product deleted successfully");
@@ -139,10 +154,15 @@ const ProductManagement = () => {
 
   const getSignatureForUpload = async (folder) => {
     try {
+      const localtoken = localStorage.getItem('_auth')
       const res = await axios.post(
         `${import.meta.env.VITE_APP_BACKEND_BASEURL}/api/gensignature`,
         { folder },
-        { withCredentials: true }
+        {
+          headers: {
+            'Authorization': `Bearer ${localtoken}`
+          }
+        }
       );
       if (res.data.error) throw new Error(res.data.error);
       return res.data;
@@ -211,11 +231,15 @@ const ProductManagement = () => {
         colors: updatedProduct.color.map(c => c.value),
         category: updatedProduct.category.value,
       };
-  
+      const localtoken = localStorage.getItem('_auth')
       await axios.put(
         `${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/product/edit`,
         updatedProductData,
-        { withCredentials: true }
+        {
+          headers: {
+            'Authorization': `Bearer ${localtoken}`
+          }
+        }
       );
   
       setProducts(
@@ -271,8 +295,12 @@ const ProductManagement = () => {
     }
     try {
       const selectedProductData = products.map(id => ( { productId: id._id, couponCode, couponPercent }))
-      
-      await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/coupons`, { coupons: selectedProductData, date }, { withCredentials: true });
+      const localtoken = localStorage.getItem('_auth')
+      await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/coupons`, { coupons: selectedProductData, date }, {
+        headers: {
+          'Authorization': `Bearer ${localtoken}`
+        }
+      });
       toast.success('Coupon applied to selected products');
     } catch (error) {
       toast.error(error.response?.data?.error || 'Failed to apply coupon');
@@ -293,7 +321,12 @@ const ProductManagement = () => {
 
   const removeCoupon = async () => {
     try {
-      const respone = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/coupons/delete`, { couponCode, couponPercent }, { withCredentials: true })
+      const localtoken = localStorage.getItem('_auth')
+      const respone = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/admin/coupons/delete`, { couponCode, couponPercent }, {
+        headers: {
+          'Authorization': `Bearer ${localtoken}`
+        }
+      })
       toast.success(respone.data.message)
     } catch (error) {
       toast.error(error.response?.data?.error || 'Failed to apply coupon');

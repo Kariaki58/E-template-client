@@ -16,7 +16,14 @@ const OrderProvider = ({ children }) => {
         if (isAuth) {
             setLoading(true);
             try {
-                const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/user`, { withCredentials: true });
+
+                const localtoken = localStorage.getItem('_auth');
+
+                const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/user`, {
+                    headers: {
+                        'Authorization': `Bearer ${localtoken}`
+                    }
+                });
                 setOrders(response.data.orders || []); // Safeguard in case `orders` is undefined
             } catch (err) {
                 if (err.response && err.response.data) {
@@ -34,7 +41,11 @@ const OrderProvider = ({ children }) => {
     const addOrder = async (orderData) => {
         setLoading(true);
         try {
-            const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order`, orderData, { withCredentials: true });
+
+            const localtoken = localStorage.getItem('_auth');
+            const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order`, orderData, {
+                headers: { 'Authorization': `Bearer ${localtoken}` },
+            });
             setOrders(prevOrders => [...prevOrders, response.data.order]);
         } catch (err) {
             if (err.response && err.response.data) {
@@ -51,7 +62,13 @@ const OrderProvider = ({ children }) => {
     const fetchAllOrders = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/admin`, { withCredentials: true });
+            const localtoken = localStorage.getItem('_auth')
+
+            const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order/admin`, {
+                headers: {
+                    'Authorization': `Bearer ${localtoken}`
+                }
+            });
             setOrders(response.data.orders);
         } catch (err) {
             if (err.response && err.response.data) {

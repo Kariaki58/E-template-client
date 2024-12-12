@@ -7,7 +7,7 @@ import { CartContext } from '../../contextApi/cartContext';
 import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated';
 import { useNavigate } from 'react-router-dom';
 
-
+const localtoken = localStorage.getItem('_auth')
 const Checkout = () => {
   const [shippingDetails, setShippingDetails] = useState({
     name: '',
@@ -53,7 +53,9 @@ const Checkout = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/address`, { withCredentials: true });
+        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/address`, {
+          headers: { 'Authorization': `Bearer ${localtoken}` },
+        });
         const { address, city, state, zipCode, country, phoneNumber, email, name } = response.data.message;
 
         setShippingDetails({
@@ -134,7 +136,9 @@ const Checkout = () => {
         try {
           if (isAuth) {
             const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/order`,
-              { cartId: cartItems._id, shippingDetails, status: transaction.status, totalAmount }, { withCredentials: true }
+              { cartId: cartItems._id, shippingDetails, status: transaction.status, totalAmount }, {
+                  headers: { 'Authorization': `Bearer ${localtoken}` },
+                }
             );
             toast.success(response.data.message);
           } else {

@@ -4,7 +4,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { MdOutlineAddIcCall, MdOutlineAccessTime } from "react-icons/md";
 import axios from 'axios';
 
-
+const localtoken = localStorage.getItem('_auth')
 const formatHours = (hours) => {
   const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
   const formattedDays = [];
@@ -78,7 +78,7 @@ const Contact = ({ location, contact, support, openHours, storeDescription }) =>
       const response = await axios.post(
         `${import.meta.env.VITE_APP_BACKEND_BASEURL}/send/email`,
         formData,
-        { withCredentials: true }
+        { headers: { 'Authorization': `Bearer ${localtoken}` }, }
       );
 
       if (response.data.error) {

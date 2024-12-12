@@ -23,6 +23,8 @@ const cld = new Cloudinary({
   },
 });
 
+const localtoken = localStorage.getItem('_auth')
+
 const ProductSections = () => {
   const { addToCart } = useContext(CartContext);
   const { currentPage, setSearch } = useContext(ProductUploadContext)
@@ -51,7 +53,7 @@ const ProductSections = () => {
     const fetchData = async () => {
       setLoading(true)
       try {
-        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/products/${params.id}`, { withCredentials: true });
+        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/products/${params.id}`, { headers: { 'Authorization': `Bearer ${localtoken}` }, });
 
         if (response.data.error) {
           throw new Error(response.data.error);

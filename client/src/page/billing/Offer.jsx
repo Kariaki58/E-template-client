@@ -5,7 +5,7 @@ import PaystackPop from '@paystack/inline-js';
 import axios from 'axios';
 import { Toaster, toast } from 'react-hot-toast';
 
-
+const localtoken = localStorage.getItem('_auth')
 const PaymentPlan = () => {
   const navigate = useNavigate();
   const popup = new PaystackPop();
@@ -56,7 +56,10 @@ const PaymentPlan = () => {
       subscriptionLimit: 1,
       onSuccess: async (transaction) => {
         const adding = { ...transaction, email }
-        const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/make-admin`, adding, { withCredentials: true });
+
+        const response = await axios.post(`${import.meta.env.VITE_APP_BACKEND_BASEURL}/make-admin`, adding, {
+          headers: { 'Authorization': `Bearer ${localtoken}` },
+        });
 
         if (response.data.error) {
           toast.error(response.data.error);

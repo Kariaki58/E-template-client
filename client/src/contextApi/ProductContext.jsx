@@ -5,6 +5,9 @@ import { Toaster, toast } from 'react-hot-toast';
 
 export const ProductUploadContext = createContext();
 
+const localtoken = localStorage.getItem('_auth')
+
+
 export const ProductUploadProvider = ({ children }) => {
   const [productName, setProductName] = useState('');
   const [productImages, setProductImages] = useState([]);
@@ -70,8 +73,8 @@ export const ProductUploadProvider = ({ children }) => {
         const response = await axios.post(url, formData, {
           headers: {
               'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${localtoken}`
           },
-          withCredentials: true,
         });
 
         if (response.data.error) {
@@ -110,7 +113,9 @@ export const ProductUploadProvider = ({ children }) => {
     try {
       const response = await axios.delete(
         `${import.meta.env.VITE_APP_BACKEND_BASEURL}/upload/delete/${productId}`,
-        { withCredentials: true }
+        {
+            headers: { 'Authorization': `Bearer ${localtoken}` },
+        }
       );
 
       if (response.data.error) {
@@ -134,7 +139,7 @@ export const ProductUploadProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_BASEURL}?page=${page}`, {
-        withCredentials: true,
+          headers: { 'Authorization': `Bearer ${localtoken}` },
       });
 
       setTotal(response.data.total);

@@ -93,11 +93,16 @@ const ReviewForm = ({ setWriteReview, productId }) => {
         imageUrl,
         productId,
       };
-  
+
+      const localtoken = localStorage.getItem('_auth')
       const response = await axios.post(
         `${import.meta.env.VITE_APP_BACKEND_BASEURL}/review/add`,
         reviewData,
-        { withCredentials: true }
+        {
+          headers: {
+            'Authorization': `Bearer ${localtoken}`
+          }
+        }
       );
     
       if (response.data.error) {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+const localtoken = localStorage.getItem('_auth')
 const Customer = () => {
   const [customers, setCustomers] = useState([]);
   const [error, setError] = useState(null);
@@ -20,7 +20,7 @@ const Customer = () => {
               page: currentPage,
               limit: perPage,
             },
-            withCredentials: true,
+            headers: { 'Authorization': `Bearer ${localtoken}` },
           }
         );
 
