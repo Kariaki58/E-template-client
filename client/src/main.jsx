@@ -16,7 +16,7 @@ import { Analytics as VercelAnalytics } from "@vercel/analytics/react"
 const authStore = createStore({
   authName: '_auth',
   authType: 'cookie',
-  cookieDomain: 'e-template-server.onrender.com',
+  cookieDomain: '.poshwears.ng',
   cookieSecure: window.location.protocol === 'https:',
   cookieSameSite: 'None',
 });
