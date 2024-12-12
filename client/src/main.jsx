@@ -15,7 +15,7 @@ import { Analytics as VercelAnalytics } from "@vercel/analytics/react"
 
 const authStore = createStore({
   authName: '_auth',
-  authType: 'localstorage',
+  authType: 'cookie',
   cookieDomain: 'e-template-server.onrender.com',
   cookieSecure: window.location.protocol === 'https:',
   cookieSameSite: 'None',
