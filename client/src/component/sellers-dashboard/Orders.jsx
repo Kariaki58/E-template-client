@@ -70,7 +70,7 @@ const Orders = () => {
     if (newStatus === 'Cancelled') {
       const confirmCancel = window.confirm('Are you sure you want to cancel this order?');
       if (confirmCancel) {
-        setIsCustomEmailModalOpen(true); // Open custom email modal for cancellation
+        handleStatusChange(order._id, newStatus);
       }
     } else {
       handleStatusChange(order._id, newStatus); // Directly update the status for other options
